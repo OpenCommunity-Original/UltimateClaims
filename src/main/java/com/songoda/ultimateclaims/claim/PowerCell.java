@@ -31,6 +31,7 @@ public class PowerCell {
     protected Location location = null;
 
     protected List<ItemStack> items = new ArrayList<>();
+    private final Deque<Audit> auditLog = new ArrayDeque<>();
 
     protected int currentPower = Settings.STARTING_POWER.getInt();
 
@@ -203,18 +204,23 @@ public class PowerCell {
     public long getItemPower() {
         updateItemsFromGui();
         double total = 0;
-        for (ItemStack itemStack : items) {
-            double itemValue = itemStack.getAmount() * plugin.getItemManager().getItemValue(itemStack);
+        List<String> materials = Settings.ITEM_VALUES.getStringList();
+        for (String value : materials) {
+            String[] parts = value.split(":");
+            CompatibleMaterial material;
+            if (parts.length == 2 && (material = CompatibleMaterial.getMaterial(parts[0].trim())) != null) {
+                double itemValue = getMaterialAmount(material) * Double.parseDouble(parts[1].trim());
 
-            switch (getCostEquation()) {
-                case DEFAULT:
-                    total += itemValue / claim.getClaimSize();
-                    break;
-                case LINEAR:
-                    total += itemValue / (claim.getClaimSize() * getLinearValue());
-                    break;
-                default:
-                    total += itemValue;
+                switch (getCostEquation()) {
+                    case DEFAULT:
+                        total += itemValue / claim.getClaimSize();
+                        break;
+                    case LINEAR:
+                        total += itemValue / (claim.getClaimSize() * getLinearValue());
+                        break;
+                    default:
+                        total += itemValue;
+                }
             }
         }
         return (int) total;
@@ -268,6 +274,26 @@ public class PowerCell {
 
     public double getEconomyPower() {
         return economyBalance / getEconomyValue();
+    }
+
+    private double getItemValue(CompatibleMaterial material) {
+        List<String> materials = Settings.ITEM_VALUES.getStringList();
+        for (String value : materials) {
+            String[] parts = value.split(":");
+            if (parts.length == 2 && CompatibleMaterial.getMaterial(parts[0].trim()) == material) {
+                double itemValue = Double.parseDouble(parts[1].trim());
+
+                switch (getCostEquation()) {
+                    case DEFAULT:
+                        return itemValue / claim.getClaimSize();
+                    case LINEAR:
+                        return itemValue / (claim.getClaimSize() * getLinearValue());
+                    default:
+                        return itemValue;
+                }
+            }
+        }
+        return 0;
     }
 
     public double getEconomyValue() {
