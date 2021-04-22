@@ -325,10 +325,7 @@ public class Claim {
     }
 
     public void animateChunk(Chunk chunk, Player player, Material material) {
-        if (!Settings.ENABLE_CHUNK_ANIMATION.getBoolean())
-            return;
-
-        int bx = chunk.getX() << 4;
+      /*  int bx = chunk.getX() << 4;
         int bz = chunk.getZ() << 4;
 
         World world = player.getWorld();
@@ -350,7 +347,7 @@ public class Claim {
                         }, random.nextInt(30) + 1);
                     }
                 }
-            }
+            }*/
     }
 
     public List<RegionCorners> getCorners() {
