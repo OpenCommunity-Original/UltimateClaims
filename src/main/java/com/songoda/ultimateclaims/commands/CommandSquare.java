@@ -134,6 +134,8 @@ public class CommandSquare extends AbstractCommand {
                             if (!plugin.getClaimManager().hasClaim(chunk)) {
 
                                 // start save logic
+                                ClaimChunkClaimEvent events = new ClaimChunkClaimEvent(claim, chunk);
+                                Bukkit.getPluginManager().callEvent(events);
                                 boolean newRegion = claim.isNewRegion(chunk);
 
                                 // check max region limit

@@ -9,6 +9,7 @@
     </properties>
 
     <build>
+        <directory>/home/nikita/Downloads/116/plugins</directory>
         <defaultGoal>clean install</defaultGoal>
         <finalName>UltimateClaims-${project.version}</finalName>
 
@@ -102,15 +103,14 @@
 
     <repositories>
         <repository>
-            <id>spigot-repo</id>
+            <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
         <repository>
-            <id>public</id>
-            <url>https://repo.songoda.com/repository/public/</url>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
-
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
@@ -126,14 +126,14 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18-R0.1-SNAPSHOT</version>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.9.2</version>
+            <version>2.10.9</version>
             <scope>provided</scope>
         </dependency>
 
