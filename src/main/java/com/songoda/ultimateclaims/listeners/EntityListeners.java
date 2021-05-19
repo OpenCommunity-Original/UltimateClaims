@@ -297,7 +297,7 @@ public class EntityListeners implements Listener {
                     plugin.getLocale().getMessage("event.claim.exit")
                             .processPlaceholder("claim", claim.getName())
                             .sendTitle(player);
-                    if (player.hasPermission("ultimateclaims.offsounds")) {
+                    if (!player.hasPermission("ultimateclaims.offsounds")) {
                         player.playSound(location, CompatibleSound.BLOCK_BELL_RESONATE.getSound(), 0.5F, 1.0F);
                     }
                 }
@@ -343,7 +343,7 @@ public class EntityListeners implements Listener {
                     plugin.getLocale().getMessage("event.claim.enter")
                             .processPlaceholder("claim", claim.getName())
                             .sendTitle(player);
-                    if (player.hasPermission("ultimateclaims.offsounds")) {
+                    if (!player.hasPermission("ultimateclaims.offsounds")) {
                         player.playSound(location, CompatibleSound.UI_TOAST_CHALLENGE_COMPLETE.getSound(), 0.5F, 1.0F);
                     }
                 }
