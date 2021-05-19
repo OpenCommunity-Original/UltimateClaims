@@ -1,8 +1,5 @@
 package com.songoda.ultimateclaims.claim;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.compatibility.CompatibleSound;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimDeleteEvent;
@@ -17,7 +14,6 @@ import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -275,7 +271,7 @@ public class Claim {
     }
 
     public ClaimedChunk removeClaimedChunk(Chunk chunk, Player player) {
-        animateChunk(chunk, player, CompatibleMaterial.REDSTONE_BLOCK.getMaterial());
+        //animateChunk(chunk, player, Material.REDSTONE_BLOCK);
         ClaimedChunk newChunk = getClaimedChunk(chunk);
         for (ClaimedRegion region : new ArrayList<>(claimedRegions)) {
             List<ClaimedRegion> claimedRegions = region.removeChunk(newChunk);

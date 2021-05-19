@@ -118,7 +118,7 @@ public class CommandSquare extends AbstractCommand {
             {
                 // start radius match
                 List<Chunk> chunks = new ArrayList<>();
-                
+
                 int xx = centerChunk.getX();
                 int zz = centerChunk.getZ();
 

@@ -66,10 +66,10 @@ public class CommandRound extends AbstractCommand {
 
             // checking touch chunks nearby
             if (claim.getClaimSize() >= 2) {
-            if (Settings.CHUNKS_MUST_TOUCH.getBoolean() && region == null) {
-                plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
-                return ReturnType.FAILURE;
-            }
+                if (Settings.CHUNKS_MUST_TOUCH.getBoolean() && region == null) {
+                    plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
+                    return ReturnType.FAILURE;
+                }
             }
 
             int maxClaimable = claim.getMaxClaimSize(player);
@@ -119,14 +119,14 @@ public class CommandRound extends AbstractCommand {
                 // start radius match
                 List<Chunk> chunks = new ArrayList<>();
 
-                int r=radius+radius-2;
-                int xx=centerChunk.getX();
-                int zz=centerChunk.getZ();
+                int r = radius + radius - 2;
+                int xx = centerChunk.getX();
+                int zz = centerChunk.getZ();
 
                 // match
                 for (int x = xx - radius; x < xx + radius + 1; x++) {
                     for (int z = zz - radius; z < zz + radius + 1; z++) {
-                        if( (x - xx) * (x - xx) + (z - zz) * (z - zz) < r*r) {
+                        if ((x - xx) * (x - xx) + (z - zz) * (z - zz) < r * r) {
 
                             // check chunk loaded
                             if (player.getLocation().getWorld().isChunkLoaded(x, z)) {

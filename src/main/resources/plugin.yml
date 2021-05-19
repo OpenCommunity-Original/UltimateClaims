@@ -3,9 +3,9 @@ description: UltimateClaims
 version: maven-version-number
 softdepend: [PlayerPoints, HolographicDisplays, Holograms, CMI, Vault, dynmap, ItemsAdder, Slimefun, ItemBridge]
 main: com.songoda.ultimateclaims.UltimateClaims
-author: songoda
-api-version: 1.13
-loadbefore: [WorldGuard]
+author: Envel
+api-version: 1.16
+loadbefore: [WorldGuard, helper]
 commands:
   c:
     description: Reloads the configuration file
