@@ -409,10 +409,9 @@ public class DataManager extends DataManagerAbstract {
     }
 
     public void addAudit(Claim claim, Audit audit) {
-        this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
-                String createChunk = "INSERT INTO " + this.getTablePrefix() + "audit_log (claim_id, who, time) VALUES (?, ?, ?)";
-                PreparedStatement statement = connection.prepareStatement(createChunk);
+        /*this.async(() -> this.databaseConnector.connect(connection -> {
+            String createChunk = "INSERT INTO " + this.getTablePrefix() + "audit_log (claim_id, who, time) VALUES (?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createChunk)) {
                 statement.setInt(1, claim.getId());
                 statement.setString(2, audit.getWho().toString());
                 statement.setLong(3, audit.getWhen());
@@ -420,7 +419,7 @@ public class DataManager extends DataManagerAbstract {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        });
+        }));*/
     }
 
     public void purgeAuditLog() {

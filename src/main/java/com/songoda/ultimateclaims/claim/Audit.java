@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class Audit {
 
-    private UUID who;
+    /*private UUID who;
     private long when;
 
     public Audit(UUID who, long when) {
@@ -26,5 +26,5 @@ public class Audit {
 
     public void setWhen(long when) {
         this.when = when;
-    }
+    }*/
 }

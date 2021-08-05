@@ -207,6 +207,21 @@ public class PowerCellGui extends CustomizableGui {
                             .processPlaceholder("time", TimeUtils.makeReadable(powercell.getItemPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString());
 
+        // CHECK THIS SONGODA CODE
+        List<String> lore = new ArrayList<>(Arrays.asList(plugin.getLocale().getMessage("interface.powercell.infolore")
+                .processPlaceholder("chunks", claim.getClaimSize())
+                .processPlaceholder("members",
+                        claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
+                .getMessage().split("\\|")));
+        //lore.add("");
+        //lore.add(plugin.getLocale().getMessage("interface.powercell.auditlog").getMessage());
+
+        /*for (Audit audit : powercell.getAuditLog().stream().limit(5).collect(Collectors.toList()))
+            lore.add(plugin.getLocale().getMessage("interface.powercell.audit")
+                    .processPlaceholder("name", Bukkit.getOfflinePlayer(audit.getWho()).getName())
+                    .processPlaceholder("time", TimeUtils.makeReadable(System.currentTimeMillis() - audit.getWhen()) + "&7.")
+                    .getMessage());*/
+
         // buttons at the bottom of the screen
         // Claim info
         this.updateItem("information", 5, fullPerms ? 5 : 4,
