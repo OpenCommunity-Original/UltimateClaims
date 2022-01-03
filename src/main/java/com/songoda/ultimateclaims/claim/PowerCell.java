@@ -204,23 +204,18 @@ public class PowerCell {
     public long getItemPower() {
         updateItemsFromGui();
         double total = 0;
-        List<String> materials = Settings.ITEM_VALUES.getStringList();
-        for (String value : materials) {
-            String[] parts = value.split(":");
-            CompatibleMaterial material;
-            if (parts.length == 2 && (material = CompatibleMaterial.getMaterial(parts[0].trim())) != null) {
-                double itemValue = getMaterialAmount(material) * Double.parseDouble(parts[1].trim());
+        for (ItemStack itemStack : items) {
+            double itemValue = itemStack.getAmount() * plugin.getItemManager().getItemValue(itemStack);
 
-                switch (getCostEquation()) {
-                    case DEFAULT:
-                        total += itemValue / claim.getClaimSize();
-                        break;
-                    case LINEAR:
-                        total += itemValue / (claim.getClaimSize() * getLinearValue());
-                        break;
-                    default:
-                        total += itemValue;
-                }
+            switch (getCostEquation()) {
+                case DEFAULT:
+                    total += itemValue / claim.getClaimSize();
+                    break;
+                case LINEAR:
+                    total += itemValue / (claim.getClaimSize() * getLinearValue());
+                    break;
+                default:
+                    total += itemValue;
             }
         }
         return (int) total;

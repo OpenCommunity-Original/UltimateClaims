@@ -170,8 +170,6 @@ public class CommandSquare extends AbstractCommand {
             }
 
             plugin.getClaimManager().addClaim(player, claim);
-            if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
-                plugin.getDynmapManager().refresh(claim);
 
             plugin.getDataManager().createClaim(claim);
 
@@ -187,9 +185,6 @@ public class CommandSquare extends AbstractCommand {
                     .sendPrefixedMessage(player);
             warnload = 0;
         }
-
-        if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
-            plugin.getDynmapManager().refresh(claim);
 
         if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
             claim.getPowerCell().updateHologram();

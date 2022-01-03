@@ -47,10 +47,6 @@ public class PowerCellGui extends CustomizableGui {
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
 
-        // Add access to audit log.
-        if (!player.hasPermission("ultimateclaims.admin.nolog"))
-            plugin.getAuditManager().addToAuditLog(claim, player.getUniqueId(), System.currentTimeMillis());
-
         // edges will be type 3
         setDefaultItem(glass3);
 
@@ -106,10 +102,6 @@ public class PowerCellGui extends CustomizableGui {
                         .processPlaceholder("chunks", claim.getClaimSize())
                         .processPlaceholder("members", claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
                         .getMessage().split("\\|")), (event) -> {
-            if (Settings.ENABLE_AUDIT_LOG.getBoolean()) {
-                closed();
-                event.manager.showGUI(event.player, new AuditGui(plugin, claim, event.player));
-            }
         });
 
         // Members

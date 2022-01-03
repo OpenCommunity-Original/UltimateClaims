@@ -128,14 +128,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>me.lucko</groupId>
-            <artifactId>helper</artifactId>
-            <version>1.0</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -144,7 +137,6 @@
             <version>2.10.9</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.songoda</groupId>
             <artifactId>SongodaCore</artifactId>

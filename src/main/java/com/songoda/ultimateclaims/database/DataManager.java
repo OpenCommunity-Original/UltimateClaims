@@ -595,7 +595,7 @@ public class DataManager extends DataManagerAbstract {
                 while (result.next()) {
                     UUID who = UUID.fromString(result.getString("who"));
                     long when = result.getLong("time");
-                    audits.addFirst(new Audit(who, when));
+                    //audits.addFirst(new Audit(who, when));
                 }
                 callback.accept(audits);
             } catch (Exception ex) {
