@@ -408,20 +408,6 @@ public class DataManager extends DataManagerAbstract {
         });
     }
 
-    public void addAudit(Claim claim, Audit audit) {
-        /*this.async(() -> this.databaseConnector.connect(connection -> {
-            String createChunk = "INSERT INTO " + this.getTablePrefix() + "audit_log (claim_id, who, time) VALUES (?, ?, ?)";
-            try (PreparedStatement statement = connection.prepareStatement(createChunk)) {
-                statement.setInt(1, claim.getId());
-                statement.setString(2, audit.getWho().toString());
-                statement.setLong(3, audit.getWhen());
-                statement.executeUpdate();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }));*/
-    }
-
     public void purgeAuditLog() {
         int purgeAfter = Settings.PURGE_AUDIT_LOG_AFTER.getInt();
         this.runAsync(() -> {
@@ -578,26 +564,6 @@ public class DataManager extends DataManagerAbstract {
                 }
 
                 this.sync(() -> callback.accept(pluginSettings));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
-
-    public void getAuditLog(Claim claim, Consumer<Deque<Audit>> callback) {
-        this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
-                String selectAudit = "SELECT * FROM " + this.getTablePrefix() + "audit_log WHERE claim_id = ?";
-                Deque<Audit> audits = new ArrayDeque<>();
-                PreparedStatement statement = connection.prepareStatement(selectAudit);
-                statement.setInt(1, claim.getId());
-                ResultSet result = statement.executeQuery();
-                while (result.next()) {
-                    UUID who = UUID.fromString(result.getString("who"));
-                    long when = result.getLong("time");
-                    //audits.addFirst(new Audit(who, when));
-                }
-                callback.accept(audits);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
