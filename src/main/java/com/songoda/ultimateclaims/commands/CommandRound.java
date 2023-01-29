@@ -240,11 +240,11 @@ public class CommandRound extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "round <радиус>";
+        return "round <radius>";
     }
 
     @Override
     public String getDescription() {
-        return "Расширить поселение по радиусу - окружность.";
+        return "Expand the claim along the radius (circle).";
     }
 }

@@ -1,14 +1,13 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class CommandName extends AbstractCommand {
@@ -49,11 +48,8 @@ public class CommandName extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        String rawString = name;
-        byte[] bytes = rawString.getBytes(StandardCharsets.UTF_8);
 
-        String utf8EncodedString = new String(bytes, StandardCharsets.UTF_8);
-        claim.setName(utf8EncodedString);
+        claim.setName(name);
 
         plugin.getDataManager().updateClaim(claim);
 
@@ -76,11 +72,11 @@ public class CommandName extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "name <название>";
+        return "name <name>";
     }
 
     @Override
     public String getDescription() {
-        return "Переименовать поселение.";
+        return "Set the display name for your claim.";
     }
 }

@@ -82,11 +82,11 @@ public class CommandSetOwner extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "setowner <поселенец>";
+        return "setowner <new_owner>";
     }
 
     @Override
     public String getDescription() {
-        return "Передать права на руководство поселением.";
+        return "Transfer the right to manage the claim.";
     }
 }

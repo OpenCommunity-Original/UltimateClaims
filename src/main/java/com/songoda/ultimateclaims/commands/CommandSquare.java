@@ -237,11 +237,11 @@ public class CommandSquare extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "square <радиус>";
+        return "square <radius>";
     }
 
     @Override
     public String getDescription() {
-        return "Расширить поселение по радиусу - квадрат.";
+        return "Expand the claim along the radius (square).";
     }
 }
