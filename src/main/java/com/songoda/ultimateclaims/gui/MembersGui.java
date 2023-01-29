@@ -44,16 +44,12 @@ public class MembersGui extends CustomizableGui {
         mirrorFill("mirrorfill_2", 1, 0, true, true, glass2);
         mirrorFill("mirrorfill_3", 0, 1, true, true, glass2);
 
-        // close button
-        this.setButton("close", 8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                plugin.getLocale().getMessage("general.interface.close").getMessage(),
-                plugin.getLocale().getMessage("general.interface.close2").getMessage()),
-                (event) -> event.player.closeInventory());
-
-        // back button
+        // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.back2").getMessage()),
+                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+        this.setButton("back",8, this.getItem(0),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Member Stats (update on refresh)
@@ -182,12 +178,12 @@ public class MembersGui extends CustomizableGui {
         showPage();
     }
 
-    public enum SortType {
+    public static enum SortType {
         DEFAULT("interface.sortingmode.default"),
         PLAYTIME("interface.sortingmode.playtime"),
         MEMBER_SINCE("interface.sortingmode.membersince");
 
-        private final String localePath;
+        private String localePath;
 
         SortType(String localePath) {
             this.localePath = localePath;

@@ -31,7 +31,7 @@ public class PowerCellGui extends CustomizableGui {
     private final UltimateClaims plugin;
     private final PowerCell powercell;
     private final Claim claim;
-    private final boolean fullPerms;
+    private boolean fullPerms;
 
     public PowerCellGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "powercell");
@@ -189,30 +189,15 @@ public class PowerCellGui extends CustomizableGui {
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("time", 0, 4,
                     plugin.getLocale().getMessage("interface.powercell.totaltitle")
-                            .processPlaceholder("time", TimeUtils.makeReadable(powercell.getTotalPower() * 60 * 1000)).getMessage(),
+                            .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString());
 
         // Display the item amount
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("item", 0, 6,
                     plugin.getLocale().getMessage("interface.powercell.valuablestitle")
-                            .processPlaceholder("time", TimeUtils.makeReadable(powercell.getItemPower() * 60 * 1000)).getMessage(),
+                            .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString());
-
-        // CHECK THIS SONGODA CODE
-        List<String> lore = new ArrayList<>(Arrays.asList(plugin.getLocale().getMessage("interface.powercell.infolore")
-                .processPlaceholder("chunks", claim.getClaimSize())
-                .processPlaceholder("members",
-                        claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
-                .getMessage().split("\\|")));
-        //lore.add("");
-        //lore.add(plugin.getLocale().getMessage("interface.powercell.auditlog").getMessage());
-
-        /*for (Audit audit : powercell.getAuditLog().stream().limit(5).collect(Collectors.toList()))
-            lore.add(plugin.getLocale().getMessage("interface.powercell.audit")
-                    .processPlaceholder("name", Bukkit.getOfflinePlayer(audit.getWho()).getName())
-                    .processPlaceholder("time", TimeUtils.makeReadable(System.currentTimeMillis() - audit.getWhen()) + "&7.")
-                    .getMessage());*/
 
         // buttons at the bottom of the screen
         // Claim info

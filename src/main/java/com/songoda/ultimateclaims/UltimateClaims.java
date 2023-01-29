@@ -43,6 +43,7 @@ import com.songoda.ultimateclaims.tasks.PowerCellTask;
 import com.songoda.ultimateclaims.tasks.TrackerTask;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.plugin.PluginManager;
 
 import java.util.Collections;
@@ -81,7 +82,7 @@ public class UltimateClaims extends SongodaPlugin {
     @Override
     public void onPluginEnable() {
         // Register in Songoda Core
-        SongodaCore.registerPlugin(this, 65, CompatibleMaterial.CHEST);
+        SongodaCore.registerPlugin(this, 65, CompatibleMaterial.getMaterial(Material.CHEST));
 
         // Load Economy & Hologram hooks
         EconomyManager.load();

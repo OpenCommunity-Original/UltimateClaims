@@ -1,5 +1,8 @@
 package com.songoda.ultimateclaims.claim;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.compatibility.CompatibleSound;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimDeleteEvent;
@@ -13,13 +16,26 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 
 public class Claim {
 
@@ -271,7 +287,7 @@ public class Claim {
     }
 
     public ClaimedChunk removeClaimedChunk(Chunk chunk, Player player) {
-        //animateChunk(chunk, player, Material.REDSTONE_BLOCK);
+        animateChunk(chunk, player, CompatibleMaterial.REDSTONE_BLOCK.getMaterial());
         ClaimedChunk newChunk = getClaimedChunk(chunk);
         for (ClaimedRegion region : new ArrayList<>(claimedRegions)) {
             List<ClaimedRegion> claimedRegions = region.removeChunk(newChunk);
@@ -321,7 +337,10 @@ public class Claim {
     }
 
     public void animateChunk(Chunk chunk, Player player, Material material) {
-      /*  int bx = chunk.getX() << 4;
+        if (!Settings.ENABLE_CHUNK_ANIMATION.getBoolean())
+            return;
+
+        int bx = chunk.getX() << 4;
         int bz = chunk.getZ() << 4;
 
         World world = player.getWorld();
@@ -343,7 +362,7 @@ public class Claim {
                         }, random.nextInt(30) + 1);
                     }
                 }
-            }*/
+            }
     }
 
     public List<RegionCorners> getCorners() {

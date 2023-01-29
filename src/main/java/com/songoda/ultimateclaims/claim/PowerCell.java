@@ -31,7 +31,6 @@ public class PowerCell {
     protected Location location = null;
 
     protected List<ItemStack> items = new ArrayList<>();
-    private final Deque<Audit> auditLog = new ArrayDeque<>();
 
     protected int currentPower = Settings.STARTING_POWER.getInt();
 
@@ -269,26 +268,6 @@ public class PowerCell {
 
     public double getEconomyPower() {
         return economyBalance / getEconomyValue();
-    }
-
-    private double getItemValue(CompatibleMaterial material) {
-        List<String> materials = Settings.ITEM_VALUES.getStringList();
-        for (String value : materials) {
-            String[] parts = value.split(":");
-            if (parts.length == 2 && CompatibleMaterial.getMaterial(parts[0].trim()) == material) {
-                double itemValue = Double.parseDouble(parts[1].trim());
-
-                switch (getCostEquation()) {
-                    case DEFAULT:
-                        return itemValue / claim.getClaimSize();
-                    case LINEAR:
-                        return itemValue / (claim.getClaimSize() * getLinearValue());
-                    default:
-                        return itemValue;
-                }
-            }
-        }
-        return 0;
     }
 
     public double getEconomyValue() {

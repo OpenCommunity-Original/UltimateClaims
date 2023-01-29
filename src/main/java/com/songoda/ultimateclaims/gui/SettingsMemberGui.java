@@ -37,17 +37,12 @@ public class SettingsMemberGui extends CustomizableGui {
         mirrorFill("mirrorfill_2", 1, 0, true, true, glass2);
         mirrorFill("mirrorfill_3", 0, 1, true, true, glass2);
 
-        // close button
-        this.setButton("close", 8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                plugin.getLocale().getMessage("general.interface.close").getMessage(),
-                plugin.getLocale().getMessage("general.interface.close2").getMessage()),
-                (event) -> event.player.closeInventory());
-
-        // back button
+        // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.back2").getMessage()),
-                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                (event) -> event.player.closeInventory());
+        this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
 
         // settings
         this.setButton("break", 1, 1, CompatibleMaterial.IRON_PICKAXE.getItem(), (event) -> toggle(ClaimPerm.BREAK));
