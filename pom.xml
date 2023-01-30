@@ -9,7 +9,6 @@
     </properties>
 
     <build>
-        <directory>/home/nikita/Downloads/117/plugins</directory>
         <defaultGoal>clean install</defaultGoal>
         <finalName>UltimateClaims-${project.version}</finalName>
 
