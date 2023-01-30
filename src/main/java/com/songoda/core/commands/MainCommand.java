@@ -27,21 +27,6 @@ public class MainCommand extends AbstractCommand {
         this.nestedCommands = new SimpleNestedCommand(this);
     }
 
-    public MainCommand setHeader(String header) {
-        this.header = header;
-        return this;
-    }
-
-    public MainCommand setSortHelp(boolean sortHelp) {
-        this.sortHelp = sortHelp;
-        return this;
-    }
-
-    public MainCommand addSubCommand(AbstractCommand command) {
-        nestedCommands.addSubCommand(command);
-        return this;
-    }
-
     public MainCommand addSubCommands(AbstractCommand... commands) {
         nestedCommands.addSubCommands(commands);
         return this;
@@ -63,7 +48,6 @@ public class MainCommand extends AbstractCommand {
             }
 
             boolean isPlayer = sender instanceof Player;
-            // todo? pagation if commands.size is too large? (player-only)
             sender.sendMessage(ChatColor.DARK_GRAY + "- " + ChatColor.YELLOW + getSyntax() + ChatColor.GRAY + " - " + getDescription());
 
             for (String cmdStr : commands) {
