@@ -7,6 +7,7 @@ import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
 import com.songoda.ultimateclaims.settings.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -99,7 +100,7 @@ public class PowerCell {
             // YEET
             updateGuiInventory();
             rejects.stream().filter(item -> item.getType() != CompatibleMaterial.AIR.getMaterial())
-                    .forEach(item -> location.getWorld().dropItemNaturally(location, item));
+                    .forEach(item -> Objects.requireNonNull(location.getWorld()).dropItemNaturally(location, item));
         }
     }
 
@@ -131,9 +132,16 @@ public class PowerCell {
     }
 
     public boolean isInventoryOpen() {
-        return opened != null
-                && opened.getInventory() != null
-                && !opened.getInventory().getViewers().isEmpty();
+        if (Bukkit.getVersion().contains("1.15")) {
+            return opened != null
+                    && opened.getInventory() != null
+                    && !opened.getInventory().getViewers().isEmpty()
+                    && !Bukkit.getPlayer(opened.getInventory().getViewers().get(0).getUniqueId()).isSneaking();
+        } else {
+            return opened != null
+                    && opened.getInventory() != null
+                    && !opened.getInventory().getViewers().isEmpty();
+        }
     }
 
     public void createHologram() {
