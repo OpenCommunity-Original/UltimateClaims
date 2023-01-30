@@ -10,14 +10,18 @@ import org.bukkit.event.HandlerList;
  */
 public class ClaimTransferOwnershipEvent extends ClaimEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private boolean cancel = false;
     private final OfflinePlayer oldOwner;
     private final OfflinePlayer newOwner;
+    private boolean cancel = false;
 
     public ClaimTransferOwnershipEvent(Claim claim, OfflinePlayer oldOwner, OfflinePlayer newOwner) {
         super(claim);
         this.oldOwner = oldOwner;
         this.newOwner = newOwner;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     @Override
@@ -40,10 +44,6 @@ public class ClaimTransferOwnershipEvent extends ClaimEvent implements Cancellab
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

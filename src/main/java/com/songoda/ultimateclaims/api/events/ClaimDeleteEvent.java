@@ -19,6 +19,10 @@ public class ClaimDeleteEvent extends ClaimEvent implements Cancellable {
         this.deleteReason = deleteReason;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public boolean isCancelled() {
         return cancel;
@@ -35,10 +39,6 @@ public class ClaimDeleteEvent extends ClaimEvent implements Cancellable {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

@@ -114,7 +114,7 @@ public class BlockListeners implements Listener {
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
                 event.getIgnitingBlock().setType(CompatibleMaterial.AIR.getMaterial());
             } else {
-                for (BlockFace bf : new BlockFace[] {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
+                for (BlockFace bf : new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
                     Block b = event.getBlock().getRelative(bf);
                     if (b != null && b.getType() == CompatibleMaterial.FIRE.getMaterial()) {
                         b.setType(CompatibleMaterial.AIR.getMaterial());

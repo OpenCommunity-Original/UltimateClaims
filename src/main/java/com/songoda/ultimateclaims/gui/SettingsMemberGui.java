@@ -39,10 +39,10 @@ public class SettingsMemberGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
+                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
                 (event) -> event.player.closeInventory());
-        this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
+        this.setButton("back", 8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
 
         // settings
         this.setButton("break", 1, 1, CompatibleMaterial.IRON_PICKAXE.getItem(), (event) -> toggle(ClaimPerm.BREAK));

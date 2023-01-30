@@ -3,7 +3,6 @@ package com.songoda.ultimateclaims.database;
 import com.songoda.core.database.DataManagerAbstract;
 import com.songoda.core.database.DatabaseConnector;
 import com.songoda.core.utils.ItemSerializer;
-import com.songoda.ultimateclaims.claim.Audit;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimSetting;
 import com.songoda.ultimateclaims.claim.ClaimSettings;
@@ -21,11 +20,7 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.Types;
+import java.sql.*;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -37,7 +32,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void createOrUpdatePluginSettings(PluginSettings pluginSettings) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 // first check to see if there is a data row for plugin settings
                 String selectPluginSettings = "SELECT * FROM " + this.getTablePrefix() + "plugin_settings";
                 try (Statement statement = connection.createStatement()) {
@@ -85,7 +80,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void createClaim(Claim claim) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createClaim = "INSERT INTO " + this.getTablePrefix() + "claim (name, power, eco_bal, locked) VALUES (?, ?, ?, ?)";
                 try (PreparedStatement statement = connection.prepareStatement(createClaim)) {
                     statement.setString(1, claim.getName());
@@ -169,7 +164,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void updateClaim(Claim claim) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, power = ?, eco_bal = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, powercell_world = ?, powercell_x = ?, powercell_y = ?, powercell_z = ?, powercell_inventory = ? WHERE id = ?";
                 PreparedStatement statement = connection.prepareStatement(updateClaim);
                 statement.setString(1, claim.getName());
@@ -218,7 +213,7 @@ public class DataManager extends DataManagerAbstract {
     }
 
     public void bulkUpdateClaims(Collection<Claim> claims) {
-        try (Connection connection = this.databaseConnector.getConnection()){
+        try (Connection connection = this.databaseConnector.getConnection()) {
             String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, power = ?, eco_bal = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, powercell_world = ?, powercell_x = ?, powercell_y = ?, powercell_z = ?, powercell_inventory = ? WHERE id = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
                 for (Claim claim : claims) {
@@ -289,8 +284,8 @@ public class DataManager extends DataManagerAbstract {
     }
 
     public void deleteClaim(Claim claim) {
-        this.runAsync(() ->  {
-            try (Connection connection = this.databaseConnector.getConnection()){
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String deleteClaim = "DELETE FROM " + this.getTablePrefix() + "claim WHERE id = ?";
                 String deleteMembers = "DELETE FROM " + this.getTablePrefix() + "member WHERE claim_id = ?";
                 String deleteBans = "DELETE FROM " + this.getTablePrefix() + "ban WHERE claim_id = ?";
@@ -347,7 +342,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void createMember(ClaimMember member) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createMember = "INSERT INTO " + this.getTablePrefix() + "member (claim_id, player_uuid, player_name, role, play_time, member_since) VALUES (?, ?, ?, ?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createMember);
                 statement.setInt(1, member.getClaim().getId());
@@ -367,8 +362,8 @@ public class DataManager extends DataManagerAbstract {
     }
 
     public void deleteMember(ClaimMember member) {
-        this.runAsync(() ->  {
-            try (Connection connection = this.databaseConnector.getConnection()){
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String deleteMember = "DELETE FROM " + this.getTablePrefix() + "member WHERE player_uuid = ? AND claim_id = ?";
                 PreparedStatement statement = connection.prepareStatement(deleteMember);
                 statement.setString(1, member.getUniqueId().toString());
@@ -382,7 +377,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void createBan(Claim claim, UUID playerUUID) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createBan = "INSERT INTO " + this.getTablePrefix() + "ban (claim_id, player_uuid) VALUES (?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createBan);
                 statement.setInt(1, claim.getId());
@@ -396,7 +391,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void deleteBan(Claim claim, UUID playerUUID) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String deleteBan = "DELETE FROM " + this.getTablePrefix() + "ban WHERE claim_id = ? AND player_uuid = ?";
                 PreparedStatement statement = connection.prepareStatement(deleteBan);
                 statement.setInt(1, claim.getId());
@@ -411,9 +406,9 @@ public class DataManager extends DataManagerAbstract {
     public void purgeAuditLog() {
         int purgeAfter = Settings.PURGE_AUDIT_LOG_AFTER.getInt();
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createChunk = Settings.MYSQL_ENABLED.getBoolean() ? "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + purgeAfter + " DAY))" :
-                        "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE strftime('%Y-%m', time / 1000, 'unixepoch') <= date('now','-" + purgeAfter +" day')";
+                        "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE strftime('%Y-%m', time / 1000, 'unixepoch') <= date('now','-" + purgeAfter + " day')";
                 PreparedStatement statement = connection.prepareStatement(createChunk);
                 statement.executeUpdate();
             } catch (Exception ex) {
@@ -424,7 +419,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void createClaimedRegion(ClaimedRegion region) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createPermission = "INSERT INTO " + this.getTablePrefix() + "claimed_regions (claim_id, id) VALUES (?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createPermission);
                 statement.setInt(1, region.getClaim().getId());
@@ -438,7 +433,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void deleteClaimedRegion(ClaimedRegion region) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String deleteRegion = "DELETE FROM " + this.getTablePrefix() + "claimed_regions WHERE id = ?";
                 PreparedStatement statement = connection.prepareStatement(deleteRegion);
                 statement.setString(1, region.getUniqueId().toString());
@@ -451,7 +446,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void createClaimedChunk(ClaimedChunk claimedChunk) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createPermission = "INSERT INTO " + this.getTablePrefix() + "chunk (claim_id, region_id, world, x, z) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createPermission);
                 statement.setInt(1, claimedChunk.getRegion().getClaim().getId());
@@ -468,7 +463,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void deleteClaimedChunk(ClaimedChunk claimedChunk) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String deletePermission = "DELETE FROM " + this.getTablePrefix() + "chunk WHERE world = ? AND x = ? AND z = ?";
                 PreparedStatement statement = connection.prepareStatement(deletePermission);
                 statement.setString(1, claimedChunk.getWorld());
@@ -483,7 +478,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void updateClaimedChunks(Set<ClaimedChunk> chunks) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createMember = "UPDATE " + this.getTablePrefix() + "chunk SET region_id = ? WHERE world = ? AND x = ? AND z = ?";
                 PreparedStatement statement = connection.prepareStatement(createMember);
                 for (ClaimedChunk claimedChunk : chunks) {
@@ -502,7 +497,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void updateSettings(Claim claim, ClaimSettings settings) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String updateClaim = "UPDATE " + this.getTablePrefix() + "settings SET hostile_mob_spawning = ?, fire_spread = ?, mob_griefing = ?, leaf_decay = ?, pvp = ?, tnt = ?, fly = ? WHERE claim_id = ?";
                 PreparedStatement statement = connection.prepareStatement(updateClaim);
                 statement.setInt(1, settings.isEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING) ? 1 : 0);
@@ -522,7 +517,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void updatePermissions(Claim claim, ClaimPermissions permissions, ClaimRole role) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String updateClaim = "UPDATE " + this.getTablePrefix() + "permissions SET interact = ?, break = ?, place = ?, mob_kill = ?, redstone = ?, doors = ?, trading = ? WHERE claim_id = ? AND type = ?";
                 PreparedStatement statement = connection.prepareStatement(updateClaim);
                 statement.setInt(1, permissions.hasPermission(ClaimPerm.INTERACT) ? 1 : 0);
@@ -543,7 +538,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void getPluginSettings(Consumer<PluginSettings> callback) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String selectPluginSettings = "SELECT * FROM " + this.getTablePrefix() + "plugin_settings";
                 Statement statement = connection.createStatement();
                 ResultSet result = statement.executeQuery(selectPluginSettings);
@@ -572,7 +567,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void getClaims(Consumer<Map<UUID, Claim>> callback) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String selectClaims = "SELECT * FROM " + this.getTablePrefix() + "claim";
                 String selectMembers = "SELECT * FROM " + this.getTablePrefix() + "member";
                 String selectBans = "SELECT * FROM " + this.getTablePrefix() + "ban";

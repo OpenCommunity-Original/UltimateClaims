@@ -2,7 +2,6 @@ package com.songoda.ultimateclaims.items.loaders;
 
 import com.jojodmo.itembridge.ItemBridge;
 import com.songoda.ultimateclaims.items.ItemLoader;
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Function;

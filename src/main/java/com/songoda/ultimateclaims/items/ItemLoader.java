@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 /**
  * An interface for custom item loaders.
+ *
  * @author Fernando Pettinelli (l3st4t)
  */
 public interface ItemLoader {

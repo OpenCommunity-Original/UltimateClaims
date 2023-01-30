@@ -19,29 +19,14 @@ import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.commands.admin.CommandRemoveClaim;
 import com.songoda.ultimateclaims.commands.admin.CommandTransferOwnership;
 import com.songoda.ultimateclaims.database.DataManager;
-import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
-import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
-import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
-import com.songoda.ultimateclaims.database.migrations._4_TradingPermission;
-import com.songoda.ultimateclaims.database.migrations._5_TntSetting;
-import com.songoda.ultimateclaims.database.migrations._6_FlySetting;
-import com.songoda.ultimateclaims.database.migrations._7_AuditLog;
-import com.songoda.ultimateclaims.database.migrations._8_ClaimedRegions;
+import com.songoda.ultimateclaims.database.migrations.*;
 import com.songoda.ultimateclaims.dynmap.DynmapManager;
 import com.songoda.ultimateclaims.items.ItemManager;
-import com.songoda.ultimateclaims.listeners.BlockListeners;
-import com.songoda.ultimateclaims.listeners.EntityListeners;
-import com.songoda.ultimateclaims.listeners.InteractListeners;
-import com.songoda.ultimateclaims.listeners.InventoryListeners;
-import com.songoda.ultimateclaims.listeners.LoginListeners;
+import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.tasks.AnimateTask;
-import com.songoda.ultimateclaims.tasks.InviteTask;
-import com.songoda.ultimateclaims.tasks.PowerCellTask;
-import com.songoda.ultimateclaims.tasks.TrackerTask;
-import com.songoda.ultimateclaims.tasks.VisualizeTask;
+import com.songoda.ultimateclaims.tasks.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.PluginManager;
@@ -52,12 +37,9 @@ import java.util.List;
 public class UltimateClaims extends SongodaPlugin {
 
     private static UltimateClaims INSTANCE;
-
-    private PluginSettings pluginSettings;
-
-    private DatabaseConnector databaseConnector;
-
     private final GuiManager guiManager = new GuiManager(this);
+    private PluginSettings pluginSettings;
+    private DatabaseConnector databaseConnector;
     private CommandManager commandManager;
     private ClaimManager claimManager;
     private DynmapManager dynmapManager;

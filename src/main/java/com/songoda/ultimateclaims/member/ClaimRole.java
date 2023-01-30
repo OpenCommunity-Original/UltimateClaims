@@ -14,18 +14,18 @@ public enum ClaimRole {
         this.localePath = localePath;
     }
 
+    public static ClaimRole fromIndex(int index) {
+        for (ClaimRole role : values())
+            if (role.getIndex() == index)
+                return role;
+        return null;
+    }
+
     public int getIndex() {
         return this.index;
     }
 
     public String getLocalePath() {
         return localePath;
-    }
-
-    public static ClaimRole fromIndex(int index) {
-        for (ClaimRole role : values())
-            if (role.getIndex() == index)
-                return role;
-        return null;
     }
 }

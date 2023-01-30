@@ -12,22 +12,16 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class PowerCell {
 
+    protected final Claim claim;
+    protected final UltimateClaims plugin = UltimateClaims.getInstance();
     // This is the unique identifier for this power cell.
     // It is reset on every plugin load.
     // Used for holograms.
     private final UUID uniqueId = UUID.randomUUID();
-
-    protected final Claim claim;
-    protected final UltimateClaims plugin = UltimateClaims.getInstance();
-
     protected Location location = null;
 
     protected List<ItemStack> items = new ArrayList<>();
@@ -192,10 +186,6 @@ public class PowerCell {
         }
     }
 
-    public void setEconomyBalance(double economyBalance) {
-        this.economyBalance = economyBalance;
-    }
-
     public long getTotalPower() {
         return getItemPower() + (long) getEconomyPower() + currentPower;
     }
@@ -266,6 +256,10 @@ public class PowerCell {
         return this.economyBalance;
     }
 
+    public void setEconomyBalance(double economyBalance) {
+        this.economyBalance = economyBalance;
+    }
+
     public double getEconomyPower() {
         return economyBalance / getEconomyValue();
     }
@@ -324,12 +318,12 @@ public class PowerCell {
         return location == null ? null : location.clone();
     }
 
-    public boolean hasLocation() {
-        return location != null;
-    }
-
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public boolean hasLocation() {
+        return location != null;
     }
 
     public PowerCellGui getGui(Player player) {

@@ -10,12 +10,16 @@ import org.bukkit.event.HandlerList;
  */
 public class ClaimPlayerKickEvent extends ClaimEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private boolean cancel = false;
     private final OfflinePlayer player;
+    private boolean cancel = false;
 
     public ClaimPlayerKickEvent(Claim claim, OfflinePlayer player) {
         super(claim);
         this.player = player;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     @Override
@@ -34,10 +38,6 @@ public class ClaimPlayerKickEvent extends ClaimEvent implements Cancellable {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

@@ -46,10 +46,10 @@ public class MembersGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
+                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
-        this.setButton("back",8, this.getItem(0),
+        this.setButton("back", 8, this.getItem(0),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Member Stats (update on refresh)
@@ -61,13 +61,13 @@ public class MembersGui extends CustomizableGui {
 
         // Settings shortcuts
         this.setButton("visitor_settings", 5, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,
-                plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
+                        plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
+                        plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR)));
 
         this.setButton("member_settings", 5, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
-                plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
+                        plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
+                        plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER)));
 
         // enable page events

@@ -16,7 +16,7 @@ public class SettingsGui extends CustomizableGui {
     private final UltimateClaims plugin;
     private final Claim claim;
     private final boolean hostilemobspawning, firespread, pvp, mobgriefing, leafdecay, tnt, fly;
-    
+
     public SettingsGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "settings");
         this.claim = claim;
@@ -37,21 +37,21 @@ public class SettingsGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
+                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
                 (event) -> event.player.closeInventory());
-        this.setButton("back",8, this.getItem(0),
+        this.setButton("back", 8, this.getItem(0),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // shortcuts for member settings
         this.setButton("visitors", rows - 1, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,
-                plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
+                        plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
+                        plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR)));
 
         this.setButton("visitors", rows - 1, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
-                plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
+                        plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
+                        plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER)));
 
         this.setItem(1, 4, AIR);

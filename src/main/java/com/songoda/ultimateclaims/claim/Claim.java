@@ -16,40 +16,20 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Claim {
 
-    private int id;
-    private String name = null;
-    private ClaimMember owner;
     private final Set<ClaimMember> members = new HashSet<>();
-
     private final Set<ClaimedRegion> claimedRegions = new HashSet<>();
     private final Set<UUID> bannedPlayers = new HashSet<>();
-
-    private Location home = null;
-    private boolean locked = false;
-
     private final ClaimSettings claimSettings = new ClaimSettings()
             .setEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING, Settings.DEFAULT_CLAIM_HOSTILE_MOB_SPAWN.getBoolean())
             .setEnabled(ClaimSetting.FIRE_SPREAD, Settings.DEFAULT_CLAIM_FIRE_SPREAD.getBoolean())
@@ -58,7 +38,11 @@ public class Claim {
             .setEnabled(ClaimSetting.PVP, Settings.DEFAULT_CLAIM_PVP.getBoolean())
             .setEnabled(ClaimSetting.TNT, Settings.DEFAULT_CLAIM_TNT.getBoolean())
             .setEnabled(ClaimSetting.FLY, Settings.DEFAULT_CLAIM_FLY.getBoolean());
-
+    private int id;
+    private String name = null;
+    private ClaimMember owner;
+    private Location home = null;
+    private boolean locked = false;
     private ClaimPermissions memberPermissions = new ClaimPermissions()
             .setAllowed(ClaimPerm.BREAK, Settings.DEFAULT_MEMBER_BREAK.getBoolean())
             .setAllowed(ClaimPerm.INTERACT, Settings.DEFAULT_MEMBER_INTERACT.getBoolean())
@@ -82,12 +66,12 @@ public class Claim {
     private BossBar bossBarVisitor = null;
     private BossBar bossBarMember = null;
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getId() {
         return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public ClaimedChunk getFirstClaimedChunk() {
@@ -127,6 +111,10 @@ public class Claim {
 
     public ClaimMember getOwner() {
         return owner;
+    }
+
+    public void setOwner(ClaimMember owner) {
+        this.owner = owner;
     }
 
     public ClaimMember setOwner(UUID owner) {
@@ -192,7 +180,6 @@ public class Claim {
      * Search for a member by username
      *
      * @param name name to search
-     *
      * @return Member instance matching this username, if any
      */
     public ClaimMember getMember(String name) {
@@ -458,10 +445,6 @@ public class Claim {
 
     public Set<UUID> getBannedPlayers() {
         return bannedPlayers;
-    }
-
-    public void setOwner(ClaimMember owner) {
-        this.owner = owner;
     }
 
     public boolean isLocked() {

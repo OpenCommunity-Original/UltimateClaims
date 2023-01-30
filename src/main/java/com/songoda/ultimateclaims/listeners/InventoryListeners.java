@@ -16,7 +16,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.Map;
 
 public class InventoryListeners implements Listener {

@@ -9,29 +9,25 @@ import com.songoda.core.utils.NumberUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.claim.Audit;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PowerCellGui extends CustomizableGui {
     private final UltimateClaims plugin;
     private final PowerCell powercell;
     private final Claim claim;
     private boolean fullPerms;
+    private long lastUpdate = 0;
 
     public PowerCellGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "powercell");
@@ -135,8 +131,6 @@ public class PowerCellGui extends CustomizableGui {
         this.setDefaultAction((event) -> refreshPower());
         this.setOnClose((event) -> closed());
     }
-
-    private long lastUpdate = 0;
 
     private void refresh() {
         // don't allow spamming this function

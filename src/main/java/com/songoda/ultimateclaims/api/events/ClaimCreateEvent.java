@@ -15,6 +15,10 @@ public class ClaimCreateEvent extends ClaimEvent implements Cancellable {
         super(claim);
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public boolean isCancelled() {
         return cancel;
@@ -27,10 +31,6 @@ public class ClaimCreateEvent extends ClaimEvent implements Cancellable {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

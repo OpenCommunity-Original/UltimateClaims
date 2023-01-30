@@ -13,10 +13,10 @@ import java.util.Objects;
 
 public class ClaimedChunk {
 
-    private ClaimedRegion claimedRegion;
     private final String world;
     private final int x;
     private final int z;
+    private ClaimedRegion claimedRegion;
 
     public ClaimedChunk(Chunk chunk) {
         this(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());

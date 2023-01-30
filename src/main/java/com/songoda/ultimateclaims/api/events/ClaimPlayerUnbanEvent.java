@@ -11,14 +11,18 @@ import org.bukkit.event.HandlerList;
  */
 public class ClaimPlayerUnbanEvent extends ClaimEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private boolean cancel = false;
     private final Player executor;
     private final OfflinePlayer unbannedPlayer;
+    private boolean cancel = false;
 
     public ClaimPlayerUnbanEvent(Claim claim, Player executor, OfflinePlayer unbannedPlayer) {
         super(claim);
         this.executor = executor;
         this.unbannedPlayer = unbannedPlayer;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     @Override
@@ -41,10 +45,6 @@ public class ClaimPlayerUnbanEvent extends ClaimEvent implements Cancellable {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

@@ -2,7 +2,10 @@ package com.songoda.ultimateclaims.items;
 
 import com.songoda.core.configuration.Config;
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.items.loaders.*;
+import com.songoda.ultimateclaims.items.loaders.ItemBridgeLoader;
+import com.songoda.ultimateclaims.items.loaders.ItemsAdderLoader;
+import com.songoda.ultimateclaims.items.loaders.SlimefunLoader;
+import com.songoda.ultimateclaims.items.loaders.VanillaLoader;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +56,7 @@ public class ItemManager {
             List<String> oldItems = Settings.ITEM_VALUES.getStringList();
             if (!oldItems.isEmpty()) {
                 convertOldItems(oldItems);
-            }else{
+            } else {
                 itemConfig.addDefault("items.0.type", "vanilla");
                 itemConfig.addDefault("items.0.item", "DIAMOND");
                 itemConfig.addDefault("items.0.value", 120);
@@ -68,7 +71,7 @@ public class ItemManager {
             List<String> oldRecipe = Settings.POWERCELL_RECIPE.getStringList();
             if (!oldRecipe.isEmpty()) {
                 convertOldRecipe(oldRecipe);
-            }else{
+            } else {
                 // We use this because putting in the items manually would be a lot of lines.
                 convertOldRecipe(Arrays.asList("3:IRON_INGOT", "4:DIAMOND", "5:IRON_INGOT",
                         "12:DIAMOND", "13:IRON_INGOT", "14:DIAMOND",

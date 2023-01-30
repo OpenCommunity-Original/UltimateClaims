@@ -10,9 +10,9 @@ import java.util.UUID;
 
 public class ClaimMember {
 
-    private int id;
     private final Claim claim;
     private final UUID uuid;
+    private int id;
     private String lastName;
     private ClaimRole role;
     private boolean isPresent = false;
@@ -26,12 +26,12 @@ public class ClaimMember {
         this.role = role;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getId() {
         return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Claim getClaim() {

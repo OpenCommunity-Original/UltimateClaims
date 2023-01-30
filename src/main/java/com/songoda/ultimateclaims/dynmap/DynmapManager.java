@@ -37,6 +37,11 @@ public class DynmapManager {
         reload();
     }
 
+    private static long generateSeed(UUID uuid) {
+        long hilo = uuid.getMostSignificantBits() ^ uuid.getLeastSignificantBits();
+        return ((hilo >> 32)) ^ hilo;
+    }
+
     /**
      * Creates new {@link AreaMarker} for a {@link Claim} and deletes old ones
      */
@@ -203,10 +208,5 @@ public class DynmapManager {
         }
 
         return ((Number) colorValue).intValue();
-    }
-
-    private static long generateSeed(UUID uuid) {
-        long hilo = uuid.getMostSignificantBits() ^ uuid.getLeastSignificantBits();
-        return ((hilo >> 32)) ^ hilo;
     }
 }

@@ -7,10 +7,9 @@ import java.util.*;
 
 public class ClaimedRegion {
 
-    private UUID uniqueId = UUID.randomUUID();
     private final Claim claim;
-
     private final Set<ClaimedChunk> claimedChunks = new HashSet<>();
+    private UUID uniqueId = UUID.randomUUID();
 
     public ClaimedRegion(Claim claim) {
         this.claim = claim;

@@ -41,10 +41,10 @@ public class BansGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
+                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
-        this.setButton("back",8, this.getItem(0),
+        this.setButton("back", 8, this.getItem(0),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Ban information
@@ -77,8 +77,8 @@ public class BansGui extends CustomizableGui {
                 final UUID playerUUID = skullPlayer.getUniqueId();
 
                 this.setButton(row, col, GuiUtils.createButtonItem(ItemUtils.getPlayerSkull(skullPlayer),
-                        ChatColor.AQUA + skullPlayer.getName(),
-                        plugin.getLocale().getMessage("interface.bans.skulllore").getMessage().split("\\|")),
+                                ChatColor.AQUA + skullPlayer.getName(),
+                                plugin.getLocale().getMessage("interface.bans.skulllore").getMessage().split("\\|")),
                         (event) -> {
                             claim.unBanPlayer(playerUUID);
                             showPage();
