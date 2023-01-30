@@ -1,6 +1,5 @@
 package com.songoda.ultimateclaims.tasks;
 
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.ReflectionUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
@@ -105,40 +104,10 @@ public class VisualizeTask extends BukkitRunnable {
                 if (show) {
                     final Location loc = b.getLocation().add(.5, 1.5, .5);
 
-                    if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
                         if (canBuild)
                             player.spawnParticle(Particle.VILLAGER_HAPPY, loc, 0, 0, 0, 0, 1);
                         else
                             player.spawnParticle(Particle.REDSTONE, loc, 0, 0, 0, 0, 1, new Particle.DustOptions(canBuild ? Color.LIME : Color.RED, 2F));
-                    } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
-                        if (canBuild)
-                            player.spawnParticle(Particle.VILLAGER_HAPPY, loc, 0, 0, 0, 0, 1);
-                        else
-                            player.spawnParticle(Particle.REDSTONE, loc, 0, 1.0F, 0.1F, 0.1F, 1.0); // xyz = r b g
-                    } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_8)) {
-                        try {
-                            Object[] data;
-                            if (canBuild)
-                                data = new Object[]{loc, Effect.valueOf("HAPPY_VILLAGER"), 20, 2, 0F, 0F, 0F, 0F, 1, 16};
-                            else
-                                data = new Object[]{loc, Effect.valueOf("COLOURED_DUST"), 30, 2, 1.0F, 0.1F, 0.1F, 0F, 1, 16};
-                            ReflectionUtils.invokePrivateMethod(player.spigot().getClass(), "playEffect", player.spigot(),
-                                    new Class[]{Location.class,
-                                            Effect.class,
-                                            int.class, //id
-                                            int.class, //data
-                                            float.class, //offset x
-                                            float.class, //offset y
-                                            float.class, //offset z
-                                            float.class, //speed
-                                            int.class, //count
-                                            int.class}, //radius, how far the player can be away from loc to see the particles
-                                    data);
-                        } catch (Exception ignore) {
-                            ignore.printStackTrace();
-                        }
-                    }
-//                         1.8 requires PacketPlayOutWorldParticles for this. todo?
                 }
             }
         }

@@ -2,7 +2,6 @@ package com.songoda.ultimateclaims.claim;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimDeleteEvent;
@@ -334,22 +333,21 @@ public class Claim {
 
         Random random = new Random();
 
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
-            for (int xx = bx; xx < bx + 16; xx++) {
-                for (int zz = bz; zz < bz + 16; zz++) {
-                    for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
-                        Block block = world.getBlockAt(xx, yy, zz);
-                        CompatibleMaterial m = CompatibleMaterial.getMaterial(block);
-                        if (!m.isOccluding() || m.isInteractable()) continue;
-                        Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
-                            player.sendBlockChange(block.getLocation(), material, (byte) 0);
-                            Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
-                                    player.sendBlockChange(block.getLocation(), block.getBlockData()), random.nextInt(30) + 1);
-                            player.playSound(block.getLocation(), CompatibleSound.BLOCK_METAL_STEP.getSound(), 1F, .2F);
-                        }, random.nextInt(30) + 1);
-                    }
+        for (int xx = bx; xx < bx + 16; xx++) {
+            for (int zz = bz; zz < bz + 16; zz++) {
+                for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
+                    Block block = world.getBlockAt(xx, yy, zz);
+                    CompatibleMaterial m = CompatibleMaterial.getMaterial(block);
+                    if (!m.isOccluding() || m.isInteractable()) continue;
+                    Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
+                        player.sendBlockChange(block.getLocation(), material, (byte) 0);
+                        Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
+                                player.sendBlockChange(block.getLocation(), block.getBlockData()), random.nextInt(30) + 1);
+                        player.playSound(block.getLocation(), CompatibleSound.BLOCK_METAL_STEP.getSound(), 1F, .2F);
+                    }, random.nextInt(30) + 1);
                 }
             }
+        }
     }
 
     public List<RegionCorners> getCorners() {

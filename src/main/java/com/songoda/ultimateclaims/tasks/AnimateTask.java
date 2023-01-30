@@ -1,7 +1,6 @@
 package com.songoda.ultimateclaims.tasks;
 
 import com.songoda.core.compatibility.CompatibleParticleHandler;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
@@ -40,7 +39,7 @@ public class AnimateTask extends BukkitRunnable {
             int x = location.getBlockX() >> 4;
             int z = location.getBlockZ() >> 4;
 
-            if ((ServerVersion.isServerVersionAtLeast(ServerVersion.V1_14) && !location.isWorldLoaded())
+            if ((!location.isWorldLoaded())
                     || !location.getWorld().isChunkLoaded(x, z)) {
                 continue;
             }
