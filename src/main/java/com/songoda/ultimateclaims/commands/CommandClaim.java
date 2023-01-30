@@ -2,6 +2,7 @@ package com.songoda.ultimateclaims.commands;
 
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.hooks.WorldGuardHook;
+import com.songoda.core.locale.Message;
 import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimChunkClaimEvent;

@@ -79,8 +79,14 @@ public class Message {
      */
     public void sendTitle(CommandSender sender) {
         if (sender instanceof Player) {
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
                 ((Player) sender).sendTitle("", getMessage(), 10, 30, 10);
                 return;
+            }
+
+            ((Player) sender).sendTitle("", getMessage());
+
+            return;
         }
 
         sender.sendMessage(this.getMessage());
@@ -114,6 +120,7 @@ public class Message {
      */
     public void sendPrefixedMessage(CommandSender sender) {
         this.message.sendTo(this.prefix, sender);
+        
     }
 
     /**

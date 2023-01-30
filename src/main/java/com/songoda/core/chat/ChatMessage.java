@@ -267,7 +267,7 @@ public class ChatMessage {
     }
 
     public void sendTo(ChatMessage prefix, CommandSender sender) {
-        if (sender instanceof Player && enabled) {
+        /*if (!(sender instanceof Player) || !enabled) {
             try {
                 List<JsonObject> textList = prefix == null ? new ArrayList<>() : new ArrayList<>(prefix.textList);
                 textList.addAll(this.textList);
@@ -290,7 +290,7 @@ public class ChatMessage {
             }
 
             return;
-        }
+        }*/
 
         sender.sendMessage(TextUtils.formatText((prefix == null ? "" : prefix.toText(true) + " ") + toText(true)));
     }
