@@ -3,7 +3,6 @@ package com.songoda.core;
 import com.songoda.core.configuration.Config;
 import com.songoda.core.database.DataManagerAbstract;
 import com.songoda.core.locale.Locale;
-import com.songoda.core.utils.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -14,10 +13,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-/**
- * REMINDER: When converting plugins to use this, REMOVE METRICS <br>
- * Must not have two instances of Metrics enabled!
- */
 public abstract class SongodaPlugin extends JavaPlugin {
     protected Locale locale;
     protected Config config = new Config(this);
@@ -25,7 +20,6 @@ public abstract class SongodaPlugin extends JavaPlugin {
 
     protected ConsoleCommandSender console = Bukkit.getConsoleSender();
     private boolean emergencyStop = false;
-
 
 
     public abstract void onPluginLoad();
@@ -107,8 +101,6 @@ public abstract class SongodaPlugin extends JavaPlugin {
                 return;
             }
 
-            // Start Metrics
-            Metrics.start(this);
         } catch (Throwable th) {
             criticalErrorOnPluginStartup(th);
 
@@ -155,7 +147,6 @@ public abstract class SongodaPlugin extends JavaPlugin {
      * @param localeName locale to use, eg "en_US"
      * @param reload     optionally reload the loaded locale if the locale didn't
      *                   change
-     *
      * @return true if the locale exists and was loaded successfully
      */
     public boolean setLocale(String localeName, boolean reload) {

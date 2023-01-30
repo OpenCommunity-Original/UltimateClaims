@@ -14,28 +14,10 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.representer.Representer;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -57,56 +39,49 @@ public class Config extends ConfigSection {
     // public new (Map<String, ?> args)
      */
     protected static final String BLANK_CONFIG = "{}\n";
-
-    protected File file;
     protected final ConfigFileConfigurationAdapter config = new ConfigFileConfigurationAdapter(this);
-    protected Comment headerComment = null;
-    protected Comment footerComment = null;
+    protected final Pattern yamlNode = Pattern.compile("^( *)([^:{}\\[\\],&*#?|\\-<>=!%@`]+):(.*)$");
     final String dirName, fileName;
     final Plugin plugin;
     final DumperOptions yamlOptions = new DumperOptions();
     final Representer yamlRepresenter = new YamlRepresenter();
     final Yaml yaml = new Yaml(new YamlConstructor(), yamlRepresenter, yamlOptions);
+    protected File file;
+    protected Comment headerComment = null;
+    protected Comment footerComment = null;
     Charset defaultCharset = StandardCharsets.UTF_8;
     SaveTask saveTask;
-    Timer autosaveTimer;
 
     ////////////// Config settings ////////////////
+    Timer autosaveTimer;
     /**
      * save file whenever a change is made
      */
     boolean autosave = false;
-
     /**
      * time in seconds to start a save after a change is made
      */
     int autosaveInterval = 60;
-
     /**
      * remove nodes not defined in defaults
      */
     boolean autoremove = false;
-
     /**
      * load comments when loading the file
      */
     boolean loadComments = true;
-
     /**
      * Default comment applied to config nodes
      */
     ConfigFormattingRules.CommentStyle defaultNodeCommentFormat = ConfigFormattingRules.CommentStyle.SIMPLE;
-
     /**
      * Default comment applied to section nodes
      */
     ConfigFormattingRules.CommentStyle defaultSectionCommentFormat = ConfigFormattingRules.CommentStyle.SPACED;
-
     /**
      * Extra lines to put between root nodes
      */
     int rootNodeSpacing = 1;
-
     /**
      * Extra lines to put in front of comments. <br>
      * This is separate from rootNodeSpacing, if applicable.
@@ -150,6 +125,17 @@ public class Config extends ConfigSection {
         fileName = file;
     }
 
+    protected static int getOffset(String s) {
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < chars.length; ++i) {
+            if (chars[i] != ' ') {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     @NotNull
     public ConfigFileConfigurationAdapter getFileConfig() {
         return config;
@@ -176,7 +162,6 @@ public class Config extends ConfigSection {
      * Set the Charset that will be used to save this config
      *
      * @param defaultCharset Charset to use
-     *
      * @return this class
      */
     public Config setDefaultCharset(Charset defaultCharset) {
@@ -216,7 +201,6 @@ public class Config extends ConfigSection {
      * All saves are done asynchronously, so this should not impact server performance.
      *
      * @param autosave set to true if autosaving is enabled.
-     *
      * @return this class
      */
     @NotNull
@@ -234,7 +218,6 @@ public class Config extends ConfigSection {
      * If the configuration is changed within this period, the timer is not reset.
      *
      * @param autosaveInterval time in seconds
-     *
      * @return this class
      */
     @NotNull
@@ -254,7 +237,6 @@ public class Config extends ConfigSection {
      * as a default setting.
      *
      * @param autoremove Remove settings that don't exist as defaults
-     *
      * @return this class
      */
     @NotNull
@@ -340,33 +322,11 @@ public class Config extends ConfigSection {
     }
 
     @NotNull
-    public Config setHeader(@NotNull String... description) {
-        if (description.length == 0) {
-            headerComment = null;
-        } else {
-            headerComment = new Comment(description);
-        }
-
-        return this;
-    }
-
-    @NotNull
     public Config setHeader(@Nullable ConfigFormattingRules.CommentStyle commentStyle, @NotNull String... description) {
         if (description.length == 0) {
             headerComment = null;
         } else {
             headerComment = new Comment(commentStyle, description);
-        }
-
-        return this;
-    }
-
-    @NotNull
-    public Config setHeader(@Nullable List<String> description) {
-        if (description == null || description.isEmpty()) {
-            headerComment = null;
-        } else {
-            headerComment = new Comment(description);
         }
 
         return this;
@@ -390,6 +350,28 @@ public class Config extends ConfigSection {
         }
 
         return Collections.emptyList();
+    }
+
+    @NotNull
+    public Config setHeader(@NotNull String... description) {
+        if (description.length == 0) {
+            headerComment = null;
+        } else {
+            headerComment = new Comment(description);
+        }
+
+        return this;
+    }
+
+    @NotNull
+    public Config setHeader(@Nullable List<String> description) {
+        if (description == null || description.isEmpty()) {
+            headerComment = null;
+        } else {
+            headerComment = new Comment(description);
+        }
+
+        return this;
     }
 
     public Config clearConfig(boolean clearDefaults) {
@@ -689,8 +671,6 @@ public class Config extends ConfigSection {
         return "";
     }
 
-    protected final Pattern yamlNode = Pattern.compile("^( *)([^:{}\\[\\],&*#?|\\-<>=!%@`]+):(.*)$");
-
     protected void writeComments(String data, Writer out) throws IOException {
         // line-by-line apply line spacing formatting and comments per-node
         BufferedReader in = new BufferedReader(new StringReader(data));
@@ -771,17 +751,6 @@ public class Config extends ConfigSection {
             out.write(line);
             out.write("\n");
         }
-    }
-
-    protected static int getOffset(String s) {
-        char[] chars = s.toCharArray();
-        for (int i = 0; i < chars.length; ++i) {
-            if (chars[i] != ' ') {
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     class SaveTask extends TimerTask {

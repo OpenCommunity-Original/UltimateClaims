@@ -47,11 +47,6 @@ public enum LegacyMaterialBlockType {
     SUGAR_CANE("SUGAR_CANE_BLOCK"),
     WATER("STATIONARY_WATER"),
     WHEAT("CROPS");
-    final String blockMaterialName;
-    final byte blockData;
-    final String alternateBlockMaterialName;
-    final Material blockMaterial, alternateBlockMaterial;
-    final boolean requiresData; // some blocks require data to render properly (double blocks)
     final static Map<String, LegacyMaterialBlockType> lookupTable = new HashMap<>();
     final static Map<String, LegacyMaterialBlockType> reverseLookupTable = new HashMap<>();
 
@@ -64,6 +59,12 @@ public enum LegacyMaterialBlockType {
             }
         }
     }
+
+    final String blockMaterialName;
+    final byte blockData;
+    final String alternateBlockMaterialName;
+    final Material blockMaterial, alternateBlockMaterial;
+    final boolean requiresData; // some blocks require data to render properly (double blocks)
 
     LegacyMaterialBlockType(String blockMaterial) {
         this(blockMaterial, (byte) -1, null, false);
@@ -90,6 +91,18 @@ public enum LegacyMaterialBlockType {
         this.blockData = data;
     }
 
+    public static LegacyMaterialBlockType getMaterial(String lookup) {
+        return lookupTable.get(lookup);
+    }
+
+    public static LegacyMaterialBlockType getFromLegacy(String lookup, byte data) {
+        return reverseLookupTable.get(lookup + ":" + data);
+    }
+
+    public static LegacyMaterialBlockType getFromLegacy(String lookup) {
+        return getFromLegacy(lookup, (byte) -1);
+    }
+
     public String getBlockMaterialName() {
         return blockMaterialName;
     }
@@ -108,17 +121,5 @@ public enum LegacyMaterialBlockType {
 
     public boolean requiresData() {
         return requiresData;
-    }
-
-    public static LegacyMaterialBlockType getMaterial(String lookup) {
-        return lookupTable.get(lookup);
-    }
-
-    public static LegacyMaterialBlockType getFromLegacy(String lookup, byte data) {
-        return reverseLookupTable.get(lookup + ":" + data);
-    }
-
-    public static LegacyMaterialBlockType getFromLegacy(String lookup) {
-        return getFromLegacy(lookup, (byte) -1);
     }
 }

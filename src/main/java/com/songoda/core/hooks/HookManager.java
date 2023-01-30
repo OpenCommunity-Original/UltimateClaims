@@ -2,18 +2,14 @@ package com.songoda.core.hooks;
 
 import org.bukkit.plugin.Plugin;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class HookManager<T extends Hook> {
     private final Class typeClass;
+    private final Map<PluginHook, T> registeredHooks = new HashMap<>();
     private T defaultHook = null;
     private boolean loaded = false;
-    private final Map<PluginHook, T> registeredHooks = new HashMap<>();
 
     public HookManager(Class typeClass) {
         this.typeClass = typeClass;
@@ -60,7 +56,6 @@ public class HookManager<T extends Hook> {
      * the previously defined default will be used.
      *
      * @param name name of the plugin to use
-     *
      * @return true if the default was set to this plugin
      */
     public boolean setPreferredHook(String name) {
@@ -80,7 +75,6 @@ public class HookManager<T extends Hook> {
      * the previously defined default will be used.
      *
      * @param plugin plugin to use
-     *
      * @return true if the default was set to this plugin
      */
     public boolean setPreferredHook(PluginHook plugin) {
@@ -98,7 +92,6 @@ public class HookManager<T extends Hook> {
      * Try to grab the handler for this specific plugin hook.
      *
      * @param name plugin to use
-     *
      * @return returns null if plugin is not enabled
      */
     public T getHook(String name) {
@@ -116,7 +109,6 @@ public class HookManager<T extends Hook> {
      * Try to grab the handler for this specific plugin hook.
      *
      * @param hook plugin to use
-     *
      * @return returns null if plugin is not enabled
      */
     public T getHook(PluginHook hook) {
@@ -158,7 +150,6 @@ public class HookManager<T extends Hook> {
      * Check to see if a specific plugin hook is enabled.
      *
      * @param name plugin to check
-     *
      * @return true if this plugin is supported and loaded
      */
     public boolean isEnabled(String name) {
@@ -169,7 +160,6 @@ public class HookManager<T extends Hook> {
      * Check to see if a specific plugin hook is enabled.
      *
      * @param hook plugin to check
-     *
      * @return true if this plugin is supported and loaded
      */
     public boolean isEnabled(PluginHook hook) {

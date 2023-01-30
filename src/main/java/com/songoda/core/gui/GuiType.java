@@ -7,9 +7,9 @@ public enum GuiType {
     DISPENSER(InventoryType.DISPENSER, 9, 3),
     HOPPER(InventoryType.HOPPER, 5, 1);
 
-    protected final InventoryType type;
-    protected final int rows;
-    protected final int columns;
+    final InventoryType type;
+    private final int rows;
+    final int columns;
 
     GuiType(InventoryType type, int rows, int columns) {
         this.type = type;

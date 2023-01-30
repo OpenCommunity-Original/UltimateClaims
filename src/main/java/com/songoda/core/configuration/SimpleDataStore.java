@@ -9,11 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
 
@@ -25,9 +21,8 @@ import java.util.logging.Level;
 public class SimpleDataStore<T extends DataStoreObject> {
     protected final Plugin plugin;
     protected final String filename, dirName;
-    private final Function<ConfigurationSection, T> getFromSection;
     protected final HashMap<Object, T> data = new HashMap<>();
-    private File file;
+    private final Function<ConfigurationSection, T> getFromSection;
     private final Object lock = new Object();
     SaveTask saveTask;
     Timer autosaveTimer;
@@ -35,6 +30,7 @@ public class SimpleDataStore<T extends DataStoreObject> {
      * time in seconds to start a save after a change is made
      */
     int autosaveInterval = 60;
+    private File file;
 
     public SimpleDataStore(@NotNull Plugin plugin, @NotNull String filename, @NotNull Function<ConfigurationSection, T> loadFunction) {
         this.plugin = plugin;
@@ -65,7 +61,7 @@ public class SimpleDataStore<T extends DataStoreObject> {
 
     /**
      * @return a directly-modifiable instance of the data mapping for this
-     *         storage
+     * storage
      */
     public Map<Object, T> getData() {
         return data;
@@ -76,9 +72,8 @@ public class SimpleDataStore<T extends DataStoreObject> {
      * if this map contains no mapping for the key.
      *
      * @param key key whose mapping is to be retrieved from this storage
-     *
      * @return the value associated with <tt>key</tt>, or
-     *         <tt>null</tt> if there was no mapping for <tt>key</tt>.
+     * <tt>null</tt> if there was no mapping for <tt>key</tt>.
      */
     @Nullable
     public T get(Object key) {
@@ -89,9 +84,8 @@ public class SimpleDataStore<T extends DataStoreObject> {
      * Removes the mapping for the specified key from this storage if present.
      *
      * @param key key whose mapping is to be removed from this storage
-     *
      * @return the previous value associated with <tt>key</tt>, or
-     *         <tt>null</tt> if there was no mapping for <tt>key</tt>.
+     * <tt>null</tt> if there was no mapping for <tt>key</tt>.
      */
     @Nullable
     public T remove(@NotNull Object key) {
@@ -110,9 +104,8 @@ public class SimpleDataStore<T extends DataStoreObject> {
      * Removes the mapping for the specified key from this storage if present.
      *
      * @param value value whose mapping is to be removed from this storage
-     *
      * @return the previous value associated with <tt>key</tt>, or
-     *         <tt>null</tt> if there was no mapping for <tt>key</tt>.
+     * <tt>null</tt> if there was no mapping for <tt>key</tt>.
      */
     @Nullable
     public T remove(@NotNull T value) {
@@ -136,9 +129,8 @@ public class SimpleDataStore<T extends DataStoreObject> {
      * a mapping for the key, the old value is replaced.
      *
      * @param value value to be added
-     *
      * @return the previous value associated with <tt>value.getKey()</tt>, or
-     *         <tt>null</tt> if there was no mapping for <tt>value.getKey()</tt>.
+     * <tt>null</tt> if there was no mapping for <tt>value.getKey()</tt>.
      */
     @Nullable
     public T add(@NotNull T value) {

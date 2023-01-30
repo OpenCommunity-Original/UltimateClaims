@@ -17,11 +17,11 @@ import java.util.Map;
  * Paged GUI for when you aren't going to be making too many pages
  */
 public class SimplePagedGui extends Gui {
+    final int nextPageIndex = 4, prevPageIndex = 6;
     protected boolean useHeader;
-    private int rowsPerPage, maxCellSlot;
     protected ItemStack headerBackItem;
     protected ItemStack footerBackItem;
-    final int nextPageIndex = 4, prevPageIndex = 6;
+    private int rowsPerPage, maxCellSlot;
 
     public SimplePagedGui() {
         this(null);

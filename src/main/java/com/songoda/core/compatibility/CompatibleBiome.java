@@ -7,15 +7,7 @@ import org.bukkit.block.Biome;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Biomes that are compatible with server versions 1.7+
@@ -116,7 +108,6 @@ public enum CompatibleBiome {
 
     private static final Map<String, CompatibleBiome> lookupMap = new HashMap<>();
     private static final Set<CompatibleBiome> compatibleBiomes = new HashSet<>();
-    private final Deque<Version> versions = new ArrayDeque<>();
     private static Method methodGetHandle, methodMarkDirty, methodBiomeToBiomeBase, methodGetBiomeIndex, methodSetBiome;
     private static Field fieldStorageRegistry;
 
@@ -164,6 +155,8 @@ public enum CompatibleBiome {
         }
     }
 
+    private final Deque<Version> versions = new ArrayDeque<>();
+
     CompatibleBiome() {
         versions.add(v(ServerVersion.UNKNOWN, name()));
     }
@@ -171,6 +164,26 @@ public enum CompatibleBiome {
     CompatibleBiome(ServerVersion version, Version... versions) {
         this.versions.add(v(version, name()));
         this.versions.addAll(Arrays.asList(versions));
+    }
+
+    public static Set<CompatibleBiome> getCompatibleBiomes() {
+        return compatibleBiomes;
+    }
+
+    public static CompatibleBiome getBiome(Biome biome) {
+        return biome == null ? null : lookupMap.get(biome.name());
+    }
+
+    public static CompatibleBiome getBiome(String name) {
+        return name == null ? null : lookupMap.get(name.toUpperCase());
+    }
+
+    private static Version v(ServerVersion version, String biome) {
+        return new Version(version, biome);
+    }
+
+    private static Version v(String biome) {
+        return new Version(ServerVersion.UNKNOWN, biome);
     }
 
     public boolean isCompatible() {
@@ -188,22 +201,11 @@ public enum CompatibleBiome {
                     return Biome.valueOf(version.biome);
                 }
             }
-        } catch (IllegalArgumentException ignore) { // This means the supporter biome server version is wrongly configured
+        } catch (
+                IllegalArgumentException ignore) { // This means the supporter biome server version is wrongly configured
         }
 
         return null;
-    }
-
-    public static Set<CompatibleBiome> getCompatibleBiomes() {
-        return compatibleBiomes;
-    }
-
-    public static CompatibleBiome getBiome(Biome biome) {
-        return biome == null ? null : lookupMap.get(biome.name());
-    }
-
-    public static CompatibleBiome getBiome(String name) {
-        return name == null ? null : lookupMap.get(name.toUpperCase());
     }
 
     public void setBiome(Chunk chunk) throws InvocationTargetException, IllegalAccessException {
@@ -257,14 +259,6 @@ public enum CompatibleBiome {
         }
 
         world.setBiome(x, z, getBiome());
-    }
-
-    private static Version v(ServerVersion version, String biome) {
-        return new Version(version, biome);
-    }
-
-    private static Version v(String biome) {
-        return new Version(ServerVersion.UNKNOWN, biome);
     }
 
     private static class Version {

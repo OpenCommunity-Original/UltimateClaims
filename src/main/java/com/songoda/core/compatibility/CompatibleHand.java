@@ -79,7 +79,6 @@ public enum CompatibleHand {
      * Get item in the selected hand
      *
      * @param player the player to get the item from
-     *
      * @return the item
      */
     public ItemStack getItem(Player player) {

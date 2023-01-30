@@ -41,7 +41,7 @@ public class WorldGuardHook {
      * Check to see if WorldGuard is installed and hooked
      *
      * @return true if and only if WorldGuard exists and addHook() has been
-     *         called and added successfully
+     * called and added successfully
      */
     public static boolean isEnabled() {
         return canHook && WorldGuardFlagHandler.isEnabled();
@@ -52,7 +52,6 @@ public class WorldGuardHook {
      *
      * @param l    location to check
      * @param flag ALLOW/DENY flag to check
-     *
      * @return flag state, or null if undefined
      */
     @Nullable
@@ -65,7 +64,6 @@ public class WorldGuardHook {
      *
      * @param c    chunk to check for regions in
      * @param flag ALLOW/DENY flag to check
-     *
      * @return flag state, or null if undefined
      */
     @Nullable
@@ -77,7 +75,6 @@ public class WorldGuardHook {
      * Check to see if the pvp flag is set and is set to ALLOW
      *
      * @param loc Location to check
-     *
      * @return false if the pvp flag is not set for this region, or is set to DENY
      */
     public static boolean isPvpAllowed(@NotNull Location loc) {
@@ -88,7 +85,6 @@ public class WorldGuardHook {
      * Check to see if the block-break flag is set and is set to ALLOW
      *
      * @param loc Location to check
-     *
      * @return false if the block-break flag is not set for this region, or is set to DENY
      */
     public static boolean isBreakAllowed(@NotNull Location loc) {
@@ -99,7 +95,6 @@ public class WorldGuardHook {
      * Check to see if the build flag is set and is set to ALLOW
      *
      * @param loc Location to check
-     *
      * @return false if the build flag is not set for this region, or is set to DENY
      */
     public static boolean isBuildAllowed(@NotNull Player player, @NotNull Location loc) {
@@ -110,7 +105,6 @@ public class WorldGuardHook {
      * Check to see if the use flag is set and is set to ALLOW
      *
      * @param loc Location to check
-     *
      * @return false if the use flag is not set for this region, or is set to DENY
      */
     public static boolean isInteractAllowed(@NotNull Location loc) {
@@ -121,7 +115,6 @@ public class WorldGuardHook {
      * Check to see if the other-explosion flag is set and is set to ALLOW
      *
      * @param loc Location to check
-     *
      * @return false if the other-explosion flag is not set for this region, or is set to DENY
      */
     public static boolean isExplosionsAllowed(@NotNull Location loc) {
@@ -132,7 +125,6 @@ public class WorldGuardHook {
      * Check to see if the mob-spawning flag is set and is set to ALLOW
      *
      * @param loc Location to check
-     *
      * @return false if the mob-spawning flag is not set for this region, or is set to DENY
      */
     public static boolean isMobSpawningAllowed(@NotNull Location loc) {
@@ -141,7 +133,6 @@ public class WorldGuardHook {
 
     /**
      * @param loc Location to check
-     *
      * @return A list of regions that contain this location.
      */
     @NotNull
@@ -151,7 +142,6 @@ public class WorldGuardHook {
 
     /**
      * @param c Chunk to check
-     *
      * @return A list of regions that contain any part of this chunk.
      */
     @NotNull

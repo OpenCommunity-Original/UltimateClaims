@@ -1,9 +1,9 @@
 package com.songoda.core.math;
 
 public class Eval {
-    private int pos = -1, ch;
     private final String toParse;
     private final String warningMessage;
+    private int pos = -1, ch;
 
     public Eval(String toParse, String warningMessage) {
         this.toParse = toParse;

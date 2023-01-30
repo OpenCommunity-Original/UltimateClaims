@@ -16,20 +16,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CustomizableGui extends Gui {
-    private static boolean showGuiKeys = false;
-    private int activationCount = 0;
-
     private static final Map<String, CustomContent> loadedGuis = new HashMap<>();
+    private static boolean showGuiKeys = false;
     private final CustomContent customContent;
+    private int activationCount = 0;
 
     public CustomizableGui(Plugin plugin, String guiKey) {
         this(plugin, guiKey, null);
@@ -244,8 +238,7 @@ public class CustomizableGui extends Gui {
                 isShow = true;
             }
 
-            if (btn instanceof MirrorFill) {
-                MirrorFill mf = (MirrorFill) btn;
+            if (btn instanceof MirrorFill mf) {
                 mirrorRow = mf.mirrorRow;
                 mirrorCol = mf.mirrorCol;
             }

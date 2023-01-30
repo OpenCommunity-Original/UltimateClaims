@@ -5,13 +5,8 @@ import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.lootables.loot.Loot;
 import com.songoda.core.utils.TextUtils;
-import org.bukkit.enchantments.Enchantment;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GuiEnchantEditor extends Gui {
     private final Gui returnGui;

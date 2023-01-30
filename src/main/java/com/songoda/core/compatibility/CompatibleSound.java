@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 /**
  * TODO: Probably recode to be similar to CompatibleMaterial
- *
+ * <p>
  * Sounds that are compatible with server versions 1.7+ <br>
  * TODO: This needs work.
  * Finished 1.8, finished 1.9 blocks, resume with 1.9 entities<br>
@@ -1341,9 +1341,9 @@ public enum CompatibleSound {
     WEATHER_RAIN("AMBIENCE_RAIN"),
     WEATHER_RAIN_ABOVE;
 
+    private static final boolean DEBUG = false;
     private /* final */ Sound sound;
     private /* final */ boolean compatibilityMode;
-    private static final boolean DEBUG = false;
 
     CompatibleSound() {
         // This could get risky, since we haven't finished this
@@ -1436,6 +1436,22 @@ public enum CompatibleSound {
         }
     }
 
+    private static Version v(String sound) {
+        return new Version(ServerVersion.UNKNOWN, sound, false);
+    }
+
+    private static Version v(ServerVersion version, String sound) {
+        return new Version(version, sound, false);
+    }
+
+    private static Version v(ServerVersion version, String sound, boolean compatibility) {
+        return new Version(version, sound, compatibility);
+    }
+
+    private static Version v(String sound, boolean compatibility) {
+        return new Version(ServerVersion.UNKNOWN, sound, compatibility);
+    }
+
     /**
      * Returns the appropriate Bukkit API sound or tries to find a sane alternative,
      * if the server does not support that sound
@@ -1508,22 +1524,6 @@ public enum CompatibleSound {
      */
     public boolean usesCompatibility() {
         return !compatibilityMode;
-    }
-
-    private static Version v(String sound) {
-        return new Version(ServerVersion.UNKNOWN, sound, false);
-    }
-
-    private static Version v(ServerVersion version, String sound) {
-        return new Version(version, sound, false);
-    }
-
-    private static Version v(ServerVersion version, String sound, boolean compatibility) {
-        return new Version(version, sound, compatibility);
-    }
-
-    private static Version v(String sound, boolean compatibility) {
-        return new Version(ServerVersion.UNKNOWN, sound, compatibility);
     }
 
     private static class Version {

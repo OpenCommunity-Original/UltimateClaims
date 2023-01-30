@@ -17,24 +17,10 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,10 +50,21 @@ public class SongodaCore {
     private CommandManager commandManager;
     private EventListener loginListener;
     private ShadedEventListener shadingListener;
+    private final ArrayList<BukkitTask> tasks = new ArrayList<>();
+
+    SongodaCore() {
+        commandManager = null;
+    }
+
+    SongodaCore(JavaPlugin javaPlugin) {
+        piggybackedPlugin = javaPlugin;
+        commandManager = new CommandManager(piggybackedPlugin);
+        loginListener = new EventListener();
+    }
 
     public static boolean hasShading() {
         // sneaky hack to check the package name since maven tries to re-shade all references to the package string
-        return !SongodaCore.class.getPackage().getName().equals(new String(new char[] {'c', 'o', 'm', '.', 's', 'o', 'n', 'g', 'o', 'd', 'a', '.', 'c', 'o', 'r', 'e'}));
+        return !SongodaCore.class.getPackage().getName().equals(new String(new char[]{'c', 'o', 'm', '.', 's', 'o', 'n', 'g', 'o', 'd', 'a', '.', 'c', 'o', 'r', 'e'}));
     }
 
     public static void registerPlugin(JavaPlugin plugin, int pluginID, CompatibleMaterial icon) {
@@ -156,14 +153,40 @@ public class SongodaCore {
         INSTANCE.register(plugin, pluginID, icon, coreVersion);
     }
 
-    SongodaCore() {
-        commandManager = null;
+    public static List<PluginInfo> getPlugins() {
+        return new ArrayList<>(registeredPlugins);
     }
 
-    SongodaCore(JavaPlugin javaPlugin) {
-        piggybackedPlugin = javaPlugin;
-        commandManager = new CommandManager(piggybackedPlugin);
-        loginListener = new EventListener();
+    public static int getCoreVersion() {
+        return coreRevision;
+    }
+
+    public static String getCoreLibraryVersion() {
+        return coreVersion;
+    }
+
+    public static int getUpdaterVersion() {
+        return updaterVersion;
+    }
+
+    public static String getPrefix() {
+        return "[SongodaCore] ";
+    }
+
+    public static Logger getLogger() {
+        return logger;
+    }
+
+    public static boolean isRegistered(String plugin) {
+        return registeredPlugins.stream().anyMatch(p -> p.getJavaPlugin().getName().equalsIgnoreCase(plugin));
+    }
+
+    public static JavaPlugin getHijackedPlugin() {
+        return INSTANCE == null ? null : INSTANCE.piggybackedPlugin;
+    }
+
+    public static SongodaCore getInstance() {
+        return INSTANCE;
     }
 
     private void init() {
@@ -202,8 +225,6 @@ public class SongodaCore {
         loginListener = null;
     }
 
-    private ArrayList<BukkitTask> tasks = new ArrayList<>();
-
     private void register(JavaPlugin plugin, int pluginID, String icon, String libraryVersion) {
         logger.info(getPrefix() + "Hooked " + plugin.getName() + ".");
         PluginInfo info = new PluginInfo(plugin, pluginID, icon, libraryVersion);
@@ -211,41 +232,6 @@ public class SongodaCore {
         // don't forget to check for language pack updates ;)
         info.addModule(new LocaleModule());
         registeredPlugins.add(info);
-    }
-    public static List<PluginInfo> getPlugins() {
-        return new ArrayList<>(registeredPlugins);
-    }
-
-    public static int getCoreVersion() {
-        return coreRevision;
-    }
-
-    public static String getCoreLibraryVersion() {
-        return coreVersion;
-    }
-
-    public static int getUpdaterVersion() {
-        return updaterVersion;
-    }
-
-    public static String getPrefix() {
-        return "[SongodaCore] ";
-    }
-
-    public static Logger getLogger() {
-        return logger;
-    }
-
-    public static boolean isRegistered(String plugin) {
-        return registeredPlugins.stream().anyMatch(p -> p.getJavaPlugin().getName().equalsIgnoreCase(plugin));
-    }
-
-    public static JavaPlugin getHijackedPlugin() {
-        return INSTANCE == null ? null : INSTANCE.piggybackedPlugin;
-    }
-
-    public static SongodaCore getInstance() {
-        return INSTANCE;
     }
 
     private static class ShadedEventListener implements Listener {
@@ -257,7 +243,6 @@ public class SongodaCore {
 
             if (via) {
                 Bukkit.getOnlinePlayers().forEach(p -> ClientVersion.onLoginVia(p, getHijackedPlugin()));
-                return;
             }
         }
 
@@ -265,7 +250,6 @@ public class SongodaCore {
         void onLogin(PlayerLoginEvent event) {
             if (via) {
                 ClientVersion.onLoginVia(event.getPlayer(), getHijackedPlugin());
-                return;
             }
         }
 

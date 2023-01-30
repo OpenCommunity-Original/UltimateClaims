@@ -8,11 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Items that are compatible with server versions 1.7+
@@ -1338,20 +1334,13 @@ public enum CompatibleMaterial {
     ZOMBIE_WALL_HEAD("SKULL", (byte) 2),
     ;
 
-    private final String modern, modern2, legacy;
-    private final LegacyMaterialAnalouge compatibleMaterial;
-    private final LegacyMaterialBlockType legacyBlockMaterial;
-    private final boolean legacyRequiresData;
-    // some materials (I'm looking at you, GREEN_DYE) have changed ID more than once
-    // minVersion is the min for modern, and minVersion2 is min to use legacyCompat1
-    private final ServerVersion minVersion, minVersion2;
-    private final byte legacyData;
-    private final Material material;
-    private final Byte data;
     // quick test to see if our version is < 1.13
-    protected static final boolean useLegacy = ServerVersion.isServerVersionBelow(ServerVersion.V1_13);
+    private static final boolean useLegacy = ServerVersion.isServerVersionBelow(ServerVersion.V1_13);
     // map to speed up name->material lookups
     private static final Map<String, CompatibleMaterial> lookupMap = new HashMap<>();
+    static LinkedHashSet<CompatibleMaterial> all = null;
+    private static Method methodGetBlockData;
+    private static Method methodSetData;
 
     static {
         for (CompatibleMaterial m : values()) {
@@ -1386,6 +1375,37 @@ public enum CompatibleMaterial {
             }
         }
     }
+
+    static {
+        if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_12)) {
+            try {
+                methodGetBlockData = FallingBlock.class.getDeclaredMethod("getBlockData");
+            } catch (NoSuchMethodException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    static {
+        if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_12)) {
+            try {
+                methodSetData = Block.class.getDeclaredMethod("setData", byte.class);
+            } catch (NoSuchMethodException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private final String modern, modern2, legacy;
+    private final LegacyMaterialAnalouge compatibleMaterial;
+    private final LegacyMaterialBlockType legacyBlockMaterial;
+    private final boolean legacyRequiresData;
+    // some materials (I'm looking at you, GREEN_DYE) have changed ID more than once
+    // minVersion is the min for modern, and minVersion2 is min to use legacyCompat1
+    private final ServerVersion minVersion, minVersion2;
+    private final byte legacyData;
+    private final Material material;
+    private final Byte data;
 
     CompatibleMaterial() {
         this(ServerVersion.UNKNOWN, null, null);
@@ -1448,84 +1468,11 @@ public enum CompatibleMaterial {
     }
 
     /**
-     * @return the Bukkit Material for this material
-     */
-    public Material getMaterial() {
-        return material;
-    }
-
-    /**
-     * @return the Bukkit Material required to create a block
-     */
-    public Material getBlockMaterial() {
-        return legacyBlockMaterial != null ? legacyBlockMaterial.getBlockMaterial() : (isBlock() ? material : AIR.material);
-    }
-
-    /**
-     * @return an item that resembles this material for the current server version
-     */
-    public ItemStack getItem() {
-        return getItem(1);
-    }
-
-    /**
-     * @param amount the amount to return
-     *
-     * @return an item that resembles this material for the current server version
-     */
-    public ItemStack getItem(int amount) {
-        if (usesCompatibility()) {
-            return compatibleMaterial.getItem();
-        }
-
-        return data != null ? new ItemStack(material, amount, data) : new ItemStack(material);
-    }
-
-    /**
-     * Does this material need to use a legacy fallback?
-     */
-    public boolean usesLegacy() {
-        return legacy != null && ServerVersion.isServerVersionBelow(minVersion);
-    }
-
-    /**
-     * Does this material need to use a fallback item on this server?
-     */
-    public boolean usesCompatibility() {
-        return compatibleMaterial != null && material == compatibleMaterial.material;
-        //return compatibleMaterial != null && ServerVersion.isServerVersionBelow(compatibleMaterial.versionLessThan);
-    }
-
-    /**
-     * Is this item reused in later versions of Minecraft?
-     */
-    public boolean isRecycled() {
-        return usesLegacy() && this == CompatibleMaterial.GRASS;
-    }
-
-    /**
-     * Get the legacy data value for this material if there is one, or -1 if none
-     */
-    public byte getData() {
-        return data != null ? data : -1;
-    }
-
-    /**
-     * Check if current material requires a data value.
-     *
-     * @return true if server is legacy and this item requires data to be defined.
-     */
-    public boolean usesData() {
-        return data != null;
-    }
-
-    /**
      * Lookup a Material by its modern id name. <br />
      * This also can grab materials by their legacy, but only if there is no
      * modern material by that name.
      *
      * @param name item to lookup
-     *
      * @return LegacyMaterial or null if none found
      */
     public static CompatibleMaterial getMaterial(String name) {
@@ -1539,7 +1486,6 @@ public enum CompatibleMaterial {
      *
      * @param name item to lookup
      * @param def  default item if this is not a valid material
-     *
      * @return LegacyMaterial or null if none found
      */
     public static CompatibleMaterial getMaterial(String name, CompatibleMaterial def) {
@@ -1550,7 +1496,6 @@ public enum CompatibleMaterial {
      * Lookup a Material by bukkit material.
      *
      * @param mat item to lookup
-     *
      * @return LegacyMaterial or null if none found
      */
     public static CompatibleMaterial getMaterial(Material mat) {
@@ -1572,7 +1517,6 @@ public enum CompatibleMaterial {
      * Lookup a Material by ItemStack.
      *
      * @param item item to lookup
-     *
      * @return LegacyMaterial or null if none found
      */
     public static CompatibleMaterial getMaterial(ItemStack item) {
@@ -1589,7 +1533,6 @@ public enum CompatibleMaterial {
      * Lookup a Material by Block, corrected for legacy
      *
      * @param block block to check
-     *
      * @return LegacyMaterial or null if none found
      */
     public static CompatibleMaterial getMaterial(Block block) {
@@ -1612,23 +1555,10 @@ public enum CompatibleMaterial {
         return null;
     }
 
-    private static Method methodGetBlockData;
-
-    static {
-        if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_12)) {
-            try {
-                methodGetBlockData = FallingBlock.class.getDeclaredMethod("getBlockData");
-            } catch (NoSuchMethodException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
     /**
      * Lookup a Material by FallingBlock, corrected for legacy
      *
      * @param block falling block to check
-     *
      * @return LegacyMaterial or null if none found
      */
     public static CompatibleMaterial getMaterial(FallingBlock block) {
@@ -1654,7 +1584,6 @@ public enum CompatibleMaterial {
      *
      * @param mat  material to check
      * @param data data of the block
-     *
      * @return LegacyMaterial or null if none found
      */
     public static CompatibleMaterial getMaterial(Material mat, byte data) {
@@ -1704,7 +1633,6 @@ public enum CompatibleMaterial {
      * modern material by that name.
      *
      * @param name item to lookup
-     *
      * @return LegacyMaterial or null if none found
      */
     public static CompatibleMaterial getBlockMaterial(String name) {
@@ -1730,7 +1658,6 @@ public enum CompatibleMaterial {
      *
      * @param name item to lookup
      * @param def  default item if this is not a valid material
-     *
      * @return LegacyMaterial or null if none found
      */
     public static CompatibleMaterial getBlockMaterial(String name, CompatibleMaterial def) {
@@ -1753,7 +1680,6 @@ public enum CompatibleMaterial {
      * Lookup a Block Material by bukkit material.
      *
      * @param mat item to lookup
-     *
      * @return LegacyMaterial or null if none found
      */
     public static CompatibleMaterial getBlockMaterial(Material mat) {
@@ -1771,8 +1697,6 @@ public enum CompatibleMaterial {
 
         return lookupMap.get(mat.name());
     }
-
-    static LinkedHashSet<CompatibleMaterial> all = null;
 
     public static Set<CompatibleMaterial> getAllValidItemMaterials() {
         if (all == null) {
@@ -1795,7 +1719,6 @@ public enum CompatibleMaterial {
      * modern material by that name.
      *
      * @param name item to lookup
-     *
      * @return ItemStack for this material, or null if none found
      */
     public static ItemStack getItem(String name) {
@@ -1812,16 +1735,243 @@ public enum CompatibleMaterial {
         return mat != null ? new ItemStack(mat) : null;
     }
 
-    private static Method methodSetData;
-
-    static {
-        if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_12)) {
-            try {
-                methodSetData = Block.class.getDeclaredMethod("setData", byte.class);
-            } catch (NoSuchMethodException ex) {
-                ex.printStackTrace();
-            }
+    public static CompatibleMaterial getSpawnEgg(EntityType type) {
+        if (type == EntityType.MUSHROOM_COW) {
+            return MOOSHROOM_SPAWN_EGG;
         }
+
+        if (ServerVersion.isServerVersionBelow(ServerVersion.V1_16) && type == EntityType.valueOf("PIG_ZOMBIE")) {
+            return ZOMBIE_PIGMAN_SPAWN_EGG;
+        }
+
+        return lookupMap.get(type.name() + "_SPAWN_EGG");
+    }
+
+    public static CompatibleMaterial getGlassPaneColor(int color) {
+        switch (color) {
+            case 0:
+                return WHITE_STAINED_GLASS_PANE;
+            case 1:
+                return ORANGE_STAINED_GLASS_PANE;
+            case 2:
+                return MAGENTA_STAINED_GLASS_PANE;
+            case 3:
+                return LIGHT_BLUE_STAINED_GLASS_PANE;
+            case 4:
+                return YELLOW_STAINED_GLASS_PANE;
+            case 5:
+                return LIME_STAINED_GLASS_PANE;
+            case 6:
+                return PINK_STAINED_GLASS_PANE;
+            case 7:
+                return GRAY_STAINED_GLASS_PANE;
+            case 8:
+                return LIGHT_GRAY_STAINED_GLASS_PANE;
+            case 9:
+                return CYAN_STAINED_GLASS_PANE;
+            case 10:
+                return PURPLE_STAINED_GLASS_PANE;
+            case 11:
+                return BLUE_STAINED_GLASS_PANE;
+            case 12:
+                return BROWN_STAINED_GLASS_PANE;
+            case 13:
+                return GREEN_STAINED_GLASS_PANE;
+            case 14:
+                return RED_STAINED_GLASS_PANE;
+            case 15:
+                return BLACK_STAINED_GLASS_PANE;
+            default:
+                return WHITE_STAINED_GLASS;
+        }
+    }
+
+    public static CompatibleMaterial getGlassColor(int color) {
+        switch (color) {
+            case 0:
+                return WHITE_STAINED_GLASS;
+            case 1:
+                return ORANGE_STAINED_GLASS;
+            case 2:
+                return MAGENTA_STAINED_GLASS;
+            case 3:
+                return LIGHT_BLUE_STAINED_GLASS;
+            case 4:
+                return YELLOW_STAINED_GLASS;
+            case 5:
+                return LIME_STAINED_GLASS;
+            case 6:
+                return PINK_STAINED_GLASS;
+            case 7:
+                return GRAY_STAINED_GLASS;
+            case 8:
+                return LIGHT_GRAY_STAINED_GLASS;
+            case 9:
+                return CYAN_STAINED_GLASS;
+            case 10:
+                return PURPLE_STAINED_GLASS;
+            case 11:
+                return BLUE_STAINED_GLASS;
+            case 12:
+                return BROWN_STAINED_GLASS;
+            case 13:
+                return GREEN_STAINED_GLASS;
+            case 14:
+                return RED_STAINED_GLASS;
+            case 15:
+                return BLACK_STAINED_GLASS;
+            default:
+                return WHITE_STAINED_GLASS;
+        }
+    }
+
+    public static CompatibleMaterial getWoolColor(int color) {
+        switch (color) {
+            case 0:
+                return WHITE_WOOL;
+            case 1:
+                return ORANGE_WOOL;
+            case 2:
+                return MAGENTA_WOOL;
+            case 3:
+                return LIGHT_BLUE_WOOL;
+            case 4:
+                return YELLOW_WOOL;
+            case 5:
+                return LIME_WOOL;
+            case 6:
+                return PINK_WOOL;
+            case 7:
+                return GRAY_WOOL;
+            case 8:
+                return LIGHT_GRAY_WOOL;
+            case 9:
+                return CYAN_WOOL;
+            case 10:
+                return PURPLE_WOOL;
+            case 11:
+                return BLUE_WOOL;
+            case 12:
+                return BROWN_WOOL;
+            case 13:
+                return GREEN_WOOL;
+            case 14:
+                return RED_WOOL;
+            case 15:
+                return BLACK_WOOL;
+            default:
+                return WHITE_WOOL;
+        }
+    }
+
+    public static CompatibleMaterial getDyeColor(int color) {
+        switch (color) {
+            case 0:
+                return BLACK_DYE;
+            case 1:
+                return RED_DYE;
+            case 2:
+                return GREEN_DYE;
+            case 3:
+                return BROWN_DYE;
+            case 4:
+                return BLUE_DYE;
+            case 5:
+                return PURPLE_DYE;
+            case 6:
+                return CYAN_DYE;
+            case 7:
+                return LIGHT_GRAY_DYE;
+            case 8:
+                return GRAY_DYE;
+            case 9:
+                return PINK_DYE;
+            case 10:
+                return LIME_DYE;
+            case 11:
+                return YELLOW_DYE;
+            case 12:
+                return LIGHT_BLUE_DYE;
+            case 13:
+                return MAGENTA_DYE;
+            case 14:
+                return ORANGE_DYE;
+            case 15:
+                return WHITE_DYE;
+            default:
+                return WHITE_DYE;
+        }
+    }
+
+    /**
+     * @return the Bukkit Material for this material
+     */
+    public Material getMaterial() {
+        return material;
+    }
+
+    /**
+     * @return the Bukkit Material required to create a block
+     */
+    public Material getBlockMaterial() {
+        return legacyBlockMaterial != null ? legacyBlockMaterial.getBlockMaterial() : (isBlock() ? material : AIR.material);
+    }
+
+    /**
+     * @return an item that resembles this material for the current server version
+     */
+    public ItemStack getItem() {
+        return getItem(1);
+    }
+
+    /**
+     * @param amount the amount to return
+     * @return an item that resembles this material for the current server version
+     */
+    public ItemStack getItem(int amount) {
+        if (usesCompatibility()) {
+            return compatibleMaterial.getItem();
+        }
+
+        return data != null ? new ItemStack(material, amount, data) : new ItemStack(material);
+    }
+
+    /**
+     * Does this material need to use a legacy fallback?
+     */
+    public boolean usesLegacy() {
+        return legacy != null && ServerVersion.isServerVersionBelow(minVersion);
+    }
+
+    /**
+     * Does this material need to use a fallback item on this server?
+     */
+    public boolean usesCompatibility() {
+        return compatibleMaterial != null && material == compatibleMaterial.material;
+        //return compatibleMaterial != null && ServerVersion.isServerVersionBelow(compatibleMaterial.versionLessThan);
+    }
+
+    /**
+     * Is this item reused in later versions of Minecraft?
+     */
+    public boolean isRecycled() {
+        return usesLegacy() && this == CompatibleMaterial.GRASS;
+    }
+
+    /**
+     * Get the legacy data value for this material if there is one, or -1 if none
+     */
+    public byte getData() {
+        return data != null ? data : -1;
+    }
+
+    /**
+     * Check if current material requires a data value.
+     *
+     * @return true if server is legacy and this item requires data to be defined.
+     */
+    public boolean usesData() {
+        return data != null;
     }
 
     /**
@@ -1847,7 +1997,6 @@ public enum CompatibleMaterial {
      * Check to see if an item matches this specific material type
      *
      * @param item Item to check
-     *
      * @return true if material of the ItemStack matches this item, corrected for legacy data
      */
     public boolean matches(ItemStack item) {
@@ -1948,10 +2097,9 @@ public enum CompatibleMaterial {
      * Check if the material is a block and does not block any light
      *
      * @return True if this material is a block and does not block any light
-     *
      * @see Material#isTransparent()
      * @deprecated currently does not have an implementation which is well
-     *         linked to the underlying server. Contributions welcome.
+     * linked to the underlying server. Contributions welcome.
      */
     @Deprecated
     public boolean isTransparent() {
@@ -3105,174 +3253,6 @@ public enum CompatibleMaterial {
                 return WHEAT_SEEDS;
             default:
                 return null;
-        }
-    }
-
-    public static CompatibleMaterial getSpawnEgg(EntityType type) {
-        if (type == EntityType.MUSHROOM_COW) {
-            return MOOSHROOM_SPAWN_EGG;
-        }
-
-        if (ServerVersion.isServerVersionBelow(ServerVersion.V1_16) && type == EntityType.valueOf("PIG_ZOMBIE")) {
-            return ZOMBIE_PIGMAN_SPAWN_EGG;
-        }
-
-        return lookupMap.get(type.name() + "_SPAWN_EGG");
-    }
-
-    public static CompatibleMaterial getGlassPaneColor(int color) {
-        switch (color) {
-            case 0:
-                return WHITE_STAINED_GLASS_PANE;
-            case 1:
-                return ORANGE_STAINED_GLASS_PANE;
-            case 2:
-                return MAGENTA_STAINED_GLASS_PANE;
-            case 3:
-                return LIGHT_BLUE_STAINED_GLASS_PANE;
-            case 4:
-                return YELLOW_STAINED_GLASS_PANE;
-            case 5:
-                return LIME_STAINED_GLASS_PANE;
-            case 6:
-                return PINK_STAINED_GLASS_PANE;
-            case 7:
-                return GRAY_STAINED_GLASS_PANE;
-            case 8:
-                return LIGHT_GRAY_STAINED_GLASS_PANE;
-            case 9:
-                return CYAN_STAINED_GLASS_PANE;
-            case 10:
-                return PURPLE_STAINED_GLASS_PANE;
-            case 11:
-                return BLUE_STAINED_GLASS_PANE;
-            case 12:
-                return BROWN_STAINED_GLASS_PANE;
-            case 13:
-                return GREEN_STAINED_GLASS_PANE;
-            case 14:
-                return RED_STAINED_GLASS_PANE;
-            case 15:
-                return BLACK_STAINED_GLASS_PANE;
-            default:
-                return WHITE_STAINED_GLASS;
-        }
-    }
-
-    public static CompatibleMaterial getGlassColor(int color) {
-        switch (color) {
-            case 0:
-                return WHITE_STAINED_GLASS;
-            case 1:
-                return ORANGE_STAINED_GLASS;
-            case 2:
-                return MAGENTA_STAINED_GLASS;
-            case 3:
-                return LIGHT_BLUE_STAINED_GLASS;
-            case 4:
-                return YELLOW_STAINED_GLASS;
-            case 5:
-                return LIME_STAINED_GLASS;
-            case 6:
-                return PINK_STAINED_GLASS;
-            case 7:
-                return GRAY_STAINED_GLASS;
-            case 8:
-                return LIGHT_GRAY_STAINED_GLASS;
-            case 9:
-                return CYAN_STAINED_GLASS;
-            case 10:
-                return PURPLE_STAINED_GLASS;
-            case 11:
-                return BLUE_STAINED_GLASS;
-            case 12:
-                return BROWN_STAINED_GLASS;
-            case 13:
-                return GREEN_STAINED_GLASS;
-            case 14:
-                return RED_STAINED_GLASS;
-            case 15:
-                return BLACK_STAINED_GLASS;
-            default:
-                return WHITE_STAINED_GLASS;
-        }
-    }
-
-    public static CompatibleMaterial getWoolColor(int color) {
-        switch (color) {
-            case 0:
-                return WHITE_WOOL;
-            case 1:
-                return ORANGE_WOOL;
-            case 2:
-                return MAGENTA_WOOL;
-            case 3:
-                return LIGHT_BLUE_WOOL;
-            case 4:
-                return YELLOW_WOOL;
-            case 5:
-                return LIME_WOOL;
-            case 6:
-                return PINK_WOOL;
-            case 7:
-                return GRAY_WOOL;
-            case 8:
-                return LIGHT_GRAY_WOOL;
-            case 9:
-                return CYAN_WOOL;
-            case 10:
-                return PURPLE_WOOL;
-            case 11:
-                return BLUE_WOOL;
-            case 12:
-                return BROWN_WOOL;
-            case 13:
-                return GREEN_WOOL;
-            case 14:
-                return RED_WOOL;
-            case 15:
-                return BLACK_WOOL;
-            default:
-                return WHITE_WOOL;
-        }
-    }
-
-    public static CompatibleMaterial getDyeColor(int color) {
-        switch (color) {
-            case 0:
-                return BLACK_DYE;
-            case 1:
-                return RED_DYE;
-            case 2:
-                return GREEN_DYE;
-            case 3:
-                return BROWN_DYE;
-            case 4:
-                return BLUE_DYE;
-            case 5:
-                return PURPLE_DYE;
-            case 6:
-                return CYAN_DYE;
-            case 7:
-                return LIGHT_GRAY_DYE;
-            case 8:
-                return GRAY_DYE;
-            case 9:
-                return PINK_DYE;
-            case 10:
-                return LIME_DYE;
-            case 11:
-                return YELLOW_DYE;
-            case 12:
-                return LIGHT_BLUE_DYE;
-            case 13:
-                return MAGENTA_DYE;
-            case 14:
-                return ORANGE_DYE;
-            case 15:
-                return WHITE_DYE;
-            default:
-                return WHITE_DYE;
         }
     }
 }

@@ -24,7 +24,55 @@ import java.util.regex.Pattern;
 
 public class ChatMessage {
     private static final Gson gson = new GsonBuilder().create();
+    private static boolean enabled = ServerVersion.isServerVersionAtLeast(ServerVersion.V1_8);
+    private static Class<?> mc_ChatMessageType;
+    private static Method mc_IChatBaseComponent_ChatSerializer_a, cb_craftPlayer_getHandle;
+    private static Constructor mc_PacketPlayOutChat_new;
+    private static Field mc_entityPlayer_playerConnection, mc_chatMessageType_Chat;
+    private static boolean mc_PacketPlayOutChat_new_1_19_0 = false;
+
+    static {
+        init();
+    }
+
     private final List<JsonObject> textList = new ArrayList<>();
+
+    static void init() {
+        if (enabled) {
+            try {
+                final String version = ServerVersion.getServerVersionString();
+                Class<?> cb_craftPlayerClazz, mc_entityPlayerClazz,
+                        mc_IChatBaseComponent, mc_IChatBaseComponent_ChatSerializer, mc_PacketPlayOutChat;
+
+                cb_craftPlayerClazz = ClassMapping.CRAFT_PLAYER.getClazz();
+                cb_craftPlayer_getHandle = cb_craftPlayerClazz.getDeclaredMethod("getHandle");
+                mc_entityPlayerClazz = ClassMapping.ENTITY_PLAYER.getClazz();
+                mc_entityPlayer_playerConnection = mc_entityPlayerClazz.getDeclaredField(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_17) ? "b" : "playerConnection");
+                mc_IChatBaseComponent = ClassMapping.I_CHAT_BASE_COMPONENT.getClazz();
+                mc_IChatBaseComponent_ChatSerializer = ClassMapping.I_CHAT_BASE_COMPONENT.getClazz("ChatSerializer");
+                mc_IChatBaseComponent_ChatSerializer_a = mc_IChatBaseComponent_ChatSerializer.getMethod("a", String.class);
+                mc_PacketPlayOutChat = ServerVersion.isServerVersionAtLeast(ServerVersion.V1_19) ? ClassMapping.CLIENTBOUND_SYSTEM_CHAT.getClazz() : ClassMapping.PACKET_PLAY_OUT_CHAT.getClazz();
+
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_19)) {
+                    try {
+                        mc_PacketPlayOutChat_new = mc_PacketPlayOutChat.getConstructor(mc_IChatBaseComponent, Boolean.TYPE);
+                    } catch (NoSuchMethodException ex) {
+                        mc_PacketPlayOutChat_new = mc_PacketPlayOutChat.getConstructor(mc_IChatBaseComponent, Integer.TYPE);
+                        mc_PacketPlayOutChat_new_1_19_0 = true;
+                    }
+                } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16)) {
+                    mc_ChatMessageType = ClassMapping.CHAT_MESSAGE_TYPE.getClazz();
+                    mc_chatMessageType_Chat = mc_ChatMessageType.getField(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_17) ? "a" : "CHAT");
+                    mc_PacketPlayOutChat_new = mc_PacketPlayOutChat.getConstructor(mc_IChatBaseComponent, mc_ChatMessageType, UUID.class);
+                } else {
+                    mc_PacketPlayOutChat_new = mc_PacketPlayOutChat.getConstructor(mc_IChatBaseComponent);
+                }
+            } catch (Throwable ex) {
+                Bukkit.getLogger().log(Level.WARNING, "Problem preparing raw chat packets (disabling further packets)", ex);
+                enabled = false;
+            }
+        }
+    }
 
     public void clear() {
         textList.clear();
@@ -227,7 +275,7 @@ public class ChatMessage {
                 Object packet;
                 if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_19)) {
                     packet = mc_PacketPlayOutChat_new.newInstance(mc_IChatBaseComponent_ChatSerializer_a.invoke(null, gson.toJson(textList)), mc_PacketPlayOutChat_new_1_19_0 ? 1 : true);
-                }else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16)) {
+                } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16)) {
                     packet = mc_PacketPlayOutChat_new.newInstance(
                             mc_IChatBaseComponent_ChatSerializer_a.invoke(null, gson.toJson(textList)),
                             mc_chatMessageType_Chat.get(null),
@@ -235,7 +283,8 @@ public class ChatMessage {
                 } else {
                     packet = mc_PacketPlayOutChat_new.newInstance(mc_IChatBaseComponent_ChatSerializer_a.invoke(null, gson.toJson(textList)));
                 }
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
+                     InvocationTargetException ex) {
                 Bukkit.getLogger().log(Level.WARNING, "Problem preparing raw chat packets (disabling further packets)", ex);
                 enabled = false;
             }
@@ -244,55 +293,6 @@ public class ChatMessage {
         }
 
         sender.sendMessage(TextUtils.formatText((prefix == null ? "" : prefix.toText(true) + " ") + toText(true)));
-    }
-
-    private static boolean enabled = ServerVersion.isServerVersionAtLeast(ServerVersion.V1_8);
-
-    private static Class<?> mc_ChatMessageType;
-    private static Method mc_IChatBaseComponent_ChatSerializer_a, cb_craftPlayer_getHandle;
-    private static Constructor mc_PacketPlayOutChat_new;
-    private static Field mc_entityPlayer_playerConnection, mc_chatMessageType_Chat;
-    private static boolean mc_PacketPlayOutChat_new_1_19_0 = false;
-
-    static {
-        init();
-    }
-
-    static void init() {
-        if (enabled) {
-            try {
-                final String version = ServerVersion.getServerVersionString();
-                Class<?> cb_craftPlayerClazz, mc_entityPlayerClazz,
-                        mc_IChatBaseComponent, mc_IChatBaseComponent_ChatSerializer, mc_PacketPlayOutChat;
-
-                cb_craftPlayerClazz = ClassMapping.CRAFT_PLAYER.getClazz();
-                cb_craftPlayer_getHandle = cb_craftPlayerClazz.getDeclaredMethod("getHandle");
-                mc_entityPlayerClazz = ClassMapping.ENTITY_PLAYER.getClazz();
-                mc_entityPlayer_playerConnection = mc_entityPlayerClazz.getDeclaredField(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_17) ? "b" : "playerConnection");
-                mc_IChatBaseComponent = ClassMapping.I_CHAT_BASE_COMPONENT.getClazz();
-                mc_IChatBaseComponent_ChatSerializer = ClassMapping.I_CHAT_BASE_COMPONENT.getClazz("ChatSerializer");
-                mc_IChatBaseComponent_ChatSerializer_a = mc_IChatBaseComponent_ChatSerializer.getMethod("a", String.class);
-                mc_PacketPlayOutChat = ServerVersion.isServerVersionAtLeast(ServerVersion.V1_19) ? ClassMapping.CLIENTBOUND_SYSTEM_CHAT.getClazz() : ClassMapping.PACKET_PLAY_OUT_CHAT.getClazz();
-
-                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_19)) {
-                    try {
-                        mc_PacketPlayOutChat_new = mc_PacketPlayOutChat.getConstructor(mc_IChatBaseComponent, Boolean.TYPE);
-                    } catch (NoSuchMethodException ex) {
-                        mc_PacketPlayOutChat_new = mc_PacketPlayOutChat.getConstructor(mc_IChatBaseComponent, Integer.TYPE);
-                        mc_PacketPlayOutChat_new_1_19_0 = true;
-                    }
-                } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16)) {
-                    mc_ChatMessageType = ClassMapping.CHAT_MESSAGE_TYPE.getClazz();
-                    mc_chatMessageType_Chat = mc_ChatMessageType.getField(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_17) ? "a" : "CHAT");
-                    mc_PacketPlayOutChat_new = mc_PacketPlayOutChat.getConstructor(mc_IChatBaseComponent, mc_ChatMessageType, UUID.class);
-                } else {
-                    mc_PacketPlayOutChat_new = mc_PacketPlayOutChat.getConstructor(mc_IChatBaseComponent);
-                }
-            } catch (Throwable ex) {
-                Bukkit.getLogger().log(Level.WARNING, "Problem preparing raw chat packets (disabling further packets)", ex);
-                enabled = false;
-            }
-        }
     }
 
     public ChatMessage replaceAll(String toReplace, String replaceWith) {

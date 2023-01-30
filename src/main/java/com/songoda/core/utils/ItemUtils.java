@@ -2,11 +2,7 @@ package com.songoda.core.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.songoda.core.compatibility.ClassMapping;
-import com.songoda.core.compatibility.CompatibleHand;
-import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.compatibility.MethodMapping;
-import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.compatibility.*;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -29,12 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -44,12 +35,72 @@ import java.util.stream.Stream;
  */
 public class ItemUtils {
     static boolean can_getI18NDisplayName = true;
+    static Class<?> cb_ItemStack = ClassMapping.CRAFT_ITEM_STACK.getClazz();
+    static Class<?> mc_ItemStack = ClassMapping.ITEM_STACK.getClazz();
+    static Class<?> mc_NBTTagCompound = ClassMapping.NBT_TAG_COMPOUND.getClazz();
+    static Class<?> mc_NBTTagList = ClassMapping.NBT_TAG_LIST.getClazz();
+    static Method mc_ItemStack_getTag;
+    static Method mc_ItemStack_setTag;
+    static Method mc_NBTTagCompound_set;
+    static Method mc_NBTTagCompound_remove;
+    static Method cb_CraftItemStack_asNMSCopy;
+    static Method cb_CraftItemStack_asCraftMirror;
+    static Class cb_CraftPlayer = NMSUtils.getCraftClass("entity.CraftPlayer");
+    static Method cb_CraftPlayer_getProfile;
+    private static Method methodAsBukkitCopy, methodAsNMSCopy, methodA;
 
     static {
         try {
             ItemStack.class.getMethod("getI18NDisplayName");
         } catch (NoSuchMethodException | SecurityException ex) {
             can_getI18NDisplayName = false;
+        }
+    }
+
+    static {
+        try {
+            Class<?> clazzEnchantmentManager = ClassMapping.ENCHANTMENT_MANAGER.getClazz();
+            Class<?> clazzItemStack = ClassMapping.ITEM_STACK.getClazz();
+            Class<?> clazzCraftItemStack = ClassMapping.CRAFT_ITEM_STACK.getClazz();
+
+            methodAsBukkitCopy = clazzCraftItemStack.getMethod("asBukkitCopy", clazzItemStack);
+            methodAsNMSCopy = clazzCraftItemStack.getMethod("asNMSCopy", ItemStack.class);
+
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_19)) {
+                Class<?> clazzRandomSource = ClassMapping.RANDOM_SOURCE.getClazz();
+                methodA = clazzEnchantmentManager.getMethod("a", clazzRandomSource.getMethod("c").getReturnType(), clazzItemStack, int.class, boolean.class);
+            } else if (ServerVersion.isServerVersion(ServerVersion.V1_8)) {
+                methodA = clazzEnchantmentManager.getMethod("a", Random.class, clazzItemStack, int.class);
+            } else {
+                methodA = clazzEnchantmentManager.getMethod("a", Random.class, clazzItemStack, int.class, boolean.class);
+            }
+        } catch (NoSuchMethodException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    static {
+        if (cb_ItemStack != null) {
+            try {
+                mc_ItemStack_getTag = MethodMapping.MC_ITEM_STACK__GET_TAG.getMethod(mc_ItemStack);
+                mc_ItemStack_setTag = MethodMapping.MC_ITEM_STACK__SET_TAG.getMethod(mc_ItemStack);
+                mc_NBTTagCompound_set = MethodMapping.MC_NBT_TAG_COMPOUND__SET.getMethod(mc_NBTTagCompound);
+                mc_NBTTagCompound_remove = MethodMapping.MC_NBT_TAG_COMPOUND__REMOVE.getMethod(mc_NBTTagCompound);
+//                mc_NBTTagCompound_setShort = MethodMapping.MC_NBT_TAG_COMPOUND__SET_SHORT.getMethod(mc_NBTTagCompound);
+//                mc_NBTTagCompound_setString = MethodMapping.MC_NBT_TAG_COMPOUND__SET_STRING.getMethod(mc_NBTTagCompound);
+                cb_CraftItemStack_asNMSCopy = MethodMapping.CB_ITEM_STACK__AS_NMS_COPY.getMethod(cb_ItemStack);
+                cb_CraftItemStack_asCraftMirror = MethodMapping.CB_ITEM_STACK__AS_CRAFT_MIRROR.getMethod(cb_ItemStack);
+//                mc_NBTTagList_add = MethodMapping.MC_NBT_TAG_LIST__ADD.getMethod(mc_NBTTagList);
+            } catch (Exception ex) {
+                Logger.getLogger(ItemUtils.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    static {
+        try {
+            cb_CraftPlayer_getProfile = cb_CraftPlayer.getMethod("getProfile");
+        } catch (Exception ignore) {
         }
     }
 
@@ -79,30 +130,6 @@ public class ItemUtils {
         });
 
         return titleCase.toString().trim();
-    }
-
-    private static Method methodAsBukkitCopy, methodAsNMSCopy, methodA;
-
-    static {
-        try {
-            Class<?> clazzEnchantmentManager = ClassMapping.ENCHANTMENT_MANAGER.getClazz();
-            Class<?> clazzItemStack = ClassMapping.ITEM_STACK.getClazz();
-            Class<?> clazzCraftItemStack = ClassMapping.CRAFT_ITEM_STACK.getClazz();
-
-            methodAsBukkitCopy = clazzCraftItemStack.getMethod("asBukkitCopy", clazzItemStack);
-            methodAsNMSCopy = clazzCraftItemStack.getMethod("asNMSCopy", ItemStack.class);
-
-            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_19)) {
-                Class<?> clazzRandomSource = ClassMapping.RANDOM_SOURCE.getClazz();
-                methodA = clazzEnchantmentManager.getMethod("a", clazzRandomSource.getMethod("c").getReturnType(), clazzItemStack, int.class, boolean.class);
-            }else if (ServerVersion.isServerVersion(ServerVersion.V1_8)) {
-                methodA = clazzEnchantmentManager.getMethod("a", Random.class, clazzItemStack, int.class);
-            } else {
-                methodA = clazzEnchantmentManager.getMethod("a", Random.class, clazzItemStack, int.class, boolean.class);
-            }
-        } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-        }
     }
 
     public static ItemStack applyRandomEnchants(ItemStack item, int level) {
@@ -168,7 +195,6 @@ public class ItemUtils {
      *
      * @param item item to copy
      * @param qty  amount the new ItemStack should have
-     *
      * @return a copy of the original item
      */
     public static ItemStack getAsCopy(ItemStack item, int qty) {
@@ -184,11 +210,10 @@ public class ItemUtils {
         }
 
         if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
-            if (!tool.hasItemMeta() || !(tool.getItemMeta() instanceof Damageable)) {
+            if (!tool.hasItemMeta() || !(tool.getItemMeta() instanceof Damageable damageable)) {
                 return true;
             }
 
-            Damageable damageable = (Damageable) tool.getItemMeta();
             int durabilityRemaining = tool.getType().getMaxDurability() - damageable.getDamage();
 
             return durabilityRemaining > requiredAmount;
@@ -197,44 +222,11 @@ public class ItemUtils {
         return tool.getDurability() + requiredAmount <= tool.getType().getMaxDurability();
     }
 
-    static Class<?> cb_ItemStack = ClassMapping.CRAFT_ITEM_STACK.getClazz();
-    static Class<?> mc_ItemStack = ClassMapping.ITEM_STACK.getClazz();
-    static Class<?> mc_NBTTagCompound = ClassMapping.NBT_TAG_COMPOUND.getClazz();
-    static Class<?> mc_NBTTagList = ClassMapping.NBT_TAG_LIST.getClazz();
-    static Method mc_ItemStack_getTag;
-    static Method mc_ItemStack_setTag;
-    static Method mc_NBTTagCompound_set;
-    static Method mc_NBTTagCompound_remove;
-//    static Method mc_NBTTagCompound_setShort;
-//    static Method mc_NBTTagCompound_setString;
-//    static Method mc_NBTTagList_add;
-    static Method cb_CraftItemStack_asNMSCopy;
-    static Method cb_CraftItemStack_asCraftMirror;
-
-    static {
-        if (cb_ItemStack != null) {
-            try {
-                mc_ItemStack_getTag = MethodMapping.MC_ITEM_STACK__GET_TAG.getMethod(mc_ItemStack);
-                mc_ItemStack_setTag = MethodMapping.MC_ITEM_STACK__SET_TAG.getMethod(mc_ItemStack);
-                mc_NBTTagCompound_set = MethodMapping.MC_NBT_TAG_COMPOUND__SET.getMethod(mc_NBTTagCompound);
-                mc_NBTTagCompound_remove = MethodMapping.MC_NBT_TAG_COMPOUND__REMOVE.getMethod(mc_NBTTagCompound);
-//                mc_NBTTagCompound_setShort = MethodMapping.MC_NBT_TAG_COMPOUND__SET_SHORT.getMethod(mc_NBTTagCompound);
-//                mc_NBTTagCompound_setString = MethodMapping.MC_NBT_TAG_COMPOUND__SET_STRING.getMethod(mc_NBTTagCompound);
-                cb_CraftItemStack_asNMSCopy = MethodMapping.CB_ITEM_STACK__AS_NMS_COPY.getMethod(cb_ItemStack);
-                cb_CraftItemStack_asCraftMirror = MethodMapping.CB_ITEM_STACK__AS_CRAFT_MIRROR.getMethod(cb_ItemStack);
-//                mc_NBTTagList_add = MethodMapping.MC_NBT_TAG_LIST__ADD.getMethod(mc_NBTTagList);
-            } catch (Exception ex) {
-                Logger.getLogger(ItemUtils.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
     /**
      * Make an item glow as if it contained an enchantment. <br>⁄
      * Tested working 1.8-1.14
      *
      * @param item itemstack to create a glowing copy of
-     *
      * @return copy of item with a blank enchantment nbt tag
      */
     public static ItemStack addGlow(ItemStack item) {
@@ -292,7 +284,6 @@ public class ItemUtils {
      * Remove all enchantments, including hidden enchantments
      *
      * @param item item to clear enchants from
-     *
      * @return copy of the item without any enchantment tag
      */
     public static ItemStack removeGlow(ItemStack item) {
@@ -394,16 +385,6 @@ public class ItemUtils {
         }
     }
 
-    static Class cb_CraftPlayer = NMSUtils.getCraftClass("entity.CraftPlayer");
-    static Method cb_CraftPlayer_getProfile;
-
-    static {
-        try {
-            cb_CraftPlayer_getProfile = cb_CraftPlayer.getMethod("getProfile");
-        } catch (Exception ignore) {
-        }
-    }
-
     public static String getSkullTexture(Player player) {
         if (player == null || ServerVersion.isServerVersionBelow(ServerVersion.V1_8)) {
             return null;
@@ -475,7 +456,6 @@ public class ItemUtils {
      *
      * @param is1 first item to compare
      * @param is2 item to compare against
-     *
      * @return true if both items are of the same material
      */
     public static boolean isSimilarMaterial(ItemStack is1, ItemStack is2) {
@@ -493,7 +473,6 @@ public class ItemUtils {
      *
      * @param inventory inventory to check
      * @param item      item to check against
-     *
      * @return true if a free slot or single receiver slot is available
      */
     public static boolean canMove(Inventory inventory, ItemStack item) {
@@ -524,7 +503,6 @@ public class ItemUtils {
      *
      * @param contents inventory to check
      * @param item     item to check against
-     *
      * @return true if a free slot or single receiver slot is available
      */
     public static boolean canMove(ItemStack[] contents, ItemStack item) {
@@ -556,7 +534,6 @@ public class ItemUtils {
      * @param inventory inventory to check
      * @param item      item to check against
      * @param reserved  which slot should be reserved
-     *
      * @return true if a free slot or single receiver slot is available
      */
     public static boolean canMoveReserved(Inventory inventory, ItemStack item, int reserved) {
@@ -592,7 +569,6 @@ public class ItemUtils {
      * @param contents inventory to check
      * @param item     item to check against
      * @param reserved which slot should be reserved
-     *
      * @return true if a free slot or single receiver slot is available
      */
     public static boolean canMoveReserved(ItemStack[] contents, ItemStack item, int reserved) {
@@ -627,7 +603,6 @@ public class ItemUtils {
      * @param amountToAdd how many of this item to attempt to add
      * @param inventory   a list that represents the inventory
      * @param maxSize     maximum number of different items this container can hold
-     *
      * @return how many items were added
      */
     public static int addAny(ItemStack item, int amountToAdd, List<ItemStack> inventory, int maxSize) {
@@ -642,7 +617,6 @@ public class ItemUtils {
      * @param inventory   a list that represents the inventory
      * @param maxSize     maximum number of different items this container can hold
      * @param reserved    slot to reserve - will not fill this slot
-     *
      * @return how many items were added
      */
     public static int addAny(ItemStack item, int amountToAdd, List<ItemStack> inventory, int maxSize, int reserved) {
@@ -693,7 +667,6 @@ public class ItemUtils {
      * @param inventory     a list that represents the inventory
      * @param containerSize maximum number of different items this container can
      *                      hold
-     *
      * @return true if the item was added
      */
     public static boolean addItem(ItemStack item, List<ItemStack> inventory, int containerSize) {
@@ -712,7 +685,6 @@ public class ItemUtils {
      * @param containerSize maximum number of different items this container can
      *                      hold
      * @param reserved      slot to reserve - will not fill this slot
-     *
      * @return true if the item was added
      */
     public static boolean addItem(ItemStack item, List<ItemStack> inventory, int containerSize, int reserved) {
@@ -731,7 +703,6 @@ public class ItemUtils {
      * @param inventory     a list that represents the inventory
      * @param containerSize maximum number of different items this container can
      * @param reserved      slot to reserve - will not fill this slot hold
-     *
      * @return true if the item was added
      */
     public static boolean addItem(ItemStack item, int amount, List<ItemStack> inventory, int containerSize, int reserved) {
@@ -748,7 +719,6 @@ public class ItemUtils {
      *                        hold
      * @param reserved        slot to reserve - will not fill this slot
      * @param inventorySource Material of the container
-     *
      * @return true if the item was added
      */
     public static boolean addItem(ItemStack item, int amount, List<ItemStack> inventory, int containerSize, int reserved, Material inventorySource) {
@@ -882,7 +852,6 @@ public class ItemUtils {
      * @param item        item to add
      * @param amountToAdd how many of this item to attempt to add
      * @param inventory   a list that represents the inventory
-     *
      * @return how many items were added
      */
     public static int addAny(ItemStack item, int amountToAdd, Inventory inventory) {
@@ -924,7 +893,6 @@ public class ItemUtils {
      *
      * @param item      item to add
      * @param inventory a list that represents the inventory hold
-     *
      * @return true if the item was added
      */
     public static boolean addItem(ItemStack item, Inventory inventory) {
@@ -942,7 +910,6 @@ public class ItemUtils {
      * @param amount    how many of this item should be added
      * @param inventory a list that represents the inventory
      * @param reserved  slot to reserve - will not fill this slot
-     *
      * @return true if the item was added
      */
     public static boolean addItem(ItemStack item, int amount, Inventory inventory, int reserved) {
@@ -957,7 +924,6 @@ public class ItemUtils {
      * @param inventory       a list that represents the inventory
      * @param reserved        slot to reserve - will not fill this slot
      * @param inventorySource Material of the container
-     *
      * @return true if the item was added
      */
     public static boolean addItem(ItemStack item, int amount, Inventory inventory, int reserved, Material inventorySource) {
@@ -1118,7 +1084,6 @@ public class ItemUtils {
      * @param inventory     a list that represents the inventory
      * @param containerSize maximum number of different items this container can
      *                      hold
-     *
      * @return true if the item was added
      */
     public static boolean addItem(ItemStack item, int amount, List<ItemStack> inventory, int containerSize) {

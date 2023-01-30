@@ -25,13 +25,13 @@ public final class PluginHook<T extends Class> {
     public static final PluginHook HOLO_DISPLAYS = new PluginHook(Holograms.class, "HolographicDisplays", HolographicDisplaysHolograms.class);
     public static final PluginHook HOLO_DECENTHOLOGRAMS = new PluginHook(Holograms.class, "DecentHolograms", DecentHologramsHolograms.class);
     public static final PluginHook LOG_CORE_PROTECT = new PluginHook(Log.class, "CoreProtect", CoreProtectLog.class);
+    private static Map<Class, PluginHook> hooks;
     /******* Start Manager stuff *******/
 
-    protected final T hookGeneric;
-    protected final String plugin;
-    protected final Class managerClass;
-    protected static Map<Class, PluginHook> hooks;
-    protected Constructor pluginConstructor; // for passing the plugin loading the hook to the plugin hook
+    private final T hookGeneric;
+    final String plugin;
+    private final Class managerClass;
+    private Constructor pluginConstructor; // for passing the plugin loading the hook to the plugin hook
 
     private PluginHook(T type, String pluginName, Class handler) {
         if (!Hook.class.isAssignableFrom(handler)) {
@@ -68,14 +68,13 @@ public final class PluginHook<T extends Class> {
      * @param type       Generic hook type for this plugin
      * @param pluginName Plugin name
      * @param handler    Specific class that will handle this plugin, if enabled.
-     *
      * @return instance of the PluginHook that was added
      */
     public static <T extends Class> PluginHook addHook(T type, String pluginName, Class handler) {
         return new PluginHook(type, pluginName, handler);
     }
 
-    protected static Map<PluginHook, Hook> loadHooks(Class type, Plugin plugin) {
+    static Map<PluginHook, Hook> loadHooks(Class type, Plugin plugin) {
         Map<PluginHook, Hook> loaded = new LinkedHashMap<>();
         PluginManager pluginManager = Bukkit.getPluginManager();
 
@@ -92,7 +91,7 @@ public final class PluginHook<T extends Class> {
         return loaded;
     }
 
-    protected static List<PluginHook> getHooks(Class type) {
+    static List<PluginHook> getHooks(Class type) {
         return hooks.entrySet().parallelStream()
                 .filter(e -> e.getKey() == type || e.getValue().managerClass == type || type.isAssignableFrom(e.getKey()))
                 .map(Map.Entry::getValue)
@@ -103,26 +102,28 @@ public final class PluginHook<T extends Class> {
         return plugin;
     }
 
-    protected Object load() {
+    private Object load() {
         try {
             return managerClass.cast(
                     pluginConstructor != null
                             ? pluginConstructor.newInstance((Plugin) null)
                             : managerClass.getConstructor().newInstance());
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Unexpected Error while creating a new Hook Manager for " + plugin, ex);
         }
 
         return null;
     }
 
-    protected Object load(Plugin hookingPlugin) {
+    private Object load(Plugin hookingPlugin) {
         try {
             return managerClass.cast(
                     pluginConstructor != null
                             ? pluginConstructor.newInstance(hookingPlugin)
                             : managerClass.getConstructor().newInstance());
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Unexpected Error while creating a new Hook Manager for " + plugin, ex);
         }
 

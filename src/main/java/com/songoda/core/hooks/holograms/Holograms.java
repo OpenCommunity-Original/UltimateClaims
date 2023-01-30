@@ -9,11 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class Holograms implements Hook {
+    protected final Plugin plugin;
     protected double xOffset = 0.5;
     protected double yOffset = 0.5;
     protected double zOffset = 0.5;
-
-    protected final Plugin plugin;
 
     public Holograms(Plugin plugin) {
         this.plugin = plugin;
@@ -31,7 +30,6 @@ public abstract class Holograms implements Hook {
      * Center and offset this location
      *
      * @param location location to offset
-     *
      * @return copy-safe location with the applied offset.
      */
     protected final Location fixLocation(Location location) {

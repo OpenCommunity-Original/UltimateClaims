@@ -8,13 +8,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Loot {
     // Command ran for this drop.
@@ -167,16 +161,16 @@ public class Loot {
         return item;
     }
 
-    public void setEnchants(Map<String, Integer> enchants) {
-        this.enchants = enchants;
-    }
-
     public void setEnchantChances(Map<String, Double> enchants) {
         this.enchantChances = enchants;
     }
 
     public Map<String, Integer> getEnchants() {
         return enchants == null ? null : Collections.unmodifiableMap(enchants);
+    }
+
+    public void setEnchants(Map<String, Integer> enchants) {
+        this.enchants = enchants;
     }
 
     public CompatibleMaterial getBurnedMaterial() {
@@ -297,29 +291,29 @@ public class Loot {
         return onlyDropFor == null ? new ArrayList<>() : new ArrayList<>(onlyDropFor);
     }
 
-    public void addOnlyDropFor(EntityType... types) {
-        this.onlyDropFor = new ArrayList<>();
-        this.onlyDropFor.addAll(Arrays.asList(types));
-    }
-
     public void setOnlyDropFor(List<EntityType> types) {
         this.onlyDropFor = types;
     }
 
-    public void setChildDropCountMin(int childDropCountMin) {
-        this.childDropCountMin = childDropCountMin;
-    }
-
-    public void setChildDropCountMax(int childDropCountMax) {
-        this.childDropCountMax = childDropCountMax;
+    public void addOnlyDropFor(EntityType... types) {
+        this.onlyDropFor = new ArrayList<>();
+        this.onlyDropFor.addAll(Arrays.asList(types));
     }
 
     public Integer getChildDropCountMin() {
         return childDropCountMin;
     }
 
+    public void setChildDropCountMin(int childDropCountMin) {
+        this.childDropCountMin = childDropCountMin;
+    }
+
     public Integer getChildDropCountMax() {
         return childDropCountMax;
+    }
+
+    public void setChildDropCountMax(int childDropCountMax) {
+        this.childDropCountMax = childDropCountMax;
     }
 
     public int getChildDropCount() {

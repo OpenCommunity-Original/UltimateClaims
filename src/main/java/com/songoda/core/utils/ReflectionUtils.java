@@ -11,18 +11,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.CodeSource;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
@@ -31,7 +24,33 @@ import java.util.zip.ZipInputStream;
 
 public class ReflectionUtils {
     public final static double JAVA_VERSION = getVersion();
-    private static String system_os = System.getProperty("os.name").toLowerCase();
+    private static final String system_os = System.getProperty("os.name").toLowerCase();
+    // does not work in JRE 8+
+    private static Method j7getStackTraceElementMethod;
+    private static Method j7getStackTraceDepthMethod;
+    // does not work in JRE != 8
+    private static Method j8getJavaLangAccess;
+    private static Method j8getStackTraceElementMethod;
+
+    static {
+        try {
+            j7getStackTraceElementMethod = Throwable.class.getDeclaredMethod("getStackTraceElement", int.class);
+            j7getStackTraceElementMethod.setAccessible(true);
+            j7getStackTraceDepthMethod = Throwable.class.getDeclaredMethod("getStackTraceDepth");
+            j7getStackTraceDepthMethod.setAccessible(true);
+        } catch (Exception ex) {
+            j7getStackTraceElementMethod = j7getStackTraceDepthMethod = null;
+        }
+
+        try {
+            j8getJavaLangAccess = Class.forName("sun.misc.SharedSecrets").getDeclaredMethod("getStackTraceElement");
+            j8getJavaLangAccess.setAccessible(true);
+            j8getStackTraceElementMethod = Class.forName("sun.misc.JavaLangAccess").getDeclaredMethod("getStackTraceDepth", Throwable.class, int.class);
+            j8getStackTraceElementMethod.setAccessible(true);
+        } catch (Exception ex) {
+            j8getJavaLangAccess = j8getStackTraceElementMethod = null;
+        }
+    }
 
     private static double getVersion() {
         String version = System.getProperty("java.version");
@@ -68,34 +87,6 @@ public class ReflectionUtils {
         m.setAccessible(true);
 
         return m.invoke(handle, parameters);
-    }
-
-    // does not work in JRE 8+
-    private static Method j7getStackTraceElementMethod;
-    private static Method j7getStackTraceDepthMethod;
-
-    // does not work in JRE != 8
-    private static Method j8getJavaLangAccess;
-    private static Method j8getStackTraceElementMethod;
-
-    static {
-        try {
-            j7getStackTraceElementMethod = Throwable.class.getDeclaredMethod("getStackTraceElement", int.class);
-            j7getStackTraceElementMethod.setAccessible(true);
-            j7getStackTraceDepthMethod = Throwable.class.getDeclaredMethod("getStackTraceDepth");
-            j7getStackTraceDepthMethod.setAccessible(true);
-        } catch (Exception ex) {
-            j7getStackTraceElementMethod = j7getStackTraceDepthMethod = null;
-        }
-
-        try {
-            j8getJavaLangAccess = Class.forName("sun.misc.SharedSecrets").getDeclaredMethod("getStackTraceElement");
-            j8getJavaLangAccess.setAccessible(true);
-            j8getStackTraceElementMethod = Class.forName("sun.misc.JavaLangAccess").getDeclaredMethod("getStackTraceDepth", Throwable.class, int.class);
-            j8getStackTraceElementMethod.setAccessible(true);
-        } catch (Exception ex) {
-            j8getJavaLangAccess = j8getStackTraceElementMethod = null;
-        }
     }
 
     /**
@@ -211,10 +202,6 @@ public class ReflectionUtils {
         return packageClasses;
     }
 
-    public enum ITERATION {
-        NONE, CLASS, PACKAGE, FULL
-    }
-
     public static List<String> getClassNamesFromPackage(Class classInPackage) throws IOException, URISyntaxException, ClassNotFoundException {
         String classPath = classInPackage.getName();
         int packageDelim = classPath.lastIndexOf('.');
@@ -268,7 +255,7 @@ public class ReflectionUtils {
             String entryName;
 
             // build jar file name, then loop through zipped entries
-            jarFileName = sourceJar != null ? sourceJar.getAbsolutePath() : URLDecoder.decode(packageURL.getFile(), "UTF-8");
+            jarFileName = sourceJar != null ? sourceJar.getAbsolutePath() : URLDecoder.decode(packageURL.getFile(), StandardCharsets.UTF_8);
             // changed - support for resource jar files, too
             if (jarFileName.startsWith("file:/")) {
                 jarFileName = jarFileName.substring(system_os.contains("win") ? 5 : 4);
@@ -365,5 +352,9 @@ public class ReflectionUtils {
         }
 
         return names;
+    }
+
+    public enum ITERATION {
+        NONE, CLASS, PACKAGE, FULL
     }
 }

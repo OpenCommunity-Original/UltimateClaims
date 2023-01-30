@@ -8,11 +8,7 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Ageable;
-import org.bukkit.block.data.AnaloguePowerable;
-import org.bukkit.block.data.Bisected;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Powerable;
+import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Gate;
 import org.bukkit.block.data.type.Switch;
@@ -23,65 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BlockUtilsModern {
-    protected static void _updatePressurePlateModern(Block plate, int power) {
-        BlockData blockData = plate.getBlockData();
-        boolean update = false;
-
-        if (blockData instanceof AnaloguePowerable) {
-            AnaloguePowerable a = (AnaloguePowerable) blockData;
-            int toPower = Math.min(a.getMaximumPower(), power);
-
-            if ((update = toPower != a.getPower())) {
-                a.setPower(toPower);
-                plate.setBlockData(a);
-            }
-        } else if (blockData instanceof Powerable) {
-            Powerable p = (Powerable) blockData;
-
-            if ((update = p.isPowered() != (power != 0))) {
-                p.setPowered(power != 0);
-                plate.setBlockData(p);
-            }
-        }
-
-        if (update) {
-            _updateRedstoneNeighbours(plate);
-        }
-    }
-
-    protected static void _toggleLeverModern(Block lever) {
-        BlockData blockData = lever.getBlockData();
-
-        if (blockData instanceof Switch) {
-            Switch s = (Switch) blockData;
-            s.setPowered(!s.isPowered());
-            lever.setBlockData(s);
-            _updateRedstoneNeighbours(lever);
-        }
-    }
-
-    protected static void _pressButtonModern(Block button) {
-        BlockData blockData = button.getBlockData();
-
-        if (blockData instanceof Switch) {
-            Switch s = (Switch) blockData;
-            s.setPowered(true);
-            button.setBlockData(s);
-            _updateRedstoneNeighbours(button);
-        }
-    }
-
-    static void _releaseButtonModern(Block button) {
-        BlockData blockData = button.getBlockData();
-
-        if (blockData instanceof Switch) {
-            Switch s = (Switch) blockData;
-            s.setPowered(false);
-            button.setBlockData(s);
-            _updateRedstoneNeighbours(button);
-        }
-    }
-
     private static Class<?> clazzCraftWorld;
     private static Class<?> clazzCraftBlock;
     private static Class<?> clazzLeverBlock;
@@ -125,6 +62,60 @@ public class BlockUtilsModern {
             nmsPlate_updateNeighbours.setAccessible(true);
         } catch (Throwable ex) {
             Logger.getLogger(BlockUtilsModern.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    protected static void _updatePressurePlateModern(Block plate, int power) {
+        BlockData blockData = plate.getBlockData();
+        boolean update = false;
+
+        if (blockData instanceof AnaloguePowerable a) {
+            int toPower = Math.min(a.getMaximumPower(), power);
+
+            if ((update = toPower != a.getPower())) {
+                a.setPower(toPower);
+                plate.setBlockData(a);
+            }
+        } else if (blockData instanceof Powerable p) {
+
+            if ((update = p.isPowered() == (power == 0))) {
+                p.setPowered(power != 0);
+                plate.setBlockData(p);
+            }
+        }
+
+        if (update) {
+            _updateRedstoneNeighbours(plate);
+        }
+    }
+
+    protected static void _toggleLeverModern(Block lever) {
+        BlockData blockData = lever.getBlockData();
+
+        if (blockData instanceof Switch s) {
+            s.setPowered(!s.isPowered());
+            lever.setBlockData(s);
+            _updateRedstoneNeighbours(lever);
+        }
+    }
+
+    protected static void _pressButtonModern(Block button) {
+        BlockData blockData = button.getBlockData();
+
+        if (blockData instanceof Switch s) {
+            s.setPowered(true);
+            button.setBlockData(s);
+            _updateRedstoneNeighbours(button);
+        }
+    }
+
+    static void _releaseButtonModern(Block button) {
+        BlockData blockData = button.getBlockData();
+
+        if (blockData instanceof Switch s) {
+            s.setPowered(false);
+            button.setBlockData(s);
+            _updateRedstoneNeighbours(button);
         }
     }
 
@@ -204,8 +195,7 @@ public class BlockUtilsModern {
             if (data.getHalf() == Bisected.Half.TOP) {
                 Block lowerHalf = door.getRelative(BlockFace.DOWN);
 
-                if (lowerHalf.getBlockData() instanceof Door) {
-                    Door lowerData = (Door) lowerHalf.getBlockData();
+                if (lowerHalf.getBlockData() instanceof Door lowerData) {
                     lowerData.setOpen(!data.isOpen());
                     lowerHalf.setBlockData(lowerData);
                 }
@@ -223,8 +213,7 @@ public class BlockUtilsModern {
         BlockData bd = block.getBlockData();
         Block door = null;
 
-        if (bd instanceof Door) {
-            final Door d = (Door) bd;
+        if (bd instanceof final Door d) {
             final BlockFace face = d.getFacing();
 
             if (face.getModX() == 0) {
@@ -250,8 +239,7 @@ public class BlockUtilsModern {
         if (BlockUtils.DOORS.contains(door.getType())) {
             BlockData bd = door.getBlockData();
 
-            if (bd instanceof Door) {
-                Door d = (Door) bd;
+            if (bd instanceof Door d) {
 
                 // The lower half of the door contains the open/close state
                 if (d.getHalf() == Bisected.Half.TOP) {
@@ -276,8 +264,7 @@ public class BlockUtilsModern {
         } else if (BlockUtils.FENCE_GATES.contains(door.getType())) {
             BlockData bd = door.getBlockData();
 
-            if (bd instanceof Gate) {
-                Gate g = (Gate) bd;
+            if (bd instanceof Gate g) {
                 final BlockFace face = g.getFacing();
 
                 if (face.getModX() == 0) {
@@ -289,8 +276,7 @@ public class BlockUtilsModern {
         } else if (BlockUtils.TRAP_DOORS.contains(door.getType())) {
             BlockData bd = door.getBlockData();
 
-            if (bd instanceof TrapDoor) {
-                TrapDoor t = (TrapDoor) bd;
+            if (bd instanceof TrapDoor t) {
 
                 if (!t.isOpen()) {
                     return BlockFace.UP;

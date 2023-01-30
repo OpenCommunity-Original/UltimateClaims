@@ -9,11 +9,11 @@ import java.util.Collections;
 import java.util.List;
 
 public final class PluginInfo {
-    protected final JavaPlugin javaPlugin;
-    protected final int songodaId;
-    protected final String coreIcon;
-    protected final String coreLibraryVersion;
-    protected final CompatibleMaterial icon;
+    private final JavaPlugin javaPlugin;
+    private final int songodaId;
+    private final String coreIcon;
+    private final String coreLibraryVersion;
+    private final CompatibleMaterial icon;
     private final List<PluginInfoModule> modules = new ArrayList<>();
     private boolean hasUpdate = false;
     private String latestVersion;

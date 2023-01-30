@@ -40,6 +40,20 @@ public class WorldGuardFlagHandler {
     static boolean legacy_v5 = false;
     static boolean hooksInstalled = false;
     static Map<String, Object> flags = new HashMap<>();
+    static Method legacy_getRegionManager = null;
+    static Method legacy_getApplicableRegions_Region = null;
+    static Method legacy_getApplicableRegions_Location = null;
+    static Method legacy5_applicableRegionSet_getFlag = null;
+    static Constructor legacy_newProtectedCuboidRegion;
+    static Class legacy_blockVectorClazz;
+    static Constructor legacy_newblockVector;
+    static Class legacy_VectorClazz;
+    static Constructor legacy_newVectorClazz;
+    static Method legacy_getApplicableRegions_Vector = null;
+    static Class legacy_simpleFlagRegistryClazz = null; // only used for 6.2
+    static Method legacy_simpleFlagRegistry_get = null; // only used for 6.2
+    static Object legacy_worldGuardPlugin_flagRegistry = null; // only used for 6.2
+    static boolean legacy_loadedFlags = false;
 
     static {
         if (wgPlugin = (worldGuardPlugin = Bukkit.getPluginManager().getPlugin("WorldGuard")) != null) {
@@ -103,7 +117,7 @@ public class WorldGuardFlagHandler {
                 Bukkit.getServer().getLogger().log(Level.WARNING, "Could not hook WorldGuard");
             } else {
                 flags.put(flag, wgFlag);
-                Bukkit.getServer().getLogger().log(Level.WARNING, "Loaded existing {1} {0}", new Object[] {((Flag) wgFlag).getName(), wgFlag.getClass().getSimpleName()});
+                Bukkit.getServer().getLogger().log(Level.WARNING, "Loaded existing {1} {0}", new Object[]{((Flag) wgFlag).getName(), wgFlag.getClass().getSimpleName()});
             }
         }
     }
@@ -123,7 +137,7 @@ public class WorldGuardFlagHandler {
             if (wgFlag != null) {
                 // we already have one
                 flags.put(flag, wgFlag);
-                Bukkit.getServer().getLogger().log(Level.WARNING, "Loaded existing {1} {0}", new Object[] {wgFlag.getName(), wgFlag.getClass().getSimpleName()});
+                Bukkit.getServer().getLogger().log(Level.WARNING, "Loaded existing {1} {0}", new Object[]{wgFlag.getName(), wgFlag.getClass().getSimpleName()});
                 return;
             }
 
@@ -227,7 +241,6 @@ public class WorldGuardFlagHandler {
      *
      * @param loc  location to check
      * @param flag ALLOW/DENY flag to check
-     *
      * @return flag state, or null if undefined
      */
     public static Boolean getBooleanFlag(Location loc, String flag, Player optionalPlayer) {
@@ -260,7 +273,6 @@ public class WorldGuardFlagHandler {
      *
      * @param c    chunk to check for regions in
      * @param flag ALLOW/DENY flag to check
-     *
      * @return flag state, or null if undefined
      */
     public static Boolean getBooleanFlag(Chunk c, String flag) {
@@ -298,21 +310,6 @@ public class WorldGuardFlagHandler {
 
         return null;
     }
-
-    static Method legacy_getRegionManager = null;
-    static Method legacy_getApplicableRegions_Region = null;
-    static Method legacy_getApplicableRegions_Location = null;
-    static Method legacy5_applicableRegionSet_getFlag = null;
-    static Constructor legacy_newProtectedCuboidRegion;
-    static Class legacy_blockVectorClazz;
-    static Constructor legacy_newblockVector;
-    static Class legacy_VectorClazz;
-    static Constructor legacy_newVectorClazz;
-    static Method legacy_getApplicableRegions_Vector = null;
-    static Class legacy_simpleFlagRegistryClazz = null; // only used for 6.2
-    static Method legacy_simpleFlagRegistry_get = null; // only used for 6.2
-    static Object legacy_worldGuardPlugin_flagRegistry = null; // only used for 6.2
-    static boolean legacy_loadedFlags = false;
 
     private static Boolean getBooleanFlagLegacy(Location l, Object flag) {
         try {

@@ -8,6 +8,34 @@ public class ConfigFormattingRules {
     CommentStyle rootCommentStyle = CommentStyle.BLOCKSPACED;
     CommentStyle mainCategoryCommentStyle = CommentStyle.SPACED;
 
+    public static CommentStyle parseStyle(List<String> lines) {
+        if (lines == null || lines.size() <= 2) {
+            return CommentStyle.SIMPLE;
+        }
+
+        if (lines.get(0).trim().equals("#") && lines.get(lines.size() - 1).trim().equals("#")) {
+            return CommentStyle.SPACED;
+        }
+
+        boolean hasBorders = lines.get(0).trim().matches("^##+$") && lines.get(lines.size() - 1).trim().matches("^##+$");
+        if (!hasBorders) {
+            // default return
+            return CommentStyle.SIMPLE;
+        }
+
+        // now need to figure out if this is blocked or not
+        if (lines.size() > 4 && lines.get(1).trim().matches(("^#"
+                + CommentStyle.BLOCKSPACED.spacePrefixTop + CommentStyle.BLOCKSPACED.spaceCharTop + "+"
+                + CommentStyle.BLOCKSPACED.spaceSuffixTop + "#$").replace("|", "\\|"))
+                && lines.get(1).trim().matches(("^#"
+                + CommentStyle.BLOCKSPACED.spacePrefixTop + CommentStyle.BLOCKSPACED.spaceCharTop + "+"
+                + CommentStyle.BLOCKSPACED.spaceSuffixTop + "#$").replace("|", "\\|"))) {
+            return CommentStyle.BLOCKSPACED;
+        }
+
+        return CommentStyle.BLOCKED;
+    }
+
     public enum CommentStyle {
         /**
          * # Comment
@@ -64,33 +92,5 @@ public class ConfigFormattingRules {
             this.spaceCharTop = this.spaceCharBottom = ' ';
             this.spaceSuffixTop = this.spaceSuffixBottom = "";
         }
-    }
-
-    public static CommentStyle parseStyle(List<String> lines) {
-        if (lines == null || lines.size() <= 2) {
-            return CommentStyle.SIMPLE;
-        }
-
-        if (lines.get(0).trim().equals("#") && lines.get(lines.size() - 1).trim().equals("#")) {
-            return CommentStyle.SPACED;
-        }
-
-        boolean hasBorders = lines.get(0).trim().matches("^##+$") && lines.get(lines.size() - 1).trim().matches("^##+$");
-        if (!hasBorders) {
-            // default return
-            return CommentStyle.SIMPLE;
-        }
-
-        // now need to figure out if this is blocked or not
-        if (lines.size() > 4 && lines.get(1).trim().matches(("^#"
-                + CommentStyle.BLOCKSPACED.spacePrefixTop + CommentStyle.BLOCKSPACED.spaceCharTop + "+"
-                + CommentStyle.BLOCKSPACED.spaceSuffixTop + "#$").replace("|", "\\|"))
-                && lines.get(1).trim().matches(("^#"
-                + CommentStyle.BLOCKSPACED.spacePrefixTop + CommentStyle.BLOCKSPACED.spaceCharTop + "+"
-                + CommentStyle.BLOCKSPACED.spaceSuffixTop + "#$").replace("|", "\\|"))) {
-            return CommentStyle.BLOCKSPACED;
-        }
-
-        return CommentStyle.BLOCKED;
     }
 }

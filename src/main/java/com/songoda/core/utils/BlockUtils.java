@@ -27,6 +27,14 @@ public class BlockUtils {
     protected static final boolean useLegacy = Material.getMaterial("OAK_LOG") == null;
     protected static Method legacySetBlockData = null;
     protected static Method legacyUpdateBlockData = null;
+    /* Only to be used by #updateAdjacentComparators */
+    private static Method chunkToNmsChunk, nmsChunkGetWorld, craftBlockGetPosition, craftBlockBlockDataGetter, blockDataGetBlock, craftMagicNumbersGetBlockByMaterial, nmsWorldUpdateAdjacentComparators;
+    /* Only to be used by #updateAdjacentComparators */
+    private static Constructor<?> blockPositionConstructor;
+    /* Only to be used by #setBlockFast */
+    private static Class<?> clazzIBlockData, clazzBlocks, clazzCraftWorld, clazzBlockPosition;
+    /* Only to be used by #setBlockFast */
+    private static Method getHandle, getByCombinedId, setType, getChunkAt, getBlockData;
 
     static {
         DOORS = EnumSet.noneOf(Material.class);
@@ -62,7 +70,6 @@ public class BlockUtils {
      * Interact with this block to either update redstone or open doors
      *
      * @param b block to update
-     *
      * @return if this block's state was updated
      */
     public static boolean tryInteract(Block b) {
@@ -328,11 +335,6 @@ public class BlockUtils {
         return null;
     }
 
-    /* Only to be used by #updateAdjacentComparators */
-    private static Method chunkToNmsChunk, nmsChunkGetWorld, craftBlockGetPosition, craftBlockBlockDataGetter, blockDataGetBlock, craftMagicNumbersGetBlockByMaterial, nmsWorldUpdateAdjacentComparators;
-    /* Only to be used by #updateAdjacentComparators */
-    private static Constructor<?> blockPositionConstructor;
-
     /**
      * Manually trigger the updateAdjacentComparators method for containers
      *
@@ -386,11 +388,6 @@ public class BlockUtils {
             ex.printStackTrace();
         }
     }
-
-    /* Only to be used by #setBlockFast */
-    private static Class<?> clazzIBlockData, clazzBlocks, clazzCraftWorld, clazzBlockPosition;
-    /* Only to be used by #setBlockFast */
-    private static Method getHandle, getByCombinedId, setType, getChunkAt, getBlockData;
 
     /**
      * Set a block to a certain type by updating the block directly in the
@@ -451,7 +448,6 @@ public class BlockUtils {
      * Checks if a crop is at its max growth stage
      *
      * @param block The crop block to check
-     *
      * @return true if the block is a crop and at its max growth stage
      */
     public static boolean isCropFullyGrown(Block block) {
@@ -476,7 +472,6 @@ public class BlockUtils {
      * Gets the max growth stage for the given block
      *
      * @param block The crop block to check
-     *
      * @return The max growth stage of the given crop type, or -1 if not a crop
      */
     public static int getMaxGrowthStage(Block block) {
@@ -501,7 +496,6 @@ public class BlockUtils {
      * Gets the max growth stage for the given material
      *
      * @param material The material of the crop
-     *
      * @return The max growth stage of the given crop type
      */
     public static int getMaxGrowthStage(Material material) {
@@ -594,7 +588,6 @@ public class BlockUtils {
      * Check to see if this material does not impede player/mob movement at all.
      *
      * @param m material to check
-     *
      * @return true if this material doesn't have a solid hitbox
      */
     public static boolean canPassThrough(Material m) {
@@ -780,7 +773,6 @@ public class BlockUtils {
      * This includes blocks like slabs and stairs
      *
      * @param m material to check
-     *
      * @return true if this is a block that can be walked through or up
      */
     public static boolean canWalkTo(Material m) {

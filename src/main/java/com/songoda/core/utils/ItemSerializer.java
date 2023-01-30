@@ -19,7 +19,6 @@ public class ItemSerializer {
      * A method to serialize an {@link ItemStack} list to Base64 String.
      *
      * @param items to turn into a Base64 String.
-     *
      * @return Base64 string of the items.
      */
     public static String toBase64(List<ItemStack> items) {
@@ -49,7 +48,6 @@ public class ItemSerializer {
      * Gets a list of ItemStacks from Base64 string.
      *
      * @param data Base64 string to convert to ItemStack list.
-     *
      * @return ItemStack array created from the Base64 string.
      */
     public static List<ItemStack> fromBase64(String data) {
@@ -78,7 +76,6 @@ public class ItemSerializer {
      * Deserialize a byte array into an ItemStack.
      *
      * @param data Data to deserialize.
-     *
      * @return Deserialized ItemStack.
      */
     public static ItemStack deserializeItem(byte[] data) {
@@ -97,7 +94,6 @@ public class ItemSerializer {
      * Serialize an ItemStack into a byte array.
      *
      * @param item Item to serialize.
-     *
      * @return Serialized data.
      */
     public static byte[] serializeItem(ItemStack item) {

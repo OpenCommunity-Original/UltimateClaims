@@ -11,21 +11,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public class DataManagerAbstract {
-    protected final DatabaseConnector databaseConnector;
-    protected final Plugin plugin;
-
-    protected final ExecutorService asyncPool = Executors.newSingleThreadExecutor();
-
     @Deprecated
     private static final Map<String, LinkedList<Runnable>> queues = new HashMap<>();
+    protected final DatabaseConnector databaseConnector;
+    protected final Plugin plugin;
+    protected final ExecutorService asyncPool = Executors.newSingleThreadExecutor();
 
     public DataManagerAbstract(DatabaseConnector databaseConnector, Plugin plugin) {
         this.databaseConnector = databaseConnector;

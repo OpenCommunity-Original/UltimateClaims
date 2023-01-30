@@ -4,12 +4,7 @@ import com.songoda.core.compatibility.ServerProject;
 import com.songoda.core.compatibility.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.SimpleCommandMap;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,14 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
@@ -43,6 +31,45 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
     public CommandManager(JavaPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    public static void registerCommandDynamically(Plugin plugin, String command, CommandExecutor executor, TabCompleter tabManager) {
+        try {
+            // Retrieve the SimpleCommandMap from the server
+            Class<?> clazzCraftServer = Bukkit.getServer().getClass();
+            Object craftServer = clazzCraftServer.cast(Bukkit.getServer());
+            SimpleCommandMap commandMap = (SimpleCommandMap) craftServer.getClass()
+                    .getDeclaredMethod("getCommandMap").invoke(craftServer);
+
+            // Construct a new Command object
+            Constructor<PluginCommand> constructorPluginCommand = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
+            constructorPluginCommand.setAccessible(true);
+            PluginCommand commandObject = constructorPluginCommand.newInstance(command, plugin);
+
+            // If we're on Paper 1.8, we need to register timings (spigot creates timings on init, paper creates it on register)
+            // later versions of paper create timings if needed when the command is executed
+            if (ServerProject.isServer(ServerProject.PAPER, ServerProject.TACO) && ServerVersion.isServerVersionBelow(ServerVersion.V1_9)) {
+                Class<?> clazz = Class.forName("co.aikar.timings.TimingsManager");
+                Method method = clazz.getMethod("getCommandTiming", String.class, Command.class);
+                Field field = PluginCommand.class.getField("timings");
+
+                field.set(commandObject, method.invoke(null, plugin.getName().toLowerCase(), commandObject));
+            }
+
+            // Set command action
+            commandObject.setExecutor(executor);
+
+            // Set tab complete
+            commandObject.setTabCompleter(tabManager);
+
+            // Register the command
+            Field fieldKnownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
+            fieldKnownCommands.setAccessible(true);
+            Map<String, Command> knownCommands = (Map<String, Command>) fieldKnownCommands.get(commandMap);
+            knownCommands.put(command, commandObject);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void setNoConsoleMessage(String msg_noConsole) {
@@ -341,45 +368,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
 
         return list;
-    }
-
-    public static void registerCommandDynamically(Plugin plugin, String command, CommandExecutor executor, TabCompleter tabManager) {
-        try {
-            // Retrieve the SimpleCommandMap from the server
-            Class<?> clazzCraftServer = Bukkit.getServer().getClass();
-            Object craftServer = clazzCraftServer.cast(Bukkit.getServer());
-            SimpleCommandMap commandMap = (SimpleCommandMap) craftServer.getClass()
-                    .getDeclaredMethod("getCommandMap").invoke(craftServer);
-
-            // Construct a new Command object
-            Constructor<PluginCommand> constructorPluginCommand = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
-            constructorPluginCommand.setAccessible(true);
-            PluginCommand commandObject = constructorPluginCommand.newInstance(command, plugin);
-
-            // If we're on Paper 1.8, we need to register timings (spigot creates timings on init, paper creates it on register)
-            // later versions of paper create timings if needed when the command is executed
-            if (ServerProject.isServer(ServerProject.PAPER, ServerProject.TACO) && ServerVersion.isServerVersionBelow(ServerVersion.V1_9)) {
-                Class<?> clazz = Class.forName("co.aikar.timings.TimingsManager");
-                Method method = clazz.getMethod("getCommandTiming", String.class, Command.class);
-                Field field = PluginCommand.class.getField("timings");
-
-                field.set(commandObject, method.invoke(null, plugin.getName().toLowerCase(), commandObject));
-            }
-
-            // Set command action
-            commandObject.setExecutor(executor);
-
-            // Set tab complete
-            commandObject.setTabCompleter(tabManager);
-
-            // Register the command
-            Field fieldKnownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
-            fieldKnownCommands.setAccessible(true);
-            Map<String, Command> knownCommands = (Map<String, Command>) fieldKnownCommands.get(commandMap);
-            knownCommands.put(command, commandObject);
-        } catch (ReflectiveOperationException ex) {
-            ex.printStackTrace();
-        }
     }
 
     /*

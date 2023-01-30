@@ -4,18 +4,13 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.lootables.loot.Loot;
-import com.songoda.core.lootables.loot.LootBuilder;
 import com.songoda.core.lootables.loot.LootManager;
 import com.songoda.core.utils.TextUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GuiLootEditor extends Gui {
     private final LootManager lootManager;

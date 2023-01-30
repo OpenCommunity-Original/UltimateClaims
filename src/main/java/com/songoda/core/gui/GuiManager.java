@@ -10,11 +10,7 @@ import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.Inventory;
@@ -177,12 +173,11 @@ public class GuiManager {
 
         @EventHandler(priority = EventPriority.LOW)
         void onClickGUI(InventoryClickEvent event) {
-            if (!(event.getWhoClicked() instanceof Player)) {
+            if (!(event.getWhoClicked() instanceof final Player player)) {
                 return;
             }
 
             Inventory openInv = event.getInventory();
-            final Player player = (Player) event.getWhoClicked();
 
             Gui gui;
             if (openInv.getHolder() != null && openInv.getHolder() instanceof GuiHolder &&

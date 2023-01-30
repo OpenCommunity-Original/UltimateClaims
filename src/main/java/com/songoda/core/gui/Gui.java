@@ -3,16 +3,8 @@ package com.songoda.core.gui;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
-import com.songoda.core.gui.events.GuiClickEvent;
-import com.songoda.core.gui.events.GuiCloseEvent;
-import com.songoda.core.gui.events.GuiDropItemEvent;
-import com.songoda.core.gui.events.GuiOpenEvent;
-import com.songoda.core.gui.events.GuiPageEvent;
-import com.songoda.core.gui.methods.Clickable;
-import com.songoda.core.gui.methods.Closable;
-import com.songoda.core.gui.methods.Droppable;
-import com.songoda.core.gui.methods.Openable;
-import com.songoda.core.gui.methods.Pagable;
+import com.songoda.core.gui.events.*;
+import com.songoda.core.gui.methods.*;
 import com.songoda.core.utils.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,17 +16,17 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * TODO: animated buttons
  */
 public class Gui {
+    protected static ItemStack AIR = new ItemStack(Material.AIR);
+    protected final Map<Integer, Boolean> unlockedCells = new HashMap<>();
+    protected final Map<Integer, ItemStack> cellItems = new HashMap<>();
+    protected final Map<Integer, Map<ClickType, Clickable>> conditionalButtons = new HashMap<>();
     protected Inventory inventory;
     protected String title;
     protected GuiType inventoryType = GuiType.STANDARD;
@@ -42,16 +34,11 @@ public class Gui {
     protected boolean acceptsItems = false;
     protected boolean allowDropItems = true;
     protected boolean allowClose = true;
-    protected final Map<Integer, Boolean> unlockedCells = new HashMap<>();
-    protected final Map<Integer, ItemStack> cellItems = new HashMap<>();
-    protected final Map<Integer, Map<ClickType, Clickable>> conditionalButtons = new HashMap<>();
     protected ItemStack blankItem = GuiUtils.getBorderGlassItem();
     protected int nextPageIndex = -1, prevPageIndex = -1;
     protected ItemStack nextPageItem, prevPageItem;
     protected ItemStack nextPage, prevPage;
     protected Gui parent = null;
-    protected static ItemStack AIR = new ItemStack(Material.AIR);
-
     protected GuiManager guiManager;
     protected boolean open = false;
     protected Clickable defaultClicker = null;
@@ -91,6 +78,18 @@ public class Gui {
     public Gui(int rows, @Nullable Gui parent) {
         this.parent = parent;
         this.rows = Math.max(1, Math.min(6, rows));
+    }
+
+    protected static String trimTitle(String title) {
+        if (title == null) {
+            return "";
+        }
+
+        if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_8) && title.length() > 32) {
+            return title.charAt(30) == '\u00A7' ? title.substring(0, 30) : title.substring(0, 31);
+        }
+
+        return title;
     }
 
     @NotNull
@@ -308,15 +307,15 @@ public class Gui {
         return this;
     }
 
+    @Nullable
+    public ItemStack getDefaultItem() {
+        return blankItem;
+    }
+
     @NotNull
     public Gui setDefaultItem(@Nullable ItemStack item) {
         blankItem = item;
         return this;
-    }
-
-    @Nullable
-    public ItemStack getDefaultItem() {
-        return blankItem;
     }
 
     @Nullable
@@ -884,18 +883,6 @@ public class Gui {
             final ItemStack item = cellItems.get(i);
             inventory.setItem(i, item != null ? item : (unlockedCells.getOrDefault(i, false) ? AIR : blankItem));
         }
-    }
-
-    protected static String trimTitle(String title) {
-        if (title == null) {
-            return "";
-        }
-
-        if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_8) && title.length() > 32) {
-            return title.charAt(30) == '\u00A7' ? title.substring(0, 30) : title.substring(0, 31);
-        }
-
-        return title;
     }
 
     protected boolean onClickOutside(@NotNull GuiManager manager, @NotNull Player player, @NotNull InventoryClickEvent event) {

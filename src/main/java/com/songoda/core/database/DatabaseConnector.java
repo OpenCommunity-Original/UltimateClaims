@@ -23,12 +23,12 @@ public interface DatabaseConnector {
      */
     void connect(ConnectionCallback callback);
 
+    Connection getConnection();
+
     /**
      * Wraps a connection in a callback which will automagically handle catching sql errors
      */
     interface ConnectionCallback {
         void accept(Connection connection) throws SQLException;
     }
-
-    Connection getConnection();
 }

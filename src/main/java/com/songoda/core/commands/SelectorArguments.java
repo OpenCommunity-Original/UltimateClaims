@@ -22,6 +22,14 @@ import java.util.stream.Stream;
 public class SelectorArguments {
     static Pattern selectorPattern = Pattern.compile("^(@[apers])(\\[(.*?)])?$");
     static Pattern selectorRangePattern = Pattern.compile("^([0-9]{1,9}(\\.[0-9]{1,9})?)?(\\.\\.)?([0-9]{1,9}(\\.[0-9]{1,9})?)?$");
+    protected final CommandSender sender;
+    protected final SelectorType selector;
+    protected double rangeMin = 0, rangeMax = Double.POSITIVE_INFINITY;
+    protected EntityType entityType;
+    public SelectorArguments(CommandSender sender, SelectorType type) {
+        this.sender = sender;
+        this.selector = type;
+    }
 
     /**
      * Parse a command selector using Minecraft's selector format. <br>
@@ -29,7 +37,6 @@ public class SelectorArguments {
      *
      * @param sender   CommandBlock or Player running the command
      * @param argument argument with the selector to parse
-     *
      * @return SelectorArguments Object for grabbing the list of entities, or null if the selector is invalid
      */
     @Nullable
@@ -55,16 +62,6 @@ public class SelectorArguments {
         }
 
         return selector;
-    }
-
-    protected final CommandSender sender;
-    protected final SelectorType selector;
-    protected double rangeMin = 0, rangeMax = Double.POSITIVE_INFINITY;
-    protected EntityType entityType;
-
-    public SelectorArguments(CommandSender sender, SelectorType type) {
-        this.sender = sender;
-        this.selector = type;
     }
 
     private void parseArguments(String selectorArgs) {
@@ -99,30 +96,6 @@ public class SelectorArguments {
             }
         }
 
-        /*
-         advancements 	Advancement earned by entity.
-         distance 	Distance to entity.
-         dx         Entities between x and x + dx.
-         dy         Entities between y and y + dy.
-         dz         Entities between z and z + dz.
-         gamemode 	Players with gamemode. It can be one of the following values: adventure, creative, spectator, survival, !adventure, !creative, !spectator, !survival
-         level      Experience level. It must be an integer value that is 0 or greater.
-         limit      Maximum number of entities to target. It must be an integer value that is 1 or greater.
-         name       Entity name.
-         nbt        NBT tag.
-         scores 	Score.
-         sort       Sort the entities. It must be one of the following values: arbitrary, furthest, nearest, random
-         tag        Scoreboard tag.
-         team       Entities on team.
-         type       Entity type (target must be the specified entity type - https://www.digminecraft.com/lists/entity_list_pc.php ).
-         x          Entity's x-coordinate position.
-         x_rotation Entity's x rotation (vertical rotation).
-         y          Entity's y-coordinate position.
-         y_rotation Entity's y rotation (horizontal rotation).
-         z          Entity's z-coordinate position.
-         target selector arguments are case-sensitive
-         @e[type=cow,limit=5]
-         */
     }
 
     public Collection<Entity> getSelection() {
@@ -143,10 +116,10 @@ public class SelectorArguments {
             case PLAYER:
                 list2.sort((o1, o2) -> (int) (o1.getLocation().distanceSquared(location) - o2.getLocation().distanceSquared(location)));
 
-                return Arrays.asList(list2.get(0));
+                return Collections.singletonList(list2.get(0));
             case RANDOM_PLAYER:
                 Collections.shuffle(list2);
-                return Arrays.asList(list2.get(0));
+                return Collections.singletonList(list2.get(0));
             case ALL_PLAYER:
             case ALL_ENTITIES:
             case SELF:
@@ -172,7 +145,7 @@ public class SelectorArguments {
                         : location.getWorld().getNearbyEntities(location, rangeMax * 2, rangeMax * 2, rangeMax * 2);
 
             case SELF:
-                return sender instanceof Entity ? Arrays.asList((Entity) sender) : Collections.emptyList();
+                return sender instanceof Entity ? List.of((Entity) sender) : Collections.emptyList();
         }
 
         return Collections.emptyList();

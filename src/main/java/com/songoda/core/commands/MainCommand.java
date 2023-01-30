@@ -3,7 +3,6 @@ package com.songoda.core.commands;
 import com.songoda.core.chat.ChatMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -12,12 +11,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MainCommand extends AbstractCommand {
+    protected final SimpleNestedCommand nestedCommands;
+    final String command;
+    final Plugin plugin;
     String header = null;
     String description;
     boolean sortHelp = false;
-    final String command;
-    final Plugin plugin;
-    protected final SimpleNestedCommand nestedCommands;
 
     public MainCommand(Plugin plugin, String command) {
         super(CommandType.CONSOLE_OK, command);
@@ -30,11 +29,6 @@ public class MainCommand extends AbstractCommand {
 
     public MainCommand setHeader(String header) {
         this.header = header;
-        return this;
-    }
-
-    public MainCommand setDescription(String description) {
-        this.description = description;
         return this;
     }
 
@@ -113,5 +107,10 @@ public class MainCommand extends AbstractCommand {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    public MainCommand setDescription(String description) {
+        this.description = description;
+        return this;
     }
 }

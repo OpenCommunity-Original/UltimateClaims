@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class ColorUtils {
-    private static Map<ColorCode, ColorSet<Integer, Integer, Integer>> colorMap = new HashMap<>();
+    private static final Map<ColorCode, ColorSet<Integer, Integer, Integer>> colorMap = new HashMap<>();
 
     static {
         colorMap.put(ColorCode.BLACK, new ColorSet<>(0, 0, 0));
@@ -26,6 +26,19 @@ public class ColorUtils {
         colorMap.put(ColorCode.LIGHT_PURPLE, new ColorSet<>(255, 85, 255));
         colorMap.put(ColorCode.YELLOW, new ColorSet<>(255, 255, 85));
         colorMap.put(ColorCode.WHITE, new ColorSet<>(255, 255, 255));
+    }
+
+    public static ColorCode fromRGB(int r, int g, int b) {
+        TreeMap<Integer, ColorCode> closest = new TreeMap<>();
+        colorMap.forEach((color, set) -> {
+            int red = Math.abs(r - set.getRed());
+            int green = Math.abs(g - set.getGreen());
+            int blue = Math.abs(b - set.getBlue());
+
+            closest.put(red + green + blue, color);
+        });
+
+        return closest.firstEntry().getValue();
     }
 
     private static class ColorSet<R, G, B> {
@@ -50,18 +63,5 @@ public class ColorUtils {
         public B getBlue() {
             return blue;
         }
-    }
-
-    public static ColorCode fromRGB(int r, int g, int b) {
-        TreeMap<Integer, ColorCode> closest = new TreeMap<>();
-        colorMap.forEach((color, set) -> {
-            int red = Math.abs(r - set.getRed());
-            int green = Math.abs(g - set.getGreen());
-            int blue = Math.abs(b - set.getBlue());
-
-            closest.put(red + green + blue, color);
-        });
-
-        return closest.firstEntry().getValue();
     }
 }

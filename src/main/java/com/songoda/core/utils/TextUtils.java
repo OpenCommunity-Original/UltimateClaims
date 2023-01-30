@@ -30,7 +30,8 @@ public class TextUtils {
         try {
             supportedCharsets.add(Charset.forName("windows-1253"));
             supportedCharsets.add(Charset.forName("ISO-8859-7"));
-        } catch (Exception ignore) {    // UnsupportedCharsetException technically can be thrown, but can also be ignored
+        } catch (
+                Exception ignore) {    // UnsupportedCharsetException technically can be thrown, but can also be ignored
         }
 
         supportedCharsets.add(StandardCharsets.US_ASCII);
@@ -103,7 +104,6 @@ public class TextUtils {
      * Note: Do not use semi-colons or § in this string, or they will be lost when decoding!
      *
      * @param s string to convert
-     *
      * @return encoded string
      */
     public static String convertToInvisibleLoreString(String s) {
@@ -129,7 +129,6 @@ public class TextUtils {
      * Note: Do not use semi-colons or § in this string, or they will be lost when decoding!
      *
      * @param s string to convert
-     *
      * @return encoded string
      */
     public static String convertToInvisibleString(String s) {
@@ -147,11 +146,11 @@ public class TextUtils {
     }
 
     // TODO: Is there a more reliable way?
+
     /**
      * Removes color markers used to encode strings as invisible text
      *
      * @param s encoded string
-     *
      * @return string with color markers removed
      */
     public static String convertFromInvisibleString(String s) {

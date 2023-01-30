@@ -737,16 +737,6 @@ public enum LegacyMaterialAnalouge {
     ZOMBIE_VILLAGER_SPAWN_EGG(ServerVersion.V1_11, "MONSTER_EGG", (byte) 0),
     ;
 
-    final ServerVersion versionLessThan;
-    final String modernMaterial;
-    final String legacyMaterial;
-    final Byte legacyData;
-    final ServerVersion legacyMinimumVersion;
-    final String compatibleMaterial;
-    final Byte compatibleData;
-    final Material material;
-    final Byte data;
-
     // map to speed up name->material lookups
     private static final Map<String, LegacyMaterialAnalouge> lookupMap = new HashMap<>();
 
@@ -756,9 +746,15 @@ public enum LegacyMaterialAnalouge {
         }
     }
 
-    public static LegacyMaterialAnalouge lookupAnalouge(String material) {
-        return lookupMap.get(material);
-    }
+    final ServerVersion versionLessThan;
+    final String modernMaterial;
+    final String legacyMaterial;
+    final Byte legacyData;
+    final ServerVersion legacyMinimumVersion;
+    final String compatibleMaterial;
+    final Byte compatibleData;
+    final Material material;
+    final Byte data;
 
     LegacyMaterialAnalouge(ServerVersion versionLessThan, String legacyMaterial, byte legacyData) {
         this(versionLessThan, null, legacyMaterial, legacyData, null, null, null);
@@ -825,6 +821,10 @@ public enum LegacyMaterialAnalouge {
             material = null;
             data = null;
         }
+    }
+
+    public static LegacyMaterialAnalouge lookupAnalouge(String material) {
+        return lookupMap.get(material);
     }
 
     public Material getMaterial() {

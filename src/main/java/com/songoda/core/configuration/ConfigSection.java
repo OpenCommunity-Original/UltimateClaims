@@ -6,15 +6,7 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -25,18 +17,18 @@ public class ConfigSection extends MemoryConfiguration {
     final String fullPath, nodeKey;
     final ConfigSection root;
     final ConfigSection parent;
-    protected int indentation = 2; // between 2 and 9 (inclusive)
-    protected char pathChar = '.';
     final HashMap<String, Comment> configComments;
     final HashMap<String, Comment> defaultComments;
     final LinkedHashMap<String, Object> defaults;
     final LinkedHashMap<String, Object> values;
+    final boolean isDefault;
+    final Object lock = new Object();
+    protected int indentation = 2; // between 2 and 9 (inclusive)
+    protected char pathChar = '.';
     /**
      * Internal root state: if any configuration value has changed from file state
      */
     boolean changed = false;
-    final boolean isDefault;
-    final Object lock = new Object();
 
     ConfigSection() {
         this.root = this;
@@ -75,6 +67,10 @@ public class ConfigSection extends MemoryConfiguration {
         }
     }
 
+    public char getPathSeparator() {
+        return root.pathChar;
+    }
+
     /**
      * Sets the character used to separate configuration nodes. <br>
      * IMPORTANT: Do not change this after loading or adding ConfigurationSections!
@@ -87,10 +83,6 @@ public class ConfigSection extends MemoryConfiguration {
         }
 
         root.pathChar = pathChar;
-    }
-
-    public char getPathSeparator() {
-        return root.pathChar;
     }
 
     /**
@@ -272,6 +264,11 @@ public class ConfigSection extends MemoryConfiguration {
     }
 
     @Override
+    public ConfigSection getDefaults() {
+        return new ConfigSection(root, this, null, true);
+    }
+
+    @Override
     public void setDefaults(Configuration c) {
         if (fullPath.isEmpty()) {
             root.defaults.clear();
@@ -282,11 +279,6 @@ public class ConfigSection extends MemoryConfiguration {
         }
 
         addDefaults(c);
-    }
-
-    @Override
-    public ConfigSection getDefaults() {
-        return new ConfigSection(root, this, null, true);
     }
 
     @Override
