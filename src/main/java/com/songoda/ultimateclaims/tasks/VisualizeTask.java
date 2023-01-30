@@ -1,6 +1,5 @@
 package com.songoda.ultimateclaims.tasks;
 
-import com.songoda.core.utils.ReflectionUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
@@ -39,7 +38,7 @@ public class VisualizeTask extends BukkitRunnable {
 
     public static boolean togglePlayer(Player p) {
         Boolean isActive = active.get(p);
-        active.put(p, isActive = (isActive == null || isActive == false));
+        active.put(p, isActive = (isActive == null || !isActive));
         return isActive;
     }
 
@@ -104,10 +103,10 @@ public class VisualizeTask extends BukkitRunnable {
                 if (show) {
                     final Location loc = b.getLocation().add(.5, 1.5, .5);
 
-                        if (canBuild)
-                            player.spawnParticle(Particle.VILLAGER_HAPPY, loc, 0, 0, 0, 0, 1);
-                        else
-                            player.spawnParticle(Particle.REDSTONE, loc, 0, 0, 0, 0, 1, new Particle.DustOptions(canBuild ? Color.LIME : Color.RED, 2F));
+                    if (canBuild)
+                        player.spawnParticle(Particle.VILLAGER_HAPPY, loc, 0, 0, 0, 0, 1);
+                    else
+                        player.spawnParticle(Particle.REDSTONE, loc, 0, 0, 0, 0, 1, new Particle.DustOptions(canBuild ? Color.LIME : Color.RED, 2F));
                 }
             }
         }

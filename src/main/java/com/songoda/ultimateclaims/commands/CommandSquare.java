@@ -174,7 +174,7 @@ public class CommandSquare extends AbstractCommand {
             plugin.getDataManager().createClaim(claim);
 
             plugin.getLocale().getMessage("command.claim.info")
-                    .processPlaceholder("time", TimeUtils.makeReadable((long) (Settings.STARTING_POWER.getInt() * 60 * 1000)))
+                    .processPlaceholder("time", TimeUtils.makeReadable((long) ((long) Settings.STARTING_POWER.getInt() * 60 * 1000)))
                     .sendPrefixedMessage(sender);
 
         }

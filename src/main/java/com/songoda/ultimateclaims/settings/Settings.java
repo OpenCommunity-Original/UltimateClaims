@@ -9,6 +9,7 @@ import com.songoda.ultimateclaims.UltimateClaims;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Settings {
@@ -73,7 +74,7 @@ public class Settings {
             "The maximum amount of members a claim can have.");
 
     public static final ConfigSetting DISABLED_WORLDS = new ConfigSetting(config, "Main.Disabled Worlds",
-            Arrays.asList("disabled_world"), "The worlds that claims are disabled in.");
+            List.of("disabled_world"), "The worlds that claims are disabled in.");
 
     public static final ConfigSetting COST_EQUATION = new ConfigSetting(config, "Main.Cost Equation",
             "DEFAULT", "The equation used for calculation the cost of a claim.",

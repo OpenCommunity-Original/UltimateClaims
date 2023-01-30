@@ -20,11 +20,10 @@ public class CommandShow extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.RED + "Command must be called as a player");
             return ReturnType.FAILURE;
         }
-        Player player = (Player) sender;
 
         if (args.length != 0)
             return ReturnType.SYNTAX_ERROR;

@@ -59,8 +59,7 @@ public class CommandHome extends AbstractCommand {
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) return null;
-        Player player = ((Player) sender);
+        if (!(sender instanceof Player player)) return null;
         if (args.length == 1) {
             boolean bypass = sender.hasPermission("ultimateclaims.bypass.home");
             List<String> claims = new ArrayList<>();

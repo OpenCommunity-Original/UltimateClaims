@@ -102,11 +102,9 @@ public class ClaimedChunk {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ClaimedChunk) {
-            ClaimedChunk other = (ClaimedChunk) o;
+        if (o instanceof ClaimedChunk other) {
             return this.world.equals(other.world) && this.x == other.x && this.z == other.z;
-        } else if (o instanceof Chunk) {
-            Chunk other = (Chunk) o;
+        } else if (o instanceof Chunk other) {
             return this.world.equals(other.getWorld().getName()) && this.x == other.getX() && this.z == other.getZ();
         } else return false;
     }

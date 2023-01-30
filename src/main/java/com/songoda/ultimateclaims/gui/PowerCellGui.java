@@ -26,7 +26,7 @@ public class PowerCellGui extends CustomizableGui {
     private final UltimateClaims plugin;
     private final PowerCell powercell;
     private final Claim claim;
-    private boolean fullPerms;
+    private final boolean fullPerms;
     private long lastUpdate = 0;
 
     public PowerCellGui(UltimateClaims plugin, Claim claim, Player player) {
@@ -183,14 +183,14 @@ public class PowerCellGui extends CustomizableGui {
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("time", 0, 4,
                     plugin.getLocale().getMessage("interface.powercell.totaltitle")
-                            .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage(),
+                            .processPlaceholder("time", TimeUtils.makeReadable(powercell.getTotalPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString());
 
         // Display the item amount
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("item", 0, 6,
                     plugin.getLocale().getMessage("interface.powercell.valuablestitle")
-                            .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
+                            .processPlaceholder("time", TimeUtils.makeReadable(powercell.getItemPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString());
 
         // buttons at the bottom of the screen

@@ -32,7 +32,7 @@ public class CommandLeave extends AbstractCommand {
         String claimStr = String.join(" ", args);
 
         Optional<Claim> oClaim = plugin.getClaimManager().getRegisteredClaims().stream()
-                .filter(c -> c.getName().toLowerCase().equals(claimStr.toLowerCase())
+                .filter(c -> c.getName().equalsIgnoreCase(claimStr)
                         && c.getMember(player) != null).findFirst();
 
         if (!oClaim.isPresent()) {
@@ -71,8 +71,7 @@ public class CommandLeave extends AbstractCommand {
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) return null;
-        Player player = ((Player) sender);
+        if (!(sender instanceof Player player)) return null;
         if (args.length == 1) {
             List<String> claims = new ArrayList<>();
             for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {

@@ -39,7 +39,7 @@ public class InviteTask extends BukkitRunnable {
             return;
 
         final long now = System.currentTimeMillis(),
-                timeout = Settings.INVITE_TIMEOUT.getInt() * 1000;
+                timeout = Settings.INVITE_TIMEOUT.getInt() * 1000L;
 
         // clean up expired invites
         for (Invite invite : new ArrayList<>(waitingInventations)) {

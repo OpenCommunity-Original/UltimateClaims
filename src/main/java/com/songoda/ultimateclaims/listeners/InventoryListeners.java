@@ -28,14 +28,11 @@ public class InventoryListeners implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        if (!(event.getPlayer() instanceof Player)) return;
+        if (!(event.getPlayer() instanceof Player player)) return;
 
         ClaimManager claimManager = plugin.getClaimManager();
-        Player player = (Player) event.getPlayer();
 
-        if (!(event.getInventory().getHolder() instanceof Chest)) return;
-
-        Chest chest = (Chest) event.getInventory().getHolder();
+        if (!(event.getInventory().getHolder() instanceof Chest chest)) return;
 
         if (!claimManager.hasClaim(player)
                 || chest.getLocation() == null) return;
