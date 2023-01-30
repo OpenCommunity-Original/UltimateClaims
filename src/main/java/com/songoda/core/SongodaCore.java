@@ -5,9 +5,6 @@ import com.songoda.core.compatibility.ClientVersion;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.core.LocaleModule;
 import com.songoda.core.core.PluginInfo;
-import com.songoda.core.core.PluginInfoModule;
-import com.songoda.core.core.SongodaCoreCommand;
-import com.songoda.core.core.SongodaCoreDiagCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -171,8 +168,6 @@ public class SongodaCore {
 
     private void init() {
         shadingListener = new ShadedEventListener();
-        commandManager.registerCommandDynamically(new SongodaCoreCommand())
-                .addSubCommand(new SongodaCoreDiagCommand());
         Bukkit.getPluginManager().registerEvents(loginListener, piggybackedPlugin);
         Bukkit.getPluginManager().registerEvents(shadingListener, piggybackedPlugin);
 
@@ -216,50 +211,7 @@ public class SongodaCore {
         // don't forget to check for language pack updates ;)
         info.addModule(new LocaleModule());
         registeredPlugins.add(info);
-        tasks.add(Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> update(info), 60L));
     }
-
-    private void update(PluginInfo plugin) {
-        try {
-            URL url = new URL("https://update.songoda.com/index.php?plugin=" + plugin.getSongodaId()
-                    + "&version=" + plugin.getJavaPlugin().getDescription().getVersion()
-                    + "&updaterVersion=" + updaterVersion);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            urlConnection.setRequestProperty("Accept", "*/*");
-            urlConnection.setConnectTimeout(5000);
-            InputStream is = urlConnection.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-
-            int numCharsRead;
-            char[] charArray = new char[1024];
-            StringBuilder sb = new StringBuilder();
-            while ((numCharsRead = isr.read(charArray)) > 0) {
-                sb.append(charArray, 0, numCharsRead);
-            }
-            urlConnection.disconnect();
-
-            String jsonString = sb.toString();
-            JSONObject json = (JSONObject) new JSONParser().parse(jsonString);
-
-            plugin.setLatestVersion((String) json.get("latestVersion"));
-            plugin.setMarketplaceLink((String) json.get("link"));
-            plugin.setNotification((String) json.get("notification"));
-            plugin.setChangeLog((String) json.get("changeLog"));
-
-            plugin.setJson(json);
-
-            for (PluginInfoModule module : plugin.getModules()) {
-                module.run(plugin);
-            }
-        } catch (IOException ex) {
-            final String er = ex.getMessage();
-            logger.log(Level.FINE, "Connection with Songoda servers failed: " + (er.contains("URL") ? er.substring(0, er.indexOf("URL") + 3) : er));
-        } catch (ParseException ex) {
-            logger.log(Level.FINE, "Failed to parse json for " + plugin.getJavaPlugin().getName() + " update check");
-        }
-    }
-
     public static List<PluginInfo> getPlugins() {
         return new ArrayList<>(registeredPlugins);
     }
