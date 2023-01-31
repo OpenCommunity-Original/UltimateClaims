@@ -94,7 +94,8 @@ public class BlockListeners implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    // TODO fix fire spread not in claims
+    //@EventHandler(ignoreCancelled = true)
     public void ignite(BlockIgniteEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
 
@@ -104,7 +105,7 @@ public class BlockListeners implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    //@EventHandler(ignoreCancelled = true)
     public void ignite(BlockBurnEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
 

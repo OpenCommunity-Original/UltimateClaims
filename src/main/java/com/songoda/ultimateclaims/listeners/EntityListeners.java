@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.listeners;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
@@ -294,6 +295,9 @@ public class EntityListeners implements Listener {
                     plugin.getLocale().getMessage("event.claim.exit")
                             .processPlaceholder("claim", claim.getName())
                             .sendTitle(player);
+                    if (!player.hasPermission("ultimateclaims.offsounds")) {
+                        player.playSound(player.getLocation(), org.bukkit.Sound.valueOf("BLOCK_BELL_RESONATE"), 0.5F, 1.0F);
+                    }
                 }
             }
         }
@@ -335,6 +339,9 @@ public class EntityListeners implements Listener {
                     plugin.getLocale().getMessage("event.claim.enter")
                             .processPlaceholder("claim", claim.getName())
                             .sendTitle(player);
+                    if (!player.hasPermission("ultimateclaims.offsounds")) {
+                        player.playSound(player.getLocation(), org.bukkit.Sound.valueOf("UI_TOAST_CHALLENGE_COMPLETE"), 0.5F, 1.0F);
+                    }
                 }
             }
         }

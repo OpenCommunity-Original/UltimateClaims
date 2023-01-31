@@ -174,8 +174,8 @@ event:
   invite:
     expired: '&cYour invitation has expired...'
   claim:
-    enter: '&7You have entered &6%claim%&7.'
-    exit: '&7You have exited &6%claim%&7.'
+    enter: '&6%claim%'
+    exit: '&7Leaving &6%claim%'
     locked: '&cA magical force prevents you from entering...'
   powercell:
     success: '&7You created a powercell. Fill it up with fuel to keep your land claimed.'
