@@ -27,6 +27,7 @@ import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.tasks.*;
+import com.songoda.ultimateclaims.util.LocaleAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.PluginManager;
@@ -73,6 +74,11 @@ public class UltimateClaims extends SongodaPlugin {
         // Setup Config
         Settings.setupConfig();
         this.setLocale(Settings.LANGUGE_MODE.getString(), false);
+
+        // Setup Locale
+        LocaleAPI localeAPI = new LocaleAPI();
+        Bukkit.getPluginManager().registerEvents(localeAPI, this);
+        localeAPI.loadSupportedLocales(this);
 
         // Set Economy & Hologram preference
         EconomyManager.getManager().setPreferredHook(Settings.ECONOMY.getString());

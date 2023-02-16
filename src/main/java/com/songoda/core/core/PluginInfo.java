@@ -2,7 +2,7 @@ package com.songoda.core.core;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -56,85 +56,85 @@ public class SettingsGui extends CustomizableGui {
 
         this.setItem(1, 4, AIR);
         if (hostilemobspawning = player.hasPermission("ultimateclaims.toggle.hostilemobspawning")) {
-            this.setButton("hostilemobspawning", 1, 1, CompatibleMaterial.ZOMBIE_SPAWN_EGG.getItem(), (event) -> toggle(ClaimSetting.HOSTILE_MOB_SPAWNING));
+            this.setButton("hostilemobspawning", 1, 1, CompatibleMaterial.ZOMBIE_SPAWN_EGG.getItem(), (event) -> toggle(ClaimSetting.HOSTILE_MOB_SPAWNING, player));
         }
         if (firespread = player.hasPermission("ultimateclaims.toggle.firespread")) {
-            this.setButton("flintandsteal", 1, 2, CompatibleMaterial.FLINT_AND_STEEL.getItem(), (event) -> toggle(ClaimSetting.FIRE_SPREAD));
+            this.setButton("flintandsteal", 1, 2, CompatibleMaterial.FLINT_AND_STEEL.getItem(), (event) -> toggle(ClaimSetting.FIRE_SPREAD, player));
         }
         if (pvp = player.hasPermission("ultimateclaims.toggle.pvp")) {
-            this.setButton("pvp", 1, 3, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> toggle(ClaimSetting.PVP));
+            this.setButton("pvp", 1, 3, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> toggle(ClaimSetting.PVP, player));
         }
         if (mobgriefing = player.hasPermission("ultimateclaims.toggle.mobgriefing")) {
-            this.setButton("mobgriefing", 1, 4, CompatibleMaterial.GUNPOWDER.getItem(), (event) -> toggle(ClaimSetting.MOB_GRIEFING));
+            this.setButton("mobgriefing", 1, 4, CompatibleMaterial.GUNPOWDER.getItem(), (event) -> toggle(ClaimSetting.MOB_GRIEFING, player));
         }
         if (leafdecay = player.hasPermission("ultimateclaims.toggle.leafdecay")) {
-            this.setButton("leafdecay", 1, 5, CompatibleMaterial.OAK_LEAVES.getItem(), (event) -> toggle(ClaimSetting.LEAF_DECAY));
+            this.setButton("leafdecay", 1, 5, CompatibleMaterial.OAK_LEAVES.getItem(), (event) -> toggle(ClaimSetting.LEAF_DECAY, player));
         }
         if (tnt = player.hasPermission("ultimateclaims.toggle.tnt")) {
-            this.setButton("tnt", 1, 6, CompatibleMaterial.TNT.getItem(), (event) -> toggle(ClaimSetting.TNT));
+            this.setButton("tnt", 1, 6, CompatibleMaterial.TNT.getItem(), (event) -> toggle(ClaimSetting.TNT, player));
         }
         if (fly = player.hasPermission("ultimateclaims.toggle.fly")) {
-            this.setButton("tnt", 1, 7, CompatibleMaterial.ELYTRA.getItem(), (event) -> toggle(ClaimSetting.FLY));
+            this.setButton("tnt", 1, 7, CompatibleMaterial.ELYTRA.getItem(), (event) -> toggle(ClaimSetting.FLY, player));
         }
 
-        refreshDisplay();
+        refreshDisplay(player);
     }
 
-    private void refreshDisplay() {
+    private void refreshDisplay(Player player) {
         if (hostilemobspawning) {
             this.updateItem("hostilemobspawning", 1, 1,
                     plugin.getLocale().getMessage("interface.settings.hostilemobspawningtitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.HOSTILE_MOB_SPAWNING))
+                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.HOSTILE_MOB_SPAWNING, player))
                             .getMessage().split("\\|"));
         }
         if (firespread) {
             this.updateItem("flintandsteal", 1, 2,
                     plugin.getLocale().getMessage("interface.settings.firespreadtitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.FIRE_SPREAD))
+                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.FIRE_SPREAD, player))
                             .getMessage().split("\\|"));
         }
         if (pvp) {
             this.updateItem("pvp", 1, 3,
                     plugin.getLocale().getMessage("interface.settings.pvptitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.PVP))
+                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.PVP, player))
                             .getMessage().split("\\|"));
         }
         if (mobgriefing) {
             this.updateItem("mobgriefing", 1, 4,
                     plugin.getLocale().getMessage("interface.settings.mobgriefingtitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.MOB_GRIEFING))
+                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.MOB_GRIEFING, player))
                             .getMessage().split("\\|"));
         }
         if (leafdecay) {
             this.updateItem("leafdecay", 1, 5,
                     plugin.getLocale().getMessage("interface.settings.leafdecaytitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.LEAF_DECAY))
+                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.LEAF_DECAY, player))
                             .getMessage().split("\\|"));
         }
         if (tnt) {
             this.updateItem("tnt", 1, 6,
                     plugin.getLocale().getMessage("interface.settings.tnttitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.TNT))
+                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.TNT, player))
                             .getMessage().split("\\|"));
         }
         if (fly) {
             this.updateItem("tnt", 1, 7,
                     plugin.getLocale().getMessage("interface.settings.flytitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.FLY))
+                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.FLY, player))
                             .getMessage().split("\\|"));
         }
     }
 
-    private void toggle(ClaimSetting setting) {
+    private void toggle(ClaimSetting setting, Player player) {
         claim.getClaimSettings().setEnabled(setting, !claim.getClaimSettings().isEnabled(setting));
         plugin.getDataManager().updateSettings(claim, claim.getClaimSettings());
-        refreshDisplay();
+        refreshDisplay(player);
     }
 }
