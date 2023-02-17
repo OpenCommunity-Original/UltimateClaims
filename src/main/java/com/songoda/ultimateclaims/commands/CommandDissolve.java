@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandDissolve extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -23,16 +25,14 @@ public class CommandDissolve extends AbstractCommand {
         Player player = (Player) sender;
 
         if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noclaim");
             return ReturnType.FAILURE;
         }
 
         Claim claim = plugin.getClaimManager().getClaim(player);
 
         claim.destroy(ClaimDeleteReason.PLAYER);
-        plugin.getLocale().getMessage("general.claim.dissolve")
-                .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(player);
+        sendPrefixedMessage(player, "general.claim.dissolve", "%claim%", claim.getName());
 
         return ReturnType.SUCCESS;
     }

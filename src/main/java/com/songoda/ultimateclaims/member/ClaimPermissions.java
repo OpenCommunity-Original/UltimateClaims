@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.member;
 
-import com.songoda.core.locale.Locale;
-import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.utils.LocaleAPI;
+import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,8 +22,7 @@ public class ClaimPermissions {
         return permissions.contains(perm);
     }
 
-    public String getStatus(ClaimPerm perm) {
-        Locale locale = UltimateClaims.getInstance().getLocale();
-        return hasPermission(perm) ? locale.getMessage("general.status.true").getMessage() : locale.getMessage("general.status.false").getMessage();
+    public String getStatus(ClaimPerm perm, Player player) {
+        return hasPermission(perm) ? LocaleAPI.getMessage(player,"general.status.true") : LocaleAPI.getMessage(player,"general.status.false");
     }
 }

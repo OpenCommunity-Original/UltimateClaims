@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandLock extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -25,22 +27,22 @@ public class CommandLock extends AbstractCommand {
         Player player = (Player) sender;
 
         if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noclaim");
             return ReturnType.FAILURE;
         }
 
         Claim claim = plugin.getClaimManager().getClaim(player);
 
         if (!claim.isLocked()) {
-            plugin.getLocale().getMessage("command.lock.locked")
-                    .sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.lock.locked")
+            ;
             for (ClaimMember member : claim.getMembers().stream().filter(m -> m.getRole() == ClaimRole.VISITOR)
                     .collect(Collectors.toList())) {
                 member.eject(null);
             }
         } else
-            plugin.getLocale().getMessage("command.lock.unlocked")
-                    .sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.lock.unlocked")
+                    ;
 
         claim.setLocked(!claim.isLocked());
 

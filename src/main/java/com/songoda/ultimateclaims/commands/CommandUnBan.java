@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandUnBan extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -31,7 +33,7 @@ public class CommandUnBan extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
 
         if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noclaim");
             return ReturnType.FAILURE;
         }
 
@@ -40,10 +42,10 @@ public class CommandUnBan extends AbstractCommand {
         OfflinePlayer toBan = Bukkit.getOfflinePlayer(args[0]);
 
         if (toBan == null || !(toBan.hasPlayedBefore() || toBan.isOnline())) {
-            plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noplayer");
             return ReturnType.FAILURE;
         } else if (player.getUniqueId().equals(toBan.getUniqueId())) {
-            plugin.getLocale().getMessage("command.unban.notself").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.unban.notself");
             return ReturnType.FAILURE;
         }
 
@@ -54,14 +56,9 @@ public class CommandUnBan extends AbstractCommand {
         }
 
         if (toBan.isOnline())
-            plugin.getLocale().getMessage("command.unban.unbanned")
-                    .processPlaceholder("claim", claim.getName())
-                    .sendPrefixedMessage(toBan.getPlayer());
+            sendPrefixedMessage(toBan.getPlayer(), "command.unban.unbanned", "%claim%", claim.getName());
 
-        plugin.getLocale().getMessage("command.unban.unban")
-                .processPlaceholder("name", toBan.getName())
-                .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(player);
+        sendPrefixedMessage(sender, "command.unban.unban", "%name%", toBan.getName(), "%claim%", claim.getName());
 
         claim.unBanPlayer(toBan.getUniqueId());
         plugin.getDataManager().deleteBan(claim, toBan.getUniqueId());

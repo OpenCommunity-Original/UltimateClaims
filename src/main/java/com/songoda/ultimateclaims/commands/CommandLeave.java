@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandLeave extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -36,12 +38,12 @@ public class CommandLeave extends AbstractCommand {
                         && c.getMember(player) != null).findFirst();
 
         if (!oClaim.isPresent()) {
-            plugin.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(player, "command.general.notapartclaim");
             return ReturnType.FAILURE;
         }
 
         if (player.getUniqueId().equals((oClaim.get()).getOwner().getUniqueId())) {
-            plugin.getLocale().getMessage("command.leave.owner").sendPrefixedMessage(sender);
+            sendPrefixedMessage(player, "command.leave.owner");
             return ReturnType.FAILURE;
         }
 
@@ -59,9 +61,7 @@ public class CommandLeave extends AbstractCommand {
 
         claim.removeMember(player);
 
-        plugin.getLocale().getMessage("command.leave.youleft")
-                .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(player);
+        sendPrefixedMessage(sender, "command.leave.youleft", "%claim%", claim.getName());
 
         for (ClaimMember member : claim.getOwnerAndMembers())
             this.notify(member);
@@ -86,10 +86,7 @@ public class CommandLeave extends AbstractCommand {
     private void notify(ClaimMember member) {
         Player player = Bukkit.getPlayer(member.getUniqueId());
         if (player != null)
-            plugin.getLocale().getMessage("command.leave.left")
-                    .processPlaceholder("player", player.getName())
-                    .processPlaceholder("claim", member.getClaim().getName())
-                    .sendPrefixedMessage(player);
+            sendPrefixedMessage(player, "command.leave.left", "%player%", player.getName(), "%claim%", member.getClaim().getName());
     }
 
     @Override

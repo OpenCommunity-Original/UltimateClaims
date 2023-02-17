@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandKick extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -31,7 +33,7 @@ public class CommandKick extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
 
         if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noclaim");
             return ReturnType.FAILURE;
         }
 
@@ -46,10 +48,10 @@ public class CommandKick extends AbstractCommand {
             toKick = Bukkit.getOfflinePlayer(args[0]);
 
             if (toKick == null || !(toKick.hasPlayedBefore() || toKick.isOnline())) {
-                plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+                sendPrefixedMessage(sender, "command.general.noplayer");
                 return ReturnType.FAILURE;
             } else if (player.getUniqueId().equals(toKick.getUniqueId())) {
-                plugin.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
+                sendPrefixedMessage(sender, "command.kick.notself");
                 return ReturnType.FAILURE;
             }
 
@@ -58,7 +60,7 @@ public class CommandKick extends AbstractCommand {
         }
 
         if (target == null || target.getRole() != ClaimRole.MEMBER) {
-            plugin.getLocale().getMessage("command.general.notinclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.notinclaim");
             return ReturnType.FAILURE;
         }
 
@@ -69,14 +71,9 @@ public class CommandKick extends AbstractCommand {
         }
 
         if (toKick.isOnline())
-            plugin.getLocale().getMessage("command.kick.kicked")
-                    .processPlaceholder("claim", claim.getName())
-                    .sendPrefixedMessage(toKick.getPlayer());
+            sendPrefixedMessage(toKick.getPlayer(), "command.kick.kicked", "%claim%", claim.getName());
 
-        plugin.getLocale().getMessage("command.kick.kick")
-                .processPlaceholder("name", toKick.getName())
-                .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(player);
+        sendPrefixedMessage(sender, "command.kick.kick", "%name%", toKick.getName(), "%claim%", claim.getName());
 
         // and YEET!
         target.setRole(ClaimRole.VISITOR);

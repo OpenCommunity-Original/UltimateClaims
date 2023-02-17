@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandRemoveClaim extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -28,7 +30,7 @@ public class CommandRemoveClaim extends AbstractCommand {
         Claim claim = plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.notclaimed");
             return ReturnType.FAILURE;
         }
 
@@ -38,18 +40,14 @@ public class CommandRemoveClaim extends AbstractCommand {
         if (offlineOwner.isOnline()) {
             Player owner = offlineOwner.getPlayer();
 
-            plugin.getLocale().getMessage("general.claim.dissolve")
-                    .processPlaceholder("claim", claim.getName())
-                    .sendPrefixedMessage(owner);
+            sendPrefixedMessage(owner, "general.claim.dissolve", "%claim%", claim.getName());
         }
 
         // Remove the whole claim
         claim.destroy(ClaimDeleteReason.ADMIN);
 
         // Send a message to player
-        plugin.getLocale().getMessage("command.removeclaim.success")
-                .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(player);
+        sendPrefixedMessage(sender, "command.removeclaim.success", "%claim%", claim.getName());
 
         return ReturnType.SUCCESS;
     }

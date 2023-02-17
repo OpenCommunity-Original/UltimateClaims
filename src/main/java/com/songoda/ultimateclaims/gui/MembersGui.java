@@ -13,6 +13,7 @@ import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.text.SimpleDateFormat;
@@ -26,7 +27,7 @@ public class MembersGui extends CustomizableGui {
     private ClaimRole displayedRole = ClaimRole.OWNER;
     private SortType sortType = SortType.DEFAULT;
 
-    public MembersGui(UltimateClaims plugin, Claim claim) {
+    public MembersGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "members");
         this.claim = claim;
         this.plugin = plugin;
@@ -63,12 +64,12 @@ public class MembersGui extends CustomizableGui {
         this.setButton("visitor_settings", 5, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,
                         plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
                         plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
-                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR)));
+                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR, player)));
 
         this.setButton("member_settings", 5, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
                         plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
                         plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
-                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER)));
+                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER, player)));
 
         // enable page events
         setNextPage(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.interface.next").getMessage()));

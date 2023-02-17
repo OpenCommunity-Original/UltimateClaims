@@ -1,6 +1,10 @@
-package com.songoda.ultimateclaims.util;
+package com.songoda.ultimateclaims.utils;
 
+import com.songoda.core.chat.ChatMessage;
+import com.songoda.core.locale.Message;
+import com.songoda.core.utils.TextUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +19,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -227,4 +232,30 @@ public class LocaleAPI implements Listener {
             setPlayerLocale(player, DEFAULT_LOCALE);
         }
     }
+
+    /**
+     * Sends a localized message with a prefix to a command sender.
+     *
+     * @param sender       The command sender to send the message to.
+     * @param messageKey   The key of the message to send.
+     * @param placeholders The placeholders to replace in the message.
+     */
+    public static void sendPrefixedMessage(CommandSender sender, String messageKey, String... placeholders) {
+        Player player = (Player) sender;
+        String message = LocaleAPI.getMessage(player, messageKey).toString();
+        String prefix = LocaleAPI.getMessage(player, "general.nametag.prefix");
+
+        if (sender instanceof Player) {
+            for (int i = 0; i < placeholders.length; i += 2) {
+                message = message.replace(placeholders[i], placeholders[i+1]);
+            }
+            player.sendMessage(TextUtils.formatText((prefix == null ? "" : prefix + " ") + message));
+        } else {
+            for (int i = 0; i < placeholders.length; i += 2) {
+                message = message.replace(placeholders[i], placeholders[i+1]);
+            }
+            sender.sendMessage(TextUtils.formatText(message));
+        }
+    }
+
 }

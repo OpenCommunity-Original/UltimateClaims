@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandShow extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -29,9 +31,9 @@ public class CommandShow extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
 
         if (VisualizeTask.togglePlayer(player))
-            plugin.getLocale().getMessage("command.show.start").sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.show.start");
         else
-            plugin.getLocale().getMessage("command.show.stop").sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.show.stop");
 
         return ReturnType.SUCCESS;
     }

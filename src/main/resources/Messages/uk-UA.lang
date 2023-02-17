@@ -2,7 +2,7 @@
 
 general:
   nametag:
-    prefix: '  &6&lClaims&f&8'
+    prefix: '  &6&lПоселення&f&8'
   word:
     none: none
   status:
@@ -61,15 +61,15 @@ command:
     accepted: "The leader of the claim is overjoyed, as another member has joined the fold. &6%name% &7accepted your invitation."
     maxed: "The claim is filled to the brim, and there's no room for one more. &7This claim is at their max capacity."
   claim:
-    success: "&7You lay down your flag and mark this land as yours. &7You've claimed this chunk for your claim."
-    newregion: "&7You forge a new path and establish a new home. &aYou've created a new region successfully."
-    maxregions: "&7You come across a sprawling landscape, but realize there's no more room for expansion. &cYou cannot create anymore regions, there's just no space left."
-    nocell: "&7You try to claim more land, but realize you need to power up first. &cYou need to create a powercell before you can claim more land."
-    noregion: "&7You try to claim a protected area, but it's just not possible. &cYou cannot claim a protected region!"
-    info: "&7A voice echoes in your mind, warning you of the dangers ahead. &cYou have &4%time% &cto create a powercell before your claim is dissolved. &7To create one, use &6/c recipe&7 to find the recipe, then construct it in the center of a single chest within your claim."
-    nottouching: "&7You try to claim distant lands, but they're just too far away. &cYou can only claim chunks that are touching each other."
-    toomany: "&7You try to claim too much land, but realize it's just not feasible. &cYou can only claim &4%amount% &cchunks."
-    disabledworld: "&7You try to do something, but realize it's just not possible here. &cYou cannot do that in this world."
+    success: "&7Ви закладаєте свій прапор і відзначаєте цю землю як свою. &7Ви заявили право на цей чанк."
+    newregion: "&7Ви відкриваєте новий шлях і засновуєте новий дім. &aВи успішно створили нову область."
+    maxregions: "&7Ви дістаєтеся до простору, але розумієте, що більше немає місця для розширення. &cВи не можете створювати більше областей, просто не залишилося місця."
+    nocell: "&7Ви намагаєтеся заявити на своє право більше землі, але розумієте, що потрібно спочатку набрати потужності. &cВам потрібно створити елемент живлення, перш ніж ви зможете заявити на своє право більше землі."
+    noregion: "&7Ви намагаєтеся заявити право на охоронювану територію, але це просто неможливо. &cВи не можете заявити право на охоронювану область!"
+    info: "&7Голос відбивається в вашому розумі, попереджаючи вас про небезпеки, що чекають на вас в майбутньому. &cУ вас є &4%time% &c, щоб створити елемент живлення, перш ніж ваша заява на право власності буде скасована. &7Щоб створити елемент живлення, скористайтеся командою &6/c recipe&7, щоб знайти рецепт, а потім побудуйте його в центрі одного сундука в межах вашої заяви на право власності."
+    nottouching: "&7Ви намагаєтеся заявити право на віддалені землі, але вони занадто далеко. &cВи можете заявляти право лише на чанки, які торкаються один одного."
+    toomany: "&7Ви намагаєтеся заявити право на занадто багато землі, але розумієте, що це просто неможливо. &cВи можете заявити право тільки на &4%amount% &cчанків."
+    disabledworld: "&7Ви намагаєтеся зробити щось, але розумієте, що це просто неможливо в цьому світі. &cВи не можете зробити це в цьому світі."
   unclaim:
     success: "&7You raise the flag, letting the land go free once again. &7You unclaimed this chunk."
     powercell: "&7You try to unclaim, but the power that fuels your home won't let you. &cYou cannot unclaim the chunk holding your powercell. Please move it first."
@@ -145,7 +145,7 @@ interface:
   settings:
     title: Settings
     hostilemobspawningtitle: '&6&lHostile Mob Spawning'
-    firespreadtitle: '&6&lFire Spread'
+    firespreadtitle: '&6&lПоширення вогню'
     pvptitle: '&6&lPVP'
     mobgriefingtitle: '&6&lMob Griefing'
     leafdecaytitle: '&6&lLeaf Decay'

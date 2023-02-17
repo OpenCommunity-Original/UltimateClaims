@@ -21,7 +21,7 @@ public class CommandSetSpawn extends AbstractCommand {
         Player player = (Player) sender;
         plugin.getPluginSettings().setSpawnPoint(player.getLocation());
         plugin.getDataManager().createOrUpdatePluginSettings(plugin.getPluginSettings());
-        plugin.getLocale().newMessage("&aSpawn point set!").sendPrefixedMessage(player);
+        plugin.getLocale().newMessage("&aSpawn point set!");
         return ReturnType.SUCCESS;
     }
 

@@ -2,7 +2,6 @@ package com.songoda.ultimateclaims.commands;
 
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.hooks.WorldGuardHook;
-import com.songoda.core.locale.Message;
 import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimChunkClaimEvent;
@@ -22,6 +21,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandClaim extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -36,12 +37,12 @@ public class CommandClaim extends AbstractCommand {
         Player player = (Player) sender;
 
         if (Settings.DISABLED_WORLDS.getStringList().contains(player.getWorld().getName())) {
-            plugin.getLocale().getMessage("command.claim.disabledworld").sendPrefixedMessage(player);
+            sendPrefixedMessage(player, "command.claim.disabledworld");
             return ReturnType.FAILURE;
         }
 
         if (plugin.getClaimManager().hasClaim(player.getLocation().getChunk())) {
-            plugin.getLocale().getMessage("command.general.claimed").sendPrefixedMessage(player);
+            sendPrefixedMessage(player, "command.general.claimed");
             return ReturnType.FAILURE;
         }
 
@@ -51,7 +52,7 @@ public class CommandClaim extends AbstractCommand {
         // firstly, can we even claim this chunk?
         Boolean flag;
         if ((flag = WorldGuardHook.getBooleanFlag(chunk, "allow-claims")) != null && !flag) {
-            plugin.getLocale().getMessage("command.claim.noregion").sendPrefixedMessage(player);
+            sendPrefixedMessage(player, "command.claim.noregion");
             return ReturnType.FAILURE;
         }
 
@@ -59,23 +60,21 @@ public class CommandClaim extends AbstractCommand {
             claim = plugin.getClaimManager().getClaim(player);
 
             if (!claim.getPowerCell().hasLocation()) {
-                plugin.getLocale().getMessage("command.claim.nocell").sendPrefixedMessage(player);
+                sendPrefixedMessage(player, "command.claim.nocell");
                 return ReturnType.FAILURE;
             }
 
             ClaimedRegion region = claim.getPotentialRegion(chunk);
 
             if (Settings.CHUNKS_MUST_TOUCH.getBoolean() && region == null) {
-                plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
+                sendPrefixedMessage(player, "command.claim.nottouching");
                 return ReturnType.FAILURE;
             }
 
             int maxClaimable = claim.getMaxClaimSize(player);
 
             if (claim.getClaimSize() >= maxClaimable) {
-                plugin.getLocale().getMessage("command.claim.toomany")
-                        .processPlaceholder("amount", maxClaimable)
-                        .sendPrefixedMessage(player);
+                sendPrefixedMessage(player, "command.claim.toomany", "%amount%", String.valueOf(maxClaimable));
                 return ReturnType.FAILURE;
             }
 
@@ -88,7 +87,7 @@ public class CommandClaim extends AbstractCommand {
             boolean newRegion = claim.isNewRegion(chunk);
 
             if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
-                plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
+                sendPrefixedMessage(sender, "command.claim.maxregions");
                 return ReturnType.FAILURE;
             }
 
@@ -122,10 +121,7 @@ public class CommandClaim extends AbstractCommand {
                 plugin.getDynmapManager().refresh();
 
             plugin.getDataManager().createClaim(claim);
-
-            plugin.getLocale().getMessage("command.claim.info")
-                    .processPlaceholder("time", TimeUtils.makeReadable(Settings.STARTING_POWER.getLong() * 60 * 1000))
-                    .sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.claim.info", "%time%", TimeUtils.makeReadable(Settings.STARTING_POWER.getLong() * 60 * 1000));
         }
 
         // we've just claimed the chunk we're in, so we've "moved" into the claim
@@ -149,8 +145,7 @@ public class CommandClaim extends AbstractCommand {
                 }
             }
         }
-
-        plugin.getLocale().getMessage("command.claim.success").sendPrefixedMessage(sender);
+        sendPrefixedMessage(sender, "command.claim.success");
         return ReturnType.SUCCESS;
     }
 

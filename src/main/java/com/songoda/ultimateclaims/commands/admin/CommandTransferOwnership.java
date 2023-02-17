@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandTransferOwnership extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -30,7 +32,7 @@ public class CommandTransferOwnership extends AbstractCommand {
         OfflinePlayer newOwner = Bukkit.getPlayer(args[0]);
 
         if (newOwner == null || !newOwner.isOnline()) {
-            plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noplayer");
             return ReturnType.FAILURE;
         }
 
@@ -38,18 +40,15 @@ public class CommandTransferOwnership extends AbstractCommand {
         Claim claim = plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.notclaimed");
             return ReturnType.FAILURE;
         }
 
         if (claim.transferOwnership(newOwner))
-            plugin.getLocale().getMessage("command.transferownership.success")
-                    .processPlaceholder("claim", claim.getName())
-                    .sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.transferownership.success", "%claim%", claim.getName());
+
         else
-            plugin.getLocale().getMessage("command.transferownership.failed")
-                    .processPlaceholder("claim", claim.getName())
-                    .sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.transferownership.failed", "%claim%", claim.getName());
 
         return ReturnType.SUCCESS;
     }

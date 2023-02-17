@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandName extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -29,7 +31,7 @@ public class CommandName extends AbstractCommand {
         Claim claim = plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.notclaimed");
             return ReturnType.FAILURE;
         }
 
@@ -39,9 +41,7 @@ public class CommandName extends AbstractCommand {
 
         plugin.getDataManager().updateClaim(claim);
 
-        plugin.getLocale().getMessage("command.name.set")
-                .processPlaceholder("name", name)
-                .sendPrefixedMessage(sender);
+        sendPrefixedMessage(sender, "command.name.set", "%name%", name);
 
         return ReturnType.SUCCESS;
     }

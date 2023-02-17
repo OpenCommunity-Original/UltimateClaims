@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandUnClaim extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -34,19 +36,19 @@ public class CommandUnClaim extends AbstractCommand {
         Claim claim = plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.notclaimed");
             return ReturnType.FAILURE;
         }
 
         if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())) {
-            plugin.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.notyourclaim");
             return ReturnType.FAILURE;
         }
 
         if (claim.getPowerCell().hasLocation()) {
             PowerCell powerCell = claim.getPowerCell();
             if (powerCell.getLocation().getChunk() == chunk) {
-                plugin.getLocale().getMessage("command.unclaim.powercell").sendPrefixedMessage(sender);
+                sendPrefixedMessage(sender, "command.unclaim.powercell");
                 return ReturnType.FAILURE;
             }
         }
@@ -83,15 +85,13 @@ public class CommandUnClaim extends AbstractCommand {
             plugin.getDynmapManager().refresh();
 
         if (claim.getClaimSize() == 0) {
-            plugin.getLocale().getMessage("general.claim.dissolve")
-                    .processPlaceholder("claim", claim.getName())
-                    .sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "general.claim.dissolve", "%claim%", claim.getName());
 
             claim.destroy(ClaimDeleteReason.PLAYER);
         } else {
             plugin.getDataManager().deleteClaimedChunk(removedChunk);
 
-            plugin.getLocale().getMessage("command.unclaim.success").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.unclaim.success");
         }
 
         return ReturnType.SUCCESS;

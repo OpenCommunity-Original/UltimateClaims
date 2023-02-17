@@ -107,7 +107,7 @@ public class PowerCellGui extends CustomizableGui {
                             plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines()),
                     (event) -> {
                         closed();
-                        event.manager.showGUI(event.player, new MembersGui(plugin, claim));
+                        event.manager.showGUI(event.player, new MembersGui(plugin, claim, player));
                     });
 
         ClaimMember member = claim.getMember(player);

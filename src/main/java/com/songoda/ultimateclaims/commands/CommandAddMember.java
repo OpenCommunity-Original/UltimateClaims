@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandAddMember extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -31,7 +33,7 @@ public class CommandAddMember extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
 
         if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noclaim");
             return ReturnType.FAILURE;
         }
 
@@ -40,19 +42,19 @@ public class CommandAddMember extends AbstractCommand {
         OfflinePlayer toInvite = Bukkit.getOfflinePlayer(args[0]);
 
         if (!(toInvite.hasPlayedBefore() || toInvite.isOnline())) {
-            plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noplayer");
             return ReturnType.FAILURE;
         }
 
         if (player.getUniqueId().equals(toInvite.getUniqueId())) {
-            plugin.getLocale().getMessage("command.invite.notself").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.invite.notself");
             return ReturnType.FAILURE;
         }
 
         if (claim.getMembers().stream()
                 .filter(m -> m.getRole() == ClaimRole.MEMBER)
                 .anyMatch(m -> m.getUniqueId().equals(toInvite.getUniqueId()))) {
-            plugin.getLocale().getMessage("command.invite.already").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.invite.already");
             return ReturnType.FAILURE;
         }
 
@@ -66,13 +68,9 @@ public class CommandAddMember extends AbstractCommand {
         plugin.getDataManager().createMember(newMember);
 
         if (toInvite.isOnline())
-            plugin.getLocale().getMessage("command.addmember.added")
-                    .processPlaceholder("claim", claim.getName())
-                    .sendPrefixedMessage(toInvite.getPlayer());
+            sendPrefixedMessage(toInvite.getPlayer(), "command.addmember.added", "%claim%", claim.getName());
 
-        plugin.getLocale().getMessage("command.addmember.add")
-                .processPlaceholder("name", toInvite.getName())
-                .sendPrefixedMessage(player);
+        sendPrefixedMessage(player, "command.addmember.add", "%name%", toInvite.getName());
 
         return ReturnType.SUCCESS;
     }

@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandSetOwner extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -30,42 +32,38 @@ public class CommandSetOwner extends AbstractCommand {
         OfflinePlayer newOwner = Bukkit.getPlayer(args[0]);
 
         if (newOwner == null || !newOwner.isOnline()) {
-            plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noplayer");
             return ReturnType.FAILURE;
         }
 
         Claim claim = plugin.getClaimManager().getClaim(player);
 
         if (player.getUniqueId().equals(newOwner.getUniqueId())) {
-            plugin.getLocale().getMessage("command.setowner.notself").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.setowner.notself");
             return ReturnType.FAILURE;
         }
 
         if (!claim.getMembers().stream()
                 .filter(m -> m.getRole() == ClaimRole.MEMBER)
                 .anyMatch(m -> m.getUniqueId().equals(newOwner.getUniqueId()))) {
-            plugin.getLocale().getMessage("command.setowner.noinclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.setowner.noinclaim");
             return ReturnType.FAILURE;
         }
 
         if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noclaim");
             return ReturnType.FAILURE;
         }
 
         if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noclaim");
             return ReturnType.FAILURE;
         }
 
         if (claim.transferOwnership(newOwner))
-            plugin.getLocale().getMessage("command.setowner.success")
-                    .processPlaceholder("claim", claim.getName())
-                    .sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.setowner.success", "%claim%", claim.getName());
         else
-            plugin.getLocale().getMessage("command.setowner.failed")
-                    .processPlaceholder("claim", claim.getName())
-                    .sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.setowner.failed", "%claim%", claim.getName());
 
         return ReturnType.SUCCESS;
     }

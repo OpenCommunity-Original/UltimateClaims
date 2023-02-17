@@ -1,7 +1,6 @@
 package com.songoda.ultimateclaims.claim;
 
-import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.util.LocaleAPI;
+import com.songoda.ultimateclaims.utils.LocaleAPI;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;

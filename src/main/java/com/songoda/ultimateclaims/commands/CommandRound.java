@@ -22,6 +22,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandRound extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -37,7 +39,7 @@ public class CommandRound extends AbstractCommand {
         Player player = (Player) sender;
 
         if (Settings.DISABLED_WORLDS.getStringList().contains(player.getWorld().getName())) {
-            plugin.getLocale().getMessage("command.claim.disabledworld").sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.claim.disabledworld");
             return ReturnType.FAILURE;
         }
 
@@ -47,7 +49,7 @@ public class CommandRound extends AbstractCommand {
         // firstly, can we even claim this chunk?
         Boolean flag;
         if ((flag = WorldGuardHook.getBooleanFlag(centerChunk, "allow-claims")) != null && !flag) {
-            plugin.getLocale().getMessage("command.claim.noregion").sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.claim.noregion");
             return ReturnType.FAILURE;
         }
 
@@ -58,7 +60,7 @@ public class CommandRound extends AbstractCommand {
 
             // monument check
             if (!claim.getPowerCell().hasLocation()) {
-                plugin.getLocale().getMessage("command.claim.nocell").sendPrefixedMessage(player);
+                sendPrefixedMessage(sender, "command.claim.nocell");
                 return ReturnType.FAILURE;
             }
 
@@ -67,7 +69,7 @@ public class CommandRound extends AbstractCommand {
             // checking touch chunks nearby
             if (claim.getClaimSize() >= 2) {
                 if (Settings.CHUNKS_MUST_TOUCH.getBoolean() && region == null) {
-                    plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
+                    sendPrefixedMessage(sender, "command.claim.nottouching");
                     return ReturnType.FAILURE;
                 }
             }
@@ -76,9 +78,7 @@ public class CommandRound extends AbstractCommand {
 
             // check chunk limit
             if (claim.getClaimSize() >= maxClaimable) {
-                plugin.getLocale().getMessage("command.claim.toomany")
-                        .processPlaceholder("amount", maxClaimable)
-                        .sendPrefixedMessage(player);
+                sendPrefixedMessage(sender, "command.claim.toomany", "%amount%", Integer.toString(maxClaimable));
                 return ReturnType.FAILURE;
             }
 
@@ -92,8 +92,8 @@ public class CommandRound extends AbstractCommand {
 
             // value - number?
             if (!NumberUtils.isNumeric(radiuss)) {
-                plugin.getLocale().getMessage("command.claim.notanumber")
-                        .sendPrefixedMessage(player);
+                sendPrefixedMessage(sender, "command.claim.notanumber")
+                ;
                 return ReturnType.FAILURE;
             }
 
@@ -102,14 +102,14 @@ public class CommandRound extends AbstractCommand {
             // limit 1-10 for players and 1-30 for admins
             if (!player.hasPermission("ultimateclaims.administrator")) {
                 if ((radius < 1) || (radius > 10)) {
-                    plugin.getLocale().getMessage("command.claim.incorrectnumber")
-                            .sendPrefixedMessage(player);
+                    sendPrefixedMessage(sender, "command.claim.incorrectnumber")
+                    ;
                     return ReturnType.FAILURE;
                 }
             } else {
                 if ((radius < 1) || (radius > 30)) {
-                    plugin.getLocale().getMessage("command.claim.incorrectnumber")
-                            .sendPrefixedMessage(player);
+                    sendPrefixedMessage(sender, "command.claim.incorrectnumber")
+                    ;
                     return ReturnType.FAILURE;
                 }
             }
@@ -142,7 +142,7 @@ public class CommandRound extends AbstractCommand {
 
                                     // check max region limit
                                     if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
-                                        plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
+                                        sendPrefixedMessage(sender, "command.claim.maxregions");
                                         return ReturnType.FAILURE;
                                     }
 
@@ -176,16 +176,13 @@ public class CommandRound extends AbstractCommand {
 
             plugin.getDataManager().createClaim(claim);
 
-            plugin.getLocale().getMessage("command.claim.info")
-                    .processPlaceholder("time", TimeUtils.makeReadable((long) ((long) Settings.STARTING_POWER.getInt() * 60 * 1000)))
-                    .sendPrefixedMessage(sender);
-
+            sendPrefixedMessage(sender, "command.claim.info", "%time%", TimeUtils.makeReadable((long) Settings.STARTING_POWER.getInt() * 60 * 1000));
         }
 
         // warn player if chunks not loaded and skipped part2
         if (warnload > 0) {
-            plugin.getLocale().getMessage("command.claim.chunksnotloaded")
-                    .sendPrefixedMessage(player);
+            sendPrefixedMessage(sender, "command.claim.chunksnotloaded")
+            ;
             warnload = 0;
         }
 
@@ -214,7 +211,7 @@ public class CommandRound extends AbstractCommand {
             }
         }
 
-        plugin.getLocale().getMessage("command.claim.success").sendPrefixedMessage(sender);
+        sendPrefixedMessage(sender, "command.claim.success");
         return ReturnType.SUCCESS;
     }
 

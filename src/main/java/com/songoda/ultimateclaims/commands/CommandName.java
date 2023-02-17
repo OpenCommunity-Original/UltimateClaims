@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandName extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -30,21 +32,19 @@ public class CommandName extends AbstractCommand {
         Claim claim = plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.notclaimed");
             return ReturnType.FAILURE;
         }
 
         if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())) {
-            plugin.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.notyourclaim");
             return ReturnType.FAILURE;
         }
 
         final String name = String.join(" ", args);
 
         if (name.length() > Settings.NAME_CHAR_LIMIT.getInt()) {
-            plugin.getLocale().getMessage("command.name.toolong")
-                    .processPlaceholder("max", Settings.NAME_CHAR_LIMIT.getInt())
-                    .sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.name.toolong", "%max%", Integer.toString(Settings.NAME_CHAR_LIMIT.getInt()));
             return ReturnType.FAILURE;
         }
 
@@ -53,9 +53,7 @@ public class CommandName extends AbstractCommand {
 
         plugin.getDataManager().updateClaim(claim);
 
-        plugin.getLocale().getMessage("command.name.set")
-                .processPlaceholder("name", name)
-                .sendPrefixedMessage(sender);
+        sendPrefixedMessage(sender, "command.name.set", "%name%", name);
 
         return ReturnType.SUCCESS;
     }

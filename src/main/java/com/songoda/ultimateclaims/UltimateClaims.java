@@ -27,7 +27,7 @@ import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.tasks.*;
-import com.songoda.ultimateclaims.util.LocaleAPI;
+import com.songoda.ultimateclaims.utils.LocaleAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.PluginManager;

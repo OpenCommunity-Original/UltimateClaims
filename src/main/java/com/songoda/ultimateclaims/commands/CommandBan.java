@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandBan extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -31,7 +33,7 @@ public class CommandBan extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
 
         if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noclaim");
             return ReturnType.FAILURE;
         }
 
@@ -46,7 +48,7 @@ public class CommandBan extends AbstractCommand {
             toBan = Bukkit.getOfflinePlayer(args[0]);
 
             if (toBan == null || !(toBan.hasPlayedBefore() || toBan.isOnline())) {
-                plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+                sendPrefixedMessage(sender, "command.general.noplayer");
                 return ReturnType.FAILURE;
             }
 
@@ -55,7 +57,7 @@ public class CommandBan extends AbstractCommand {
         }
 
         if (player.getUniqueId().equals(toBan.getUniqueId())) {
-            plugin.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.kick.notself");
             return ReturnType.FAILURE;
         }
 
@@ -66,14 +68,10 @@ public class CommandBan extends AbstractCommand {
         }
 
         if (toBan.isOnline())
-            plugin.getLocale().getMessage("command.ban.banned")
-                    .processPlaceholder("claim", claim.getName())
-                    .sendPrefixedMessage(toBan.getPlayer());
 
-        plugin.getLocale().getMessage("command.ban.ban")
-                .processPlaceholder("name", toBan.getName())
-                .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(player);
+            sendPrefixedMessage(toBan.getPlayer(), "command.ban.banned", "%claim%", claim.getName());
+
+        sendPrefixedMessage(player, "command.ban.ban", "%name%", toBan.getName(), "%claim%", claim.getName());
 
         if (target != null) {
             claim.removeMember(toBan);

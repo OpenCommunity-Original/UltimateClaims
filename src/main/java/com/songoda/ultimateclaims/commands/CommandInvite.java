@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandInvite extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -30,7 +32,7 @@ public class CommandInvite extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
 
         if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noclaim");
             return ReturnType.FAILURE;
         }
 
@@ -39,36 +41,32 @@ public class CommandInvite extends AbstractCommand {
         OfflinePlayer invited = Bukkit.getPlayer(args[0]);
 
         if (invited == null || !invited.isOnline()) {
-            plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.noplayer");
             return ReturnType.FAILURE;
         }
 
         if (player.getUniqueId().equals(invited.getUniqueId())) {
-            plugin.getLocale().getMessage("command.invite.notself").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.invite.notself");
             return ReturnType.FAILURE;
         }
 
         if (claim.getMembers().stream()
                 .filter(m -> m.getRole() == ClaimRole.MEMBER)
                 .anyMatch(m -> m.getUniqueId().equals(invited.getUniqueId()))) {
-            plugin.getLocale().getMessage("command.invite.already").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.invite.already");
             return ReturnType.FAILURE;
         }
 
         if (plugin.getInviteTask().getInvite(player.getUniqueId()) != null) {
-            plugin.getLocale().getMessage("command.invite.alreadyinvited").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.invite.alreadyinvited");
             return ReturnType.FAILURE;
         }
 
         plugin.getInviteTask().addInvite(new Invite(player.getUniqueId(), invited.getUniqueId(), claim));
 
-        plugin.getLocale().getMessage("command.invite.invite")
-                .processPlaceholder("name", invited.getName())
-                .sendPrefixedMessage(player);
+        sendPrefixedMessage(player, "command.invite.invite", "%name%", invited.getName());
 
-        plugin.getLocale().getMessage("command.invite.invited")
-                .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(invited.getPlayer());
+        sendPrefixedMessage(invited.getPlayer(), "command.invite.invited", "%claim%", claim.getName());
         return ReturnType.SUCCESS;
     }
 

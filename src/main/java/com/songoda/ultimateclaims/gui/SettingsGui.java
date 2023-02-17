@@ -47,12 +47,12 @@ public class SettingsGui extends CustomizableGui {
         this.setButton("visitors", rows - 1, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,
                         plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
                         plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
-                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR)));
+                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR, player)));
 
         this.setButton("visitors", rows - 1, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
                         plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
                         plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
-                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER)));
+                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER, player)));
 
         this.setItem(1, 4, AIR);
         if (hostilemobspawning = player.hasPermission("ultimateclaims.toggle.hostilemobspawning")) {

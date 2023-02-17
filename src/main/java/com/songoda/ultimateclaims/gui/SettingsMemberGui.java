@@ -10,6 +10,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class SettingsMemberGui extends CustomizableGui {
@@ -18,7 +19,7 @@ public class SettingsMemberGui extends CustomizableGui {
     private final Claim claim;
     private final ClaimRole role;
 
-    public SettingsMemberGui(UltimateClaims plugin, Claim claim, Gui returnGui, ClaimRole type) {
+    public SettingsMemberGui(UltimateClaims plugin, Claim claim, Gui returnGui, ClaimRole type, Player player) {
         super(plugin, "membersettings");
         this.claim = claim;
         this.role = type;
@@ -45,65 +46,65 @@ public class SettingsMemberGui extends CustomizableGui {
         this.setButton("back", 8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
 
         // settings
-        this.setButton("break", 1, 1, CompatibleMaterial.IRON_PICKAXE.getItem(), (event) -> toggle(ClaimPerm.BREAK));
-        this.setButton("place", 1, 2, CompatibleMaterial.STONE.getItem(), (event) -> toggle(ClaimPerm.PLACE));
-        this.setButton("interact", 1, 3, CompatibleMaterial.LEVER.getItem(), (event) -> toggle(ClaimPerm.INTERACT));
-        this.setButton("trading", 1, 4, CompatibleMaterial.EMERALD.getItem(), (event) -> toggle(ClaimPerm.TRADING));
-        this.setButton("doors", 1, 5, CompatibleMaterial.OAK_DOOR.getItem(), (event) -> toggle(ClaimPerm.DOORS));
-        this.setButton("kills", 1, 6, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> toggle(ClaimPerm.MOB_KILLING));
-        this.setButton("redstone", 1, 7, CompatibleMaterial.REDSTONE.getItem(), (event) -> toggle(ClaimPerm.REDSTONE));
-        refreshDisplay();
+        this.setButton("break", 1, 1, CompatibleMaterial.IRON_PICKAXE.getItem(), (event) -> toggle(ClaimPerm.BREAK, player));
+        this.setButton("place", 1, 2, CompatibleMaterial.STONE.getItem(), (event) -> toggle(ClaimPerm.PLACE, player));
+        this.setButton("interact", 1, 3, CompatibleMaterial.LEVER.getItem(), (event) -> toggle(ClaimPerm.INTERACT, player));
+        this.setButton("trading", 1, 4, CompatibleMaterial.EMERALD.getItem(), (event) -> toggle(ClaimPerm.TRADING, player));
+        this.setButton("doors", 1, 5, CompatibleMaterial.OAK_DOOR.getItem(), (event) -> toggle(ClaimPerm.DOORS, player));
+        this.setButton("kills", 1, 6, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> toggle(ClaimPerm.MOB_KILLING, player));
+        this.setButton("redstone", 1, 7, CompatibleMaterial.REDSTONE.getItem(), (event) -> toggle(ClaimPerm.REDSTONE, player));
+        refreshDisplay(player);
     }
 
-    private void refreshDisplay() {
+    private void refreshDisplay(Player player) {
         this.updateItem("break", 1, 1,
                 plugin.getLocale().getMessage("interface.permsettings.breaktitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.BREAK) : claim.getVisitorPermissions().getStatus(ClaimPerm.BREAK))
+                                ? claim.getMemberPermissions().getStatus(ClaimPerm.BREAK, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.BREAK, player))
                         .getMessage().split("\\|"));
         this.updateItem("place", 1, 2,
                 plugin.getLocale().getMessage("interface.permsettings.placetitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.PLACE) : claim.getVisitorPermissions().getStatus(ClaimPerm.PLACE))
+                                ? claim.getMemberPermissions().getStatus(ClaimPerm.PLACE, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.PLACE, player))
                         .getMessage().split("\\|"));
         this.updateItem("interact", 1, 3,
                 plugin.getLocale().getMessage("interface.permsettings.interacttitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.INTERACT) : claim.getVisitorPermissions().getStatus(ClaimPerm.INTERACT))
+                                ? claim.getMemberPermissions().getStatus(ClaimPerm.INTERACT, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.INTERACT, player))
                         .getMessage().split("\\|"));
 
         this.updateItem("trading", 1, 4,
                 plugin.getLocale().getMessage("interface.permsettings.tradingtitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.TRADING) : claim.getVisitorPermissions().getStatus(ClaimPerm.TRADING))
+                                ? claim.getMemberPermissions().getStatus(ClaimPerm.TRADING, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.TRADING, player))
                         .getMessage().split("\\|"));
 
         this.updateItem("doors", 1, 5,
                 plugin.getLocale().getMessage("interface.permsettings.doorstitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.DOORS) : claim.getVisitorPermissions().getStatus(ClaimPerm.DOORS))
+                                ? claim.getMemberPermissions().getStatus(ClaimPerm.DOORS, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.DOORS, player))
                         .getMessage().split("\\|"));
         this.updateItem("kills", 1, 6,
                 plugin.getLocale().getMessage("interface.permsettings.mobkilltitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.MOB_KILLING) : claim.getVisitorPermissions().getStatus(ClaimPerm.MOB_KILLING))
+                                ? claim.getMemberPermissions().getStatus(ClaimPerm.MOB_KILLING, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.MOB_KILLING, player))
                         .getMessage().split("\\|"));
         this.updateItem("redstone", 1, 7,
                 plugin.getLocale().getMessage("interface.permsettings.redstonetitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.REDSTONE) : claim.getVisitorPermissions().getStatus(ClaimPerm.REDSTONE))
+                                ? claim.getMemberPermissions().getStatus(ClaimPerm.REDSTONE, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.REDSTONE, player))
                         .getMessage().split("\\|"));
 
     }
 
-    private void toggle(ClaimPerm perm) {
+    private void toggle(ClaimPerm perm, Player player) {
         if (role == ClaimRole.MEMBER) {
             claim.getMemberPermissions().setAllowed(perm, !claim.getMemberPermissions().hasPermission(perm));
             plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
@@ -111,6 +112,6 @@ public class SettingsMemberGui extends CustomizableGui {
             claim.getVisitorPermissions().setAllowed(perm, !claim.getVisitorPermissions().hasPermission(perm));
             plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
         }
-        refreshDisplay();
+        refreshDisplay(player);
     }
 }

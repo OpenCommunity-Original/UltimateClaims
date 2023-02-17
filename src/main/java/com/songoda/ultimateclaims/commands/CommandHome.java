@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class CommandHome extends AbstractCommand {
 
     private final UltimateClaims plugin;
@@ -39,20 +41,20 @@ public class CommandHome extends AbstractCommand {
                         && (bypass || c.isOwnerOrMember(player))).findFirst();
 
         if (!oClaim.isPresent()) {
-            plugin.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.general.notapartclaim");
             return ReturnType.FAILURE;
         }
         Claim claim = oClaim.get();
 
         if (claim.getHome() == null) {
-            plugin.getLocale().getMessage("command.home.none").sendPrefixedMessage(sender);
+            sendPrefixedMessage(sender, "command.home.none");
             return ReturnType.FAILURE;
         }
 
         player.teleport(claim.getHome());
 
-        plugin.getLocale().getMessage("command.home.success")
-                .sendPrefixedMessage(player);
+        sendPrefixedMessage(player, "command.home.success")
+        ;
 
         return ReturnType.SUCCESS;
     }
