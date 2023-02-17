@@ -1,7 +1,5 @@
 package com.songoda.ultimateclaims.utils;
 
-import com.songoda.core.chat.ChatMessage;
-import com.songoda.core.locale.Message;
 import com.songoda.core.utils.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -19,7 +17,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 

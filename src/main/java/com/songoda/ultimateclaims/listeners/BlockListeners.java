@@ -10,11 +10,13 @@ import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
+import com.songoda.ultimateclaims.utils.LocaleAPI;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -40,6 +42,8 @@ public class BlockListeners implements Listener {
 
         Chunk chunk = block.getChunk();
 
+        Player player = event.getPlayer();
+
         if (!claimManager.hasClaim(chunk)) return;
 
         Claim claim = claimManager.getClaim(chunk);
@@ -58,8 +62,8 @@ public class BlockListeners implements Listener {
             }
         }
 
-        if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+        if (!claim.playerHasPerms(player, ClaimPerm.PLACE)) {
+            LocaleAPI.getMessage(player,"event.general.nopermission");
             event.setCancelled(true);
         }
     }
@@ -71,24 +75,25 @@ public class BlockListeners implements Listener {
         Block block = event.getBlock();
 
         Chunk chunk = event.getBlock().getChunk();
+        Player player = event.getPlayer();
 
         if (!claimManager.hasClaim(chunk)) return;
 
         Claim claim = claimManager.getClaim(chunk);
         PowerCell powerCell = claim.getPowerCell();
 
-        if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.BREAK)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+        if (!claim.playerHasPerms(player, ClaimPerm.BREAK)) {
+            LocaleAPI.getMessage(player,"event.general.nopermission");
             event.setCancelled(true);
             return;
         }
 
         if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
-            ClaimMember member = claim.getMember(event.getPlayer());
-            if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.admin.removeclaim")) {
+            ClaimMember member = claim.getMember(player);
+            if ((member != null && member.getRole() == ClaimRole.OWNER) || player.hasPermission("ultimateclaims.admin.removeclaim")) {
                 powerCell.destroy();
             } else {
-                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+                LocaleAPI.getMessage(player,"event.general.nopermission");
                 event.setCancelled(true);
             }
         }

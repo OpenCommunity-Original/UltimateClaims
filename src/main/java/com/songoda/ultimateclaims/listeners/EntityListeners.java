@@ -12,6 +12,8 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
+import com.songoda.ultimateclaims.utils.LocaleAPI;
+import com.songoda.ultimateclaims.utils.Util;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -292,12 +294,10 @@ public class EntityListeners implements Listener {
                     claim.getVisitorBossBar().removePlayer(player);
                     claim.getMemberBossBar().removePlayer(player);
                 } else {
-                    plugin.getLocale().getMessage("event.claim.exit")
-                            .processPlaceholder("claim", claim.getName())
-                            .sendTitle(player);
-                    if (!player.hasPermission("ultimateclaims.offsounds")) {
+                    Util.sendTitle(LocaleAPI.getMessage(player, "event.claim.exit", "%claim%", claim.getName()), player);
+                    /*if (!player.hasPermission("ultimateclaims.offsounds")) {
                         player.playSound(player.getLocation(), org.bukkit.Sound.valueOf("BLOCK_BELL_RESONATE"), 0.5F, 1.0F);
-                    }
+                    }*/
                 }
             }
         }
@@ -308,8 +308,7 @@ public class EntityListeners implements Listener {
                 ClaimMember member = claim.getMember(player);
                 if (member == null) {
                     if (claim.isLocked() && !player.hasPermission("ultimateclaims.bypass.lock")) {
-                        plugin.getLocale().getMessage("event.claim.locked")
-                                .sendTitle(player);
+                        Util.sendTitle(LocaleAPI.getMessage(player, "event.claim.locked"), player);
                         return true;
                     }
 
@@ -324,8 +323,7 @@ public class EntityListeners implements Listener {
                 if (member != null
                         && claim.isBanned(member.getUniqueId())
                         && !player.hasPermission("ultimateclaims.bypass.ban")) {
-                    plugin.getLocale().getMessage("event.claim.locked")
-                            .sendTitle(player);
+                    Util.sendTitle(LocaleAPI.getMessage(player, "event.claim.locked"), player);
                     return true;
                 }
 
@@ -336,12 +334,10 @@ public class EntityListeners implements Listener {
                         claim.getMemberBossBar().addPlayer(player);
                     }
                 } else {
-                    plugin.getLocale().getMessage("event.claim.enter")
-                            .processPlaceholder("claim", claim.getName())
-                            .sendTitle(player);
-                    if (!player.hasPermission("ultimateclaims.offsounds")) {
+                    Util.sendTitle(LocaleAPI.getMessage(player, "event.claim.enter", "%claim%", claim.getName()), player);
+                    /*if (!player.hasPermission("ultimateclaims.offsounds")) {
                         player.playSound(player.getLocation(), org.bukkit.Sound.valueOf("UI_TOAST_CHALLENGE_COMPLETE"), 0.5F, 1.0F);
-                    }
+                    }*/
                 }
             }
         }

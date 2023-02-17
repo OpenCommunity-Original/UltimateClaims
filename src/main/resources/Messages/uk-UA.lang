@@ -6,98 +6,98 @@ general:
   word:
     none: none
   status:
-    'true': true
-    'false': false
+    'true': так
+    'false': ні
   claim:
     defaultname: '%name%''s claim'
     powercell:
-      low: '&cLow Power!'
-      message: '&6%time% &7Remaining.'
-    dissolve: '&7Your claim &6%claim% &7has been dissolved.'
-  notanumber: '&cThe entry &4%value% &cis not a number'
-  notenoughfunds: '&cYou do not have enough funds.'
-  notenoughfundspowercell: '&cThis power cell does not have enough funds. %balance% is available to be withdrawn.'
-  powercellrecipe: '&6Powercell Recipe'
+      low: '&cМало енергії!'
+      message: '&6%time% &7залишилось.'
+    dissolve: '&7Ваша земля %claim% &7була розформована.'
+  notanumber: '&cВхідне значення &4%value% &c- не число'
+  notenoughfunds: '&cУ вас недостатньо коштів.'
+  notenoughfundspowercell: '&cУ цьому елементі живлення недостатньо коштів. Доступно для вилучення %balance%.'
+  powercellrecipe: '&6Рецепт елементу живлення'
   interface:
-    exit: '&cExit'
-    back: '&cBack'
-    next: '&cNext Page'
-    previous: '&cPrevious Page'
-    current: '&7Current: &6%current%&7.'
+    exit: '&cВихід'
+    back: '&cНазад'
+    next: '&cНаступна сторінка'
+    previous: '&cПопередня сторінка'
+    current: '&7Поточна: &6%current%&7.'
 # Command Messages
 command:
   general:
-    notapartclaim: "&7You venture into a land unknown, but soon realize you don't belong here. &cThis claim doesn't seem to exist or you're not part of it."
-    noclaim: "&7You roam the wilds, searching for a place to call your own. &cBut you realize you need to be in a claim first to do what you wish to do."
-    noplayer: "&7You try to call out to someone, but there's no answer. &cEither that player doesn't exist or they're not around at the moment."
-    notinclaim: "&7You look around, but the player you sought isn't here. &cThey seem to be outside of your claim."
-    claimed: "&7You come across a rich and bountiful land, but as you approach, you see a signpost. &cThis chunk has already been claimed by someone else."
-    notclaimed: "&7You wander into a vast and untamed territory, but find no signs of habitation. &cThis chunk doesn't seem to be claimed."
-    notyourclaim: "&7You find yourself on someone else's territory, and must turn back. &cThis chunk is claimed by another player, not you."
+    notapartclaim: "&7Ви відправляєтесь в невідому землю, але скоро розумієте, що ви не належите сюди. &cЦя претензія, здається, не існує, або ви не частина неї."
+    noclaim: "&7Ви блукаєте дикою місцевістю, шукаючи місце, яке зможете назвати своїм. &cАле ви розумієте, що спочатку вам потрібно вступити до претензії, щоб зробити те, що ви бажаєте."
+    noplayer: "&7Ви намагаєтесь зателефонувати комусь, але немає відповіді. &cАбо цього гравця не існує, або його немає поруч у цей момент."
+    notinclaim: "&7Ви роздивляєтесь навколо, але гравця, якого ви шукаєте, тут немає. &cВони, здається, знаходяться за межами вашої претензії."
+    claimed: "&7Ви натрапляєте на багату і плодючу землю, але, підійшовши ближче, бачите знаковий стовп. &cЦей шматок вже був заявлений іншою людиною."
+    notclaimed: "&7Ви входите в широку та невідому територію, але не знаходите жодних ознак населеного пункту. &cЦей шматок, здається, не заявлений."
+    notyourclaim: "&7Ви знаходитесь на території іншої людини та повинні повернутися. &cЦей шматок заявлений іншим гравцем, а не вами."
   invite:
-    invited: "&7A mysterious voice calls out to you, inviting you to join a new land. &7You've been invited to join &6%claim% &7- use &6/c accept &7to accept this invitation."
-    invite: "&7You call out to a fellow adventurer, inviting them to join you on your journey. &7You've invited &6%name% &7to join your claim."
-    notself: "&7You try to invite yourself, but it's just not possible. &cYou can't invite yourself to join your own claim."
-    already: "&7You try to invite a companion, but they've already joined your journey. &cThis player is already a member of your claim."
-    alreadyinvited: "&7You extend an invitation, but it seems they've already received one. &cThis player already has an active invitation to your claim."
+    invited: "&7Таємничий голос кличе тебе, запрошуючи вступити до нової землі. &7Тебе запрошено вступити до &6%claim% &7- використай &6/c accept &7щоб прийняти запрошення."
+    invite: "&7Ти кличеш до себе товариша-подорожника, запрошуючи його приєднатися до твоєї подорожі. &7Ти запрошуєш &6%name% &7до своєї області."
+    notself: "&7Ти намагаєшся запросити себе, але це просто неможливо. &cТи не можеш запросити самого себе до своєї області."
+    already: "&7Ти намагаєшся запросити товариша, але він вже приєднався до твоєї подорожі. &cЦей гравець вже є учасником твоєї області."
+    alreadyinvited: "&7Ти надсилаєш запрошення, але здається, що вони вже отримали його. &cЦей гравець вже має активне запрошення до твоєї області."
   addmember:
-    added: "You receive an invitation to join a new home. &7You have been added to &6%claim%&7."
-    add: "You welcome a new member to your home. &7You have added &6%name% &7to your claim&7."
+    added: "Ти отримуєш запрошення вступити до нового будинку. &7Тебе додано до &6%claim%&7."
+    add: "Ти вітаєш нового учасника свого будинку. &7Ти додав &6%name% &7до своєї області."
   kick:
-    kicked: "You are forced to leave your home. &cYou have been kicked from &4%claim%&c."
-    kick: "You banish a disruptive member from your home. &7You kicked &6%name% &7from &6%claim%&7."
-    notself: "You try to kick yourself, but realize it's just not possible. &7You cannot kick yourself."
+    kicked: "Тебе змушують покинути твій будинок. &cТебе викинуто з &4%claim%&c."
+    kick: "Ти виганяєш дратівливого учасника зі свого будинку. &7Ти вигнав &6%name% &7з &6%claim%&7."
+    notself: "Ти намагаєшся вигнати самого себе, але розумієш, що це просто неможливо. &7Ти не можеш вигнати самого себе."
   ban:
-    notself: "You try to ban yourself, but realize it's just not possible. &7You cannot ban yourself."
-    banned: "You are banned from a place you once called home. &cYou have been banned from &4%claim%&c."
-    ban: "You ban a disruptive member from a place they once called home. &7You banned &6%name% &7from &6%claim%&7."
+    notself: "Ви намагаєтесь заблокувати себе, але розумієте, що це неможливо. &7Ви не можете заблокувати самого себе."
+    banned: "Вас заблоковано у місці, яке колись називали домом. &cВас заблоковано у &4%claim%&c."
+    ban: "Ви забороняєте руйнівному члену бути частиною місця, яке вони колись називали своїм домом. &7Ви заблокували &6%name% &7у &6%claim%&7."
   unban:
-    unbanned: "You are welcomed back into a place you once called home. &cYou have been unbanned from &4%claim%&c."
-    unban: "You welcome back a former member to a place they once called home. &7You unbanned &6%name% &7from &6%claim%&7."
-    notself: "You try to unban yourself, but realize it's just not possible. &7You cannot unban yourself."
+    unbanned: "Вас вітають назад у місці, яке колись називали домом. &cВас розблоковано у &4%claim%&c."
+    unban: "Ви вітаєте колишнього члена назад у місці, яке вони колись називали своїм домом. &7Ви розблокували &6%name% &7у &6%claim%&7."
+    notself: "Ви намагаєтесь розблокувати себе, але розумієте, що це неможливо. &7Ви не можете розблокувати самого себе."
   accept:
-    none: "You look around, but there's no invitation to be found. &cYou do not currently have any invites to accept."
-    success: "You accept the invitation with open arms and join the community. &7You are now a member of %claim%&7."
-    accepted: "The leader of the claim is overjoyed, as another member has joined the fold. &6%name% &7accepted your invitation."
-    maxed: "The claim is filled to the brim, and there's no room for one more. &7This claim is at their max capacity."
+    none: "Ви дивитесь навколо, але не знаходите запрошення. &cНаразі ви не маєте запрошень на прийняття."
+    success: "Ви з радістю приймаєте запрошення і приєднуєтесь до спільноти. &7Ви тепер є членом %claim%&7."
+    accepted: "Лідер місця дуже радий, що з'явився ще один член. &6%name% &7прийняв ваше запрошення."
+    maxed: "Місце наповнене до країв, і немає місця для ще одного. &7Це місце досягло максимальної кількості учасників."
   claim:
-    success: "&7Ви закладаєте свій прапор і відзначаєте цю землю як свою. &7Ви заявили право на цей чанк."
+    success: "&7Ви закладаєте свій прапор і відзначаєте цю землю як свою. &7Ви заявили право на цю область."
     newregion: "&7Ви відкриваєте новий шлях і засновуєте новий дім. &aВи успішно створили нову область."
     maxregions: "&7Ви дістаєтеся до простору, але розумієте, що більше немає місця для розширення. &cВи не можете створювати більше областей, просто не залишилося місця."
     nocell: "&7Ви намагаєтеся заявити на своє право більше землі, але розумієте, що потрібно спочатку набрати потужності. &cВам потрібно створити елемент живлення, перш ніж ви зможете заявити на своє право більше землі."
     noregion: "&7Ви намагаєтеся заявити право на охоронювану територію, але це просто неможливо. &cВи не можете заявити право на охоронювану область!"
     info: "&7Голос відбивається в вашому розумі, попереджаючи вас про небезпеки, що чекають на вас в майбутньому. &cУ вас є &4%time% &c, щоб створити елемент живлення, перш ніж ваша заява на право власності буде скасована. &7Щоб створити елемент живлення, скористайтеся командою &6/c recipe&7, щоб знайти рецепт, а потім побудуйте його в центрі одного сундука в межах вашої заяви на право власності."
-    nottouching: "&7Ви намагаєтеся заявити право на віддалені землі, але вони занадто далеко. &cВи можете заявляти право лише на чанки, які торкаються один одного."
-    toomany: "&7Ви намагаєтеся заявити право на занадто багато землі, але розумієте, що це просто неможливо. &cВи можете заявити право тільки на &4%amount% &cчанків."
+    nottouching: "&7Ви намагаєтеся заявити право на віддалені землі, але вони занадто далеко. &cВи можете заявляти право лише на ті області, які торкаються один одного."
+    toomany: "&7Ви намагаєтеся заявити право на занадто багато землі, але розумієте, що це просто неможливо. &cВи можете заявити право тільки на &4%amount% &cобластей."
     disabledworld: "&7Ви намагаєтеся зробити щось, але розумієте, що це просто неможливо в цьому світі. &cВи не можете зробити це в цьому світі."
   unclaim:
-    success: "&7You raise the flag, letting the land go free once again. &7You unclaimed this chunk."
-    powercell: "&7You try to unclaim, but the power that fuels your home won't let you. &cYou cannot unclaim the chunk holding your powercell. Please move it first."
+    success: "&7&7Ви знімаєте прапор, звільняючи землю знову на волю. &7Ви відмовилися від цієї області."
+    powercell: "&7Ви намагаєтеся відмовитися від цієї області, але енергія, що живить ваш будинок, не дозволяє цього. &cВи не можете відмовитися від області, де знаходиться ваш енергоелемент. Будь ласка, спочатку перемістіть його."
   removeclaim:
-    success: "&7You tear down what you once built and free the land. &7You removed claim %claim%."
+    success: "&7Ви руйнуєте те, що колись будували, і звільняєте землю. &7Ви видалили право власності на область %claim%."
   transferownership:
-    success: "&7You pass the torch of leadership to another, entrusting the land to their care. &7You transferred ownership of %claim% successfully."
-    failed: "&7You try to transfer ownership, but the transfer fails. &7You failed to transfer ownership of %claim%."
+    success: "&7Ви передаєте жезл лідерства іншій людині, довіряючи землю їх догляду. &7Ви успішно передали право власності на область %claim%."
+    failed: "&7Ви намагаєтесь передати право власності, але передача не вдається. &7Ви не змогли передати право власності на область %claim%."
   leave:
-    youleft: "&7You say goodbye to your friends and venture out on your own. &7You left &6%claim%&7."
-    left: "&7A player bids farewell and sets out on their own journey. &6%player% &7left &6%claim%&7."
-    owner: "&7You try to leave, but the land won't let you go. &cYou cannot leave your own claim."
+    youleft: "&7Ви прощаєтеся зі своїми друзями і вирушаєте в одиночну подорож. &7Ви покидаєте &6%claim%&7."
+    left: "&7Гравець прощається та вирушає в одиночну подорож. &6%player% &7покидає &6%claim%&7."
+    owner: "&7Ви намагаєтеся покинути область, але земля не відпускає вас. &cВи не можете покинути свою власну область."
   lock:
-    locked: "&7You secure your home, keeping unwanted visitors at bay. &7You locked your claim."
-    unlocked: "&7You welcome the world with open arms and unlock your doors. &7You unlocked your claim."
-    lockedother: "&7You secure someone else's home, keeping unwanted visitors at bay. &7You locked the claim."
-    unlockedother: "&7You welcome the world into someone else's home. &7You unlocked the claim."
+    locked: "&7Ви захищаєте свій будинок, затримуючи небажаних відвідувачів. &7Ви заблокували цю область."
+    unlocked: "&7Ви зустрічаєте світ з відкритими обіймами та розблоковуєте свої двері. &7Ви розблокували цю область."
+    lockedother: "&7Ви захищаєте будинок іншої людини, затримуючи небажаних відвідувачів. &7Ви заблокували цю область."
+    unlockedother: "&7Ви запрошуєте світ до будинку іншої людини. &7Ви розблокували цю область."
   sethome:
-    set: "&7You make this place your own and establish a new home. &7You set the home for your claim."
+    set: "&7Ви робите це місце своїм власним та створюєте новий дім. &7Ви встановили дім для своєї області."
   name:
-    set: "&7You give your claim a new identity, one that better represents its character. &7The name for your claim changed to %name%."
-    toolong: "&7You try to give your claim a name, but it's just too long. &cThat name is too long. The maximum character count is &9%max%&c."
+    set: "&7Ви даєте своїй області нову ідентичність, яка краще відображає її характер. &7Назва вашої області змінена на %name%."
+    toolong: "&7Ви намагаєтесь дати своїй області назву, але вона занадто довга. &cЦя назва занадто довга. Максимальна кількість символів &9%max%&c."
   home:
-    none: "&7You look for your home, but there's just nothing there. &cThat claim doesn''t have a home set..."
-    success: "&7You teleport to your home, finally back where you belong. &7You teleported to your claims home."
+    none: "&7Ви шукаєте свій дім, але нічого не знаходите. &cДля цієї області не встановлено дім..."
+    success: "&7Ви телепортуєтесь до свого дому та нарешті повертаєтесь до свого місця. &7Ви телепортувалися до дому своєї області."
   show:
-    start: "&7You turn on the visualizer, illuminating the claims around you. &7Claim visualizer &2enabled."
-    stop: "&7You turn off the visualizer, shrouding the world in mystery once again. &7Claim visualizer &cdisabled."
+    start: "&7Ви вмикаєте візуалізатор та підсвічуєте області навколо вас. &7Візуалізатор областей &2увімкнено."
+stop: "&7Ви вимикаєте візуалізатор та знову загортаєте світ в таємницю. &7Візуалізатор областей &cвимкнено."
 # Interface Messages
 interface:
   powercell:
@@ -169,16 +169,16 @@ interface:
 # Event Messages
 event:
   general:
-    nopermission: '&cYou do not have permission to do that.'
+    nopermission: '&cУ вас недостатньо прав для цього.'
   invite:
-    expired: '&cYour invitation has expired...'
+    expired: '&cВаше запрошення минуло термін дії...'
   claim:
     enter: '&6%claim%'
-    exit: '&7Leaving &6%claim%'
-    locked: '&cA magical force prevents you from entering...'
+    exit: '&7Покидаєте &6%claim%'
+    locked: '&cМагічна сила не дає вам зайти...'
   powercell:
-    success: '&7You created a powercell. Fill it up with fuel to keep your land claimed.'
-    failopen: '&cYou need to be the owner of this claim to open its powercell.'
-    lowpower: '&cYour claim &4%claim% &cis out of power!'
-    superpower: '&cYour claim &4%claim% &cis still out of power and at risk of dissolution!'
-    destroyed: '&cPower cell destroyed. You have gained %balance% from its money storage.'
+    success: '&7Ви створили елемент живлення. Заповніть його паливом, щоб зберігати право власності на землю.'
+    failopen: '&cВи повинні бути власником цієї області, щоб відкрити її елемент живлення.'
+    lowpower: '&cВаша область &4%claim% &cпозбавлена живлення!'
+    superpower: '&cВаша область &4%claim% &cпродовжує бути позбавленою живлення та знаходиться під загрозою розпаду!'
+    destroyed: '&cЕлемент живлення знищено. Ви отримали %balance% з його казначейського сховища.'

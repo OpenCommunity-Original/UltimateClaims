@@ -7,6 +7,7 @@ import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.utils.LocaleAPI;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -30,23 +31,25 @@ public class InteractListeners implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
 
-        Chunk chunk = event.getClickedBlock().getChunk();
+        Block block = event.getClickedBlock();
+        Chunk chunk = block.getChunk();
+        Player player = event.getPlayer();
 
         boolean hasClaim = claimManager.hasClaim(chunk);
         if (event.getAction() == Action.PHYSICAL && hasClaim) {
             Claim claim = claimManager.getClaim(chunk);
 
-            boolean canRedstone = isRedstone(event.getClickedBlock()) && claim.playerHasPerms(event.getPlayer(), ClaimPerm.REDSTONE);
+            boolean canRedstone = isRedstone(block) && claim.playerHasPerms(player, ClaimPerm.REDSTONE);
             if (canRedstone) {
                 return;
-            } else if (isRedstone(event.getClickedBlock()) && !claim.playerHasPerms(event.getPlayer(), ClaimPerm.REDSTONE)) {
-                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+            } else if (isRedstone(block) && !claim.playerHasPerms(player, ClaimPerm.REDSTONE)) {
+                LocaleAPI.getMessage(player,"event.general.nopermission");
                 event.setCancelled(true);
                 return;
             }
 
-            if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
-                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+            if (!claim.playerHasPerms(player, ClaimPerm.PLACE)) {
+                LocaleAPI.getMessage(player,"event.general.nopermission");
                 event.setCancelled(true);
             }
             return;
@@ -56,38 +59,38 @@ public class InteractListeners implements Listener {
 
         Claim claim = claimManager.getClaim(chunk);
 
-        boolean canDoors = isDoor(event.getClickedBlock()) && claim.playerHasPerms(event.getPlayer(), ClaimPerm.DOORS);
-        boolean canRedstone = isRedstone(event.getClickedBlock()) && claim.playerHasPerms(event.getPlayer(), ClaimPerm.REDSTONE);
+        boolean canDoors = isDoor(block) && claim.playerHasPerms(player, ClaimPerm.DOORS);
+        boolean canRedstone = isRedstone(block) && claim.playerHasPerms(player, ClaimPerm.REDSTONE);
 
         if (canRedstone || canDoors) {
             return;
-        } else if (isRedstone(event.getClickedBlock()) && !claim.playerHasPerms(event.getPlayer(), ClaimPerm.REDSTONE)
-                || isDoor(event.getClickedBlock()) && !claim.playerHasPerms(event.getPlayer(), ClaimPerm.DOORS)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+        } else if (isRedstone(block) && !claim.playerHasPerms(player, ClaimPerm.REDSTONE)
+                || isDoor(block) && !claim.playerHasPerms(player, ClaimPerm.DOORS)) {
+            LocaleAPI.getMessage(player,"event.general.nopermission");
             event.setCancelled(true);
             return;
         }
 
-        ClaimMember member = claim.getMember(event.getPlayer());
+        ClaimMember member = claim.getMember(player);
 
         if (claim.getPowerCell().hasLocation()
-                && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
+                && claim.getPowerCell().getLocation().equals(block.getLocation())
                 && event.getAction() == Action.RIGHT_CLICK_BLOCK
-                && !event.getPlayer().isSneaking()) {
+                && !player.isSneaking()) {
 
             // Make sure all items in the powercell are stacked.
             claim.getPowerCell().stackItems();
-            if (member != null && member.getRole() != ClaimRole.VISITOR || event.getPlayer().hasPermission("ultimateclaims.powercell.view")) {
-                plugin.getGuiManager().showGUI(event.getPlayer(), claim.getPowerCell().getGui(event.getPlayer()));
+            if (member != null && member.getRole() != ClaimRole.VISITOR || player.hasPermission("ultimateclaims.powercell.view")) {
+                plugin.getGuiManager().showGUI(player, claim.getPowerCell().getGui(player));
             } else {
-                plugin.getLocale().getMessage("event.powercell.failopen").sendPrefixedMessage(event.getPlayer());
+                LocaleAPI.getMessage(player,"event.powercell.failopen");
             }
             event.setCancelled(true);
             return;
         }
 
-        if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.INTERACT)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+        if (!claim.playerHasPerms(player, ClaimPerm.INTERACT)) {
+            LocaleAPI.getMessage(player,"event.general.nopermission");
             event.setCancelled(true);
         }
     }
@@ -114,7 +117,7 @@ public class InteractListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms(player, ClaimPerm.PLACE)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(player);
+            LocaleAPI.getMessage(player,"event.general.nopermission");
             event.setCancelled(true);
         }
     }

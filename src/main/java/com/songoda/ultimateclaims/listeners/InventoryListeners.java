@@ -7,6 +7,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.items.PowerCellItem;
 import com.songoda.ultimateclaims.settings.Settings;
+import com.songoda.ultimateclaims.utils.LocaleAPI;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
@@ -86,6 +87,6 @@ public class InventoryListeners implements Listener {
         player.playSound(location, CompatibleSound.ENTITY_BLAZE_DEATH.getSound(), 1F, .4F);
         player.playSound(location, CompatibleSound.ENTITY_PLAYER_LEVELUP.getSound(), 1F, .1F);
 
-        plugin.getLocale().getMessage("event.powercell.success").sendPrefixedMessage(player);
+        LocaleAPI.getMessage(player,"event.powercell.success");
     }
 }
