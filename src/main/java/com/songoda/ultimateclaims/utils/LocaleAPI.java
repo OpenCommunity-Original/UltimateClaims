@@ -261,4 +261,9 @@ public class LocaleAPI implements Listener {
         }
     }
 
+    public static String getFormattedMessage(Player player, String key, String... placeholders) {
+        String message = getMessage(player, key, placeholders);
+        return TextUtils.formatText(message);
+    }
+
 }

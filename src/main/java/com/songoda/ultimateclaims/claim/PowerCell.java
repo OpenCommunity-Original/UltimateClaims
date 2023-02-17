@@ -15,6 +15,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class PowerCell {
 
     protected final Claim claim;
@@ -353,8 +355,7 @@ public class PowerCell {
             OfflinePlayer owner = claim.getOwner().getPlayer();
             EconomyManager.deposit(owner, economyBalance);
             if (owner.isOnline())
-                owner.getPlayer().sendMessage(plugin.getLocale().getMessage("event.powercell.destroyed")
-                        .processPlaceholder("balance", economyBalance).getPrefixedMessage());
+                sendPrefixedMessage(owner.getPlayer(), "event.powercell.destroyed", "%balance%", String.format("%.2f", economyBalance));
         }
         this.economyBalance = 0;
         this.items.clear();

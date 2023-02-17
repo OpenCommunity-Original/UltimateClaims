@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.gui;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.GuiUtils;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimSetting;
@@ -10,6 +11,9 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import static com.songoda.ultimateclaims.utils.LocaleAPI.getFormattedMessage;
+import static com.songoda.ultimateclaims.utils.LocaleAPI.getMessage;
 
 public class SettingsGui extends CustomizableGui {
 
@@ -22,7 +26,7 @@ public class SettingsGui extends CustomizableGui {
         this.claim = claim;
         this.plugin = plugin;
         this.setRows(3);
-        this.setTitle(plugin.getLocale().getMessage("interface.settings.title").getMessage());
+        this.setTitle(getFormattedMessage(player,"interface.settings.title"));
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -37,21 +41,20 @@ public class SettingsGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
-                (event) -> event.player.closeInventory());
+                        getFormattedMessage(player, "general.interface.back")),
+                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
         this.setButton("back", 8, this.getItem(0),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // shortcuts for member settings
         this.setButton("visitors", rows - 1, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,
-                        plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
-                        plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
+                        getFormattedMessage(player,"interface.members.visitorsettingstitle"),
+                        getFormattedMessage(player,"interface.members.visitorsettingslore").split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR, player)));
 
         this.setButton("visitors", rows - 1, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
-                        plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
-                        plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
+                        getFormattedMessage(player,"interface.members.membersettingstitle"),
+                        getFormattedMessage(player,"interface.members.membersettingslore").split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER, player)));
 
         this.setItem(1, 4, AIR);
@@ -83,52 +86,45 @@ public class SettingsGui extends CustomizableGui {
     private void refreshDisplay(Player player) {
         if (hostilemobspawning) {
             this.updateItem("hostilemobspawning", 1, 1,
-                    plugin.getLocale().getMessage("interface.settings.hostilemobspawningtitle").getMessage(),
-                    plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.HOSTILE_MOB_SPAWNING, player))
-                            .getMessage().split("\\|"));
+                    getFormattedMessage(player,"interface.settings.hostilemobspawningtitle"),
+                    getFormattedMessage(player,"general.interface.current", "%current%", claim.getClaimSettings().getStatus(ClaimSetting.HOSTILE_MOB_SPAWNING, player))
+                            .split("\\|"));
         }
         if (firespread) {
             this.updateItem("flintandsteal", 1, 2,
-                    plugin.getLocale().getMessage("interface.settings.firespreadtitle").getMessage(),
-                    plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.FIRE_SPREAD, player))
-                            .getMessage().split("\\|"));
+                    getFormattedMessage(player,"interface.settings.firespreadtitle"),
+                    getFormattedMessage(player,"general.interface.current", "%current%", claim.getClaimSettings().getStatus(ClaimSetting.FIRE_SPREAD, player))
+                            .split("\\|"));
         }
         if (pvp) {
             this.updateItem("pvp", 1, 3,
-                    plugin.getLocale().getMessage("interface.settings.pvptitle").getMessage(),
-                    plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.PVP, player))
-                            .getMessage().split("\\|"));
+                    getFormattedMessage(player,"interface.settings.pvptitle"),
+                    getFormattedMessage( player,"general.interface.current", "%current%", claim.getClaimSettings().getStatus(ClaimSetting.PVP, player))
+                            .split("\\|"));
         }
         if (mobgriefing) {
             this.updateItem("mobgriefing", 1, 4,
-                    plugin.getLocale().getMessage("interface.settings.mobgriefingtitle").getMessage(),
-                    plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.MOB_GRIEFING, player))
-                            .getMessage().split("\\|"));
+                    getFormattedMessage(player,"interface.settings.mobgriefingtitle"),
+                    getFormattedMessage(player,"general.interface.current", "%current%", claim.getClaimSettings().getStatus(ClaimSetting.MOB_GRIEFING, player))
+                            .split("\\|"));
         }
         if (leafdecay) {
             this.updateItem("leafdecay", 1, 5,
-                    plugin.getLocale().getMessage("interface.settings.leafdecaytitle").getMessage(),
-                    plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.LEAF_DECAY, player))
-                            .getMessage().split("\\|"));
+                    getFormattedMessage(player,"interface.settings.leafdecaytitle"),
+                    getFormattedMessage(player,"general.interface.current", "%current%", claim.getClaimSettings().getStatus(ClaimSetting.LEAF_DECAY, player))
+                            .split("\\|"));
         }
         if (tnt) {
             this.updateItem("tnt", 1, 6,
-                    plugin.getLocale().getMessage("interface.settings.tnttitle").getMessage(),
-                    plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.TNT, player))
-                            .getMessage().split("\\|"));
+                    getFormattedMessage(player,"interface.settings.tnttitle"),
+                    getFormattedMessage(player,"general.interface.current", "%current%", claim.getClaimSettings().getStatus(ClaimSetting.TNT, player))
+                            .split("\\|"));
         }
         if (fly) {
             this.updateItem("tnt", 1, 7,
-                    plugin.getLocale().getMessage("interface.settings.flytitle").getMessage(),
-                    plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.FLY, player))
-                            .getMessage().split("\\|"));
+                    getFormattedMessage(player,"interface.settings.flytitle"),
+                    getFormattedMessage(player,"general.interface.current", "%current%", claim.getClaimSettings().getStatus(ClaimSetting.FLY, player))
+                            .split("\\|"));
         }
     }
 
