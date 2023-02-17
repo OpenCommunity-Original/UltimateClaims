@@ -104,9 +104,10 @@ public class LocaleAPI implements Listener {
      *
      * @param player the player
      * @param key    the message key
-     * @return the message or null if not found
+     * @param placeholders the placeholders and their corresponding values to be replaced in the message
+     * @return the message with placeholders replaced or null if not found
      */
-    public static String getMessage(Player player, String key) {
+    public static String getMessage(Player player, String key, String... placeholders) {
         Locale locale = getPlayerLocale(player);
         String lang = locale.toLanguageTag();
         File file = new File(baseName, lang + ".lang");
@@ -127,6 +128,11 @@ public class LocaleAPI implements Listener {
                         return null;
                     })
                     .join();
+        }
+
+        // replace placeholders
+        for (int i = 0; i < placeholders.length; i += 2) {
+            message = message.replace(placeholders[i], placeholders[i+1]);
         }
 
         return message;
