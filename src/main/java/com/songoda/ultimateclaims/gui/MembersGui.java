@@ -49,8 +49,7 @@ public class MembersGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                        getFormattedMessage(player, "general.interface.back"),
-                        getFormattedMessage(player, "general.interface.exit")),
+                        getFormattedMessage(player, "general.interface.back")),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
         this.setButton("back", 8, this.getItem(0),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));

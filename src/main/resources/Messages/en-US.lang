@@ -12,17 +12,17 @@ general:
     defaultname: '%name%''s claim'
     powercell:
       low: '&cLow Power!'
-      message: '&6%time% &7Remaining.'
+      message: '&6%time% &7remaining.'
     dissolve: '&7Your claim &6%claim% &7has been dissolved.'
-  notanumber: '&cThe entry &4%value% &cis not a number'
+  notanumber: '&cThe entry is not a number'
   notenoughfunds: '&cYou do not have enough funds.'
   notenoughfundspowercell: '&cThis power cell does not have enough funds. %balance% is available to be withdrawn.'
   powercellrecipe: '&6Powercell Recipe'
   interface:
-    exit: '&cExit'
-    back: '&cBack'
-    next: '&cNext Page'
-    previous: '&cPrevious Page'
+    exit: '&c&lExit'
+    back: '&c&lBack'
+    next: '&c&lNext Page'
+    previous: '&c&lPrevious Page'
     current: '&7Current: &6%current%&7.'
 # Command Messages
 command:
@@ -162,10 +162,6 @@ interface:
     default: DEFAULT
     playtime: PLAYTIME
     membersince: MEMBER SINCE
-  audits:
-    title: Audit Log
-    entryname: '&6%who%'
-    entrylore: '&7When: &6%when% ago'
 # Event Messages
 event:
   general:

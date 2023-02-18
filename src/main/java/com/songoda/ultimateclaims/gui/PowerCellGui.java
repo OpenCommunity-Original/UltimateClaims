@@ -189,7 +189,7 @@ public class PowerCellGui extends CustomizableGui {
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("time", 0, 4,
                     getFormattedMessage(player, "interface.powercell.totaltitle",
-                            "time", TimeUtils.makeReadable(powercell.getTotalPower() * 60 * 1000)),
+                            "%time%", TimeUtils.makeReadable(powercell.getTotalPower() * 60 * 1000)),
                     ChatColor.BLACK.toString());
 
         // Display the item amount
@@ -205,7 +205,7 @@ public class PowerCellGui extends CustomizableGui {
                 getFormattedMessage(player, "interface.powercell.infotitle"),
                 getFormattedMessage(player, "interface.powercell.infolore",
                         "%chunks%", Integer.toString(claim.getClaimSize()),
-                        "members", Long.toString(claim.getOwnerAndMembers().stream()
+                        "%members%", Long.toString(claim.getOwnerAndMembers().stream()
                                 .filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER)
                                 .count()))
                         .split("\\|"));
@@ -237,7 +237,7 @@ public class PowerCellGui extends CustomizableGui {
                 getFormattedMessage(player, "interface.powercell.addfunds"),
                 response -> {
                     if (!NumberUtils.isNumeric(String.valueOf(response))) {
-                        sendPrefixedMessage(player, "general.notanumber", "%value%", String.valueOf(response));
+                        sendPrefixedMessage(player, "general.notanumber");
                         return;
                     }
                     double amount = Double.parseDouble(response.getMessage().trim());
@@ -264,8 +264,7 @@ public class PowerCellGui extends CustomizableGui {
                 getFormattedMessage(player, "interface.powercell.takefunds"),
                 response -> {
                     if (!NumberUtils.isNumeric(response.getMessage())) {
-                        sendPrefixedMessage(player, "general.notanumber",
-                                "%value%", String.valueOf(response));
+                        sendPrefixedMessage(player, "general.notanumber");
                         return;
                     }
                     double amount = Double.parseDouble(response.getMessage().trim());

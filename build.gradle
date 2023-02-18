@@ -66,7 +66,7 @@ dependencies {
 }
 
 group = 'com.songoda'
-version = '1.10.2'
+version = '1.11'
 description = 'UltimateClaims'
 java.sourceCompatibility = JavaVersion.VERSION_19
 

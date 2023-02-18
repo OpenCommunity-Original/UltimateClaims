@@ -28,7 +28,7 @@ public class SettingsMemberGui extends CustomizableGui {
         this.plugin = plugin;
         this.setRows(3);
         this.setTitle(getFormattedMessage(player, "interface.permsettings.title",
-                "role", TextUtils.formatText(role.toString().toLowerCase(), true)));
+                "%role%", TextUtils.formatText(role.toString().toLowerCase(), true)));
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -42,8 +42,7 @@ public class SettingsMemberGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                        getFormattedMessage(player, "general.interface.back"),
-                        getFormattedMessage(player, "general.interface.exit")),
+                        getFormattedMessage(player, "general.interface.back")),
                 (event) -> event.player.closeInventory());
         this.setButton("back", 8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
 

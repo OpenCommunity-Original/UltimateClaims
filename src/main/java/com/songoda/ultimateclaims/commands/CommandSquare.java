@@ -92,8 +92,7 @@ public class CommandSquare extends AbstractCommand {
 
             // value - number?
             if (!NumberUtils.isNumeric(radiuss)) {
-                sendPrefixedMessage(sender, "command.claim.notanumber")
-                ;
+                sendPrefixedMessage(sender, "command.claim.notanumber");
                 return ReturnType.FAILURE;
             }
 
