@@ -13,6 +13,8 @@ import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.getFormattedMessage;
+
 public class SettingsMemberGui extends CustomizableGui {
 
     private final UltimateClaims plugin;
@@ -25,8 +27,8 @@ public class SettingsMemberGui extends CustomizableGui {
         this.role = type;
         this.plugin = plugin;
         this.setRows(3);
-        this.setTitle(plugin.getLocale().getMessage("interface.permsettings.title")
-                .processPlaceholder("role", TextUtils.formatText(role.toString().toLowerCase(), true)).getMessage());
+        this.setTitle(getFormattedMessage(player, "interface.permsettings.title",
+                "role", TextUtils.formatText(role.toString().toLowerCase(), true)));
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -40,8 +42,8 @@ public class SettingsMemberGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        getFormattedMessage(player, "general.interface.back"),
+                        getFormattedMessage(player, "general.interface.exit")),
                 (event) -> event.player.closeInventory());
         this.setButton("back", 8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
 
@@ -58,49 +60,49 @@ public class SettingsMemberGui extends CustomizableGui {
 
     private void refreshDisplay(Player player) {
         this.updateItem("break", 1, 1,
-                plugin.getLocale().getMessage("interface.permsettings.breaktitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
+                getFormattedMessage(player, "interface.permsettings.breaktitle"),
+                getFormattedMessage(player, "general.interface.current",
+                        "%current%", role == ClaimRole.MEMBER
                                 ? claim.getMemberPermissions().getStatus(ClaimPerm.BREAK, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.BREAK, player))
-                        .getMessage().split("\\|"));
+                        .split("\\|"));
         this.updateItem("place", 1, 2,
-                plugin.getLocale().getMessage("interface.permsettings.placetitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
+                getFormattedMessage(player, "interface.permsettings.placetitle"),
+                getFormattedMessage(player, "general.interface.current",
+                        "%current%", role == ClaimRole.MEMBER
                                 ? claim.getMemberPermissions().getStatus(ClaimPerm.PLACE, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.PLACE, player))
-                        .getMessage().split("\\|"));
+                        .split("\\|"));
         this.updateItem("interact", 1, 3,
-                plugin.getLocale().getMessage("interface.permsettings.interacttitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
+                getFormattedMessage(player, "interface.permsettings.interacttitle"),
+                getFormattedMessage(player, "general.interface.current",
+                        "%current%", role == ClaimRole.MEMBER
                                 ? claim.getMemberPermissions().getStatus(ClaimPerm.INTERACT, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.INTERACT, player))
-                        .getMessage().split("\\|"));
+                        .split("\\|"));
 
         this.updateItem("trading", 1, 4,
-                plugin.getLocale().getMessage("interface.permsettings.tradingtitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
+                getFormattedMessage(player, "interface.permsettings.tradingtitle"),
+                getFormattedMessage(player, "general.interface.current",
+                        "%current%", role == ClaimRole.MEMBER
                                 ? claim.getMemberPermissions().getStatus(ClaimPerm.TRADING, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.TRADING, player))
-                        .getMessage().split("\\|"));
+                        .split("\\|"));
 
         this.updateItem("doors", 1, 5,
-                plugin.getLocale().getMessage("interface.permsettings.doorstitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
+                getFormattedMessage(player, "interface.permsettings.doorstitle"),
+                getFormattedMessage(player, "general.interface.current",
+                        "%current%", role == ClaimRole.MEMBER
                                 ? claim.getMemberPermissions().getStatus(ClaimPerm.DOORS, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.DOORS, player))
-                        .getMessage().split("\\|"));
+                        .split("\\|"));
         this.updateItem("kills", 1, 6,
-                plugin.getLocale().getMessage("interface.permsettings.mobkilltitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
+                getFormattedMessage(player, "interface.permsettings.mobkilltitle"),
+                getFormattedMessage(player, "general.interface.current",
+                        "%current%", role == ClaimRole.MEMBER
                                 ? claim.getMemberPermissions().getStatus(ClaimPerm.MOB_KILLING, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.MOB_KILLING, player))
-                        .getMessage().split("\\|"));
+                        .split("\\|"));
         this.updateItem("redstone", 1, 7,
-                plugin.getLocale().getMessage("interface.permsettings.redstonetitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
+                getFormattedMessage(player, "interface.permsettings.redstonetitle"),
+                getFormattedMessage(player, "general.interface.current",
+                        "%current%", role == ClaimRole.MEMBER
                                 ? claim.getMemberPermissions().getStatus(ClaimPerm.REDSTONE, player) : claim.getVisitorPermissions().getStatus(ClaimPerm.REDSTONE, player))
-                        .getMessage().split("\\|"));
+                        .split("\\|"));
 
     }
 

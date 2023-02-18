@@ -10,23 +10,26 @@ import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.getFormattedMessage;
+
 public class BansGui extends CustomizableGui {
 
     private final UltimateClaims plugin;
     private final Claim claim;
 
-    public BansGui(UltimateClaims plugin, Claim claim) {
+    public BansGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "bans");
         this.claim = claim;
         this.plugin = plugin;
         setRows(6);
-        this.setTitle(plugin.getLocale().getMessage("interface.bans.title").getMessage());
+        this.setTitle(getFormattedMessage(player, "interface.bans.title"));
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -41,26 +44,25 @@ public class BansGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        getFormattedMessage(player, "general.interface.back")),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
         this.setButton("back", 8, this.getItem(0),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Ban information
         this.setItem("information", 4, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
-                plugin.getLocale().getMessage("interface.bans.infotitle").getMessage(),
-                plugin.getLocale().getMessage("interface.bans.infolore")
-                        .processPlaceholder("bancount", claim.getBannedPlayers().size()).getMessage().split("\\|")));
+                getFormattedMessage(player, "interface.bans.infotitle"),
+                getFormattedMessage(player, "interface.bans.infolore", "%bancount%", Integer.toString(claim.getBannedPlayers().size()))
+                        .split("\\|")));
 
         // enable page events
-        setNextPage(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.interface.next").getMessage()));
-        setPrevPage(5, 2, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.interface.previous").getMessage()));
-        setOnPage((event) -> showPage());
-        showPage();
+        setNextPage(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, getFormattedMessage(player, "general.interface.next")));
+        setPrevPage(5, 2, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, getFormattedMessage(player, "general.interface.previous")));
+        setOnPage((event) -> showPage(player));
+        showPage(player);
     }
 
-    private void showPage() {
+    private void showPage(Player player) {
         List<UUID> toDisplay = new ArrayList<>(claim.getBannedPlayers());
         this.pages = (int) Math.max(1, Math.ceil(toDisplay.size() / (7 * 4)));
         this.page = Math.max(page, pages);
@@ -78,10 +80,10 @@ public class BansGui extends CustomizableGui {
 
                 this.setButton(row, col, GuiUtils.createButtonItem(ItemUtils.getPlayerSkull(skullPlayer),
                                 ChatColor.AQUA + skullPlayer.getName(),
-                                plugin.getLocale().getMessage("interface.bans.skulllore").getMessage().split("\\|")),
+                                getFormattedMessage(player, "interface.bans.skulllore").split("\\|")),
                         (event) -> {
                             claim.unBanPlayer(playerUUID);
-                            showPage();
+                            showPage(player);
                         });
 
                 current++;

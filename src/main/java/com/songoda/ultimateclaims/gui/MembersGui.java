@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.getFormattedMessage;
+
 public class MembersGui extends CustomizableGui {
 
     private final UltimateClaims plugin;
@@ -32,7 +34,7 @@ public class MembersGui extends CustomizableGui {
         this.claim = claim;
         this.plugin = plugin;
         this.setRows(6);
-        this.setTitle(plugin.getLocale().getMessage("interface.members.title").getMessage());
+        this.setTitle(getFormattedMessage(player, "interface.members.title"));
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -47,8 +49,8 @@ public class MembersGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
-                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        getFormattedMessage(player, "general.interface.back"),
+                        getFormattedMessage(player, "general.interface.exit")),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
         this.setButton("back", 8, this.getItem(0),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
@@ -57,49 +59,55 @@ public class MembersGui extends CustomizableGui {
         this.setItem("stats", 4, CompatibleMaterial.PAINTING.getItem());
 
         // Filters
-        this.setButton("type", 3, CompatibleMaterial.HOPPER.getItem(), (event) -> toggleFilterType());
-        this.setButton("sort", 5, CompatibleMaterial.HOPPER.getItem(), (event) -> toggleSort());
+        this.setButton("type", 3, CompatibleMaterial.HOPPER.getItem(), (event) -> toggleFilterType(player));
+        this.setButton("sort", 5, CompatibleMaterial.HOPPER.getItem(), (event) -> toggleSort(player));
 
         // Settings shortcuts
         this.setButton("visitor_settings", 5, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,
-                        plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
-                        plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
-                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR, player)));
+                        getFormattedMessage(player, "interface.members.visitorsettingstitle"),
+                        getFormattedMessage(player, "interface.members.visitorsettingslore").split("\\|")),
+                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this,
+                        ClaimRole.VISITOR, player)));
 
         this.setButton("member_settings", 5, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
-                        plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
-                        plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
-                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER, player)));
+                        getFormattedMessage(player, "interface.members.membersettingstitle"),
+                        getFormattedMessage(player, "interface.members.membersettingslore").split("\\|")),
+                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this,
+                        ClaimRole.MEMBER, player)));
 
         // enable page events
-        setNextPage(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.interface.next").getMessage()));
-        setPrevPage(5, 2, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.interface.previous").getMessage()));
-        setOnPage((event) -> showPage());
-        showPage();
+        setNextPage(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.ARROW,
+                getFormattedMessage(player, "general.interface.next")));
+        setPrevPage(5, 2, GuiUtils.createButtonItem(CompatibleMaterial.ARROW,
+                getFormattedMessage(player, "general.interface.previous")));
+        setOnPage((event) -> showPage(player));
+        showPage(player);
     }
 
-    private void showPage() {
+    private void showPage(Player player) {
         // refresh stats
         this.setItem("stats", 4, GuiUtils.updateItem(this.getItem(4),
-                plugin.getLocale().getMessage("interface.members.statstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.members.statslore")
-                        .processPlaceholder("totalmembers", claim.getOwnerAndMembers().size())
-                        .processPlaceholder("maxmembers", Settings.MAX_MEMBERS.getInt())
-                        .processPlaceholder("members", claim.getMembers().size()).getMessage().split("\\|")));
+                getFormattedMessage(player, "interface.members.statstitle"),
+                getFormattedMessage(player, "interface.members.statslore",
+                        "%totalmembers%", Integer.toString(claim.getOwnerAndMembers().size()),
+                        "%maxmembers%", Integer.toString(Settings.MAX_MEMBERS.getInt()),
+                        "%members%", Integer.toString(claim.getMembers().size()))
+                        .split("\\|")));
 
         // Filters
         this.setItem("type", 3, GuiUtils.updateItem(this.getItem(3),
-                plugin.getLocale().getMessage("interface.members.changetypetitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current",
-                                displayedRole == ClaimRole.OWNER ? plugin.getLocale().getMessage("interface.role.all").getMessage() : plugin.getLocale().getMessage(displayedRole.getLocalePath()).getMessage())
-                        .getMessage().split("\\|")));
+                getFormattedMessage(player, "interface.members.changetypetitle"),
+                getFormattedMessage(player, "general.interface.current",
+                        "%current%", displayedRole == ClaimRole.OWNER ?
+                                getFormattedMessage(player, "interface.role.all") :
+                                getFormattedMessage(player, displayedRole.getLocalePath()))
+                        .split("\\|")));
         this.setItem("sort", 5, GuiUtils.updateItem(this.getItem(5),
-                plugin.getLocale().getMessage("interface.members.changesorttitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current",
-                                plugin.getLocale().getMessage(sortType.getLocalePath()).getMessage())
-                        .getMessage().split("\\|")));
+                getFormattedMessage(player, "interface.members.changesorttitle"),
+                getFormattedMessage(player, "general.interface.current",
+                        "%current%",
+                        getFormattedMessage(player, sortType.getLocalePath()))
+                        .split("\\|")));
 
         // show members
         List<ClaimMember> toDisplay = new ArrayList<>(claim.getOwnerAndMembers());
@@ -136,20 +144,20 @@ public class MembersGui extends CustomizableGui {
 
                 this.setItem(row, col, GuiUtils.createButtonItem(ItemUtils.getPlayerSkull(skullPlayer),
                         ChatColor.AQUA + skullPlayer.getName(),
-                        plugin.getLocale().getMessage("interface.members.skulllore")
-                                .processPlaceholder("role",
-                                        plugin.getLocale().getMessage(toDisplay.get(currentMember).getRole().getLocalePath()).getMessage())
-                                .processPlaceholder("playtime", TimeUtils.makeReadable(claimMember.getPlayTime()))
-                                .processPlaceholder("membersince",
-                                        new SimpleDateFormat("dd/MM/yyyy").format(new Date(claimMember.getMemberSince())))
-                                .getMessage().split("\\|")));
+                        getFormattedMessage(player, "interface.members.skulllore",
+                                "%role%",
+                                getFormattedMessage(player, toDisplay.get(currentMember).getRole().getLocalePath()),
+                                "%playtime%", TimeUtils.makeReadable(claimMember.getPlayTime()),
+                                "%membersince%",
+                                new SimpleDateFormat("dd/MM/yyyy").format(new Date(claimMember.getMemberSince())))
+                                .split("\\|")));
 
                 currentMember++;
             }
         }
     }
 
-    void toggleFilterType() {
+    void toggleFilterType(Player player) {
         switch (displayedRole) {
             case OWNER:
                 displayedRole = ClaimRole.VISITOR;
@@ -161,10 +169,10 @@ public class MembersGui extends CustomizableGui {
                 displayedRole = ClaimRole.MEMBER;
                 break;
         }
-        showPage();
+        showPage(player);
     }
 
-    void toggleSort() {
+    void toggleSort(Player player) {
         switch (sortType) {
             case DEFAULT:
                 sortType = SortType.PLAYTIME;
@@ -176,7 +184,7 @@ public class MembersGui extends CustomizableGui {
                 sortType = SortType.DEFAULT;
                 break;
         }
-        showPage();
+        showPage(player);
     }
 
     public enum SortType {

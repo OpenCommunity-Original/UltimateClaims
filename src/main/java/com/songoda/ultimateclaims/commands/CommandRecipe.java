@@ -19,7 +19,7 @@ public class CommandRecipe extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        plugin.getGuiManager().showGUI((Player) sender, new RecipeDisplayGui());
+        plugin.getGuiManager().showGUI((Player) sender, new RecipeDisplayGui((Player) sender));
         return ReturnType.SUCCESS;
     }
 
