@@ -87,6 +87,6 @@ public class InventoryListeners implements Listener {
         player.playSound(location, CompatibleSound.ENTITY_BLAZE_DEATH.getSound(), 1F, .4F);
         player.playSound(location, CompatibleSound.ENTITY_PLAYER_LEVELUP.getSound(), 1F, .1F);
 
-        LocaleAPI.getMessage(player,"event.powercell.success");
+        LocaleAPI.getMessage(player, "event.powercell.success");
     }
 }

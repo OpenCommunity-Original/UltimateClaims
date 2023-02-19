@@ -63,7 +63,7 @@ public class BlockListeners implements Listener {
         }
 
         if (!claim.playerHasPerms(player, ClaimPerm.PLACE)) {
-            LocaleAPI.getMessage(player,"event.general.nopermission");
+            LocaleAPI.getMessage(player, "event.general.nopermission");
             event.setCancelled(true);
         }
     }
@@ -83,7 +83,7 @@ public class BlockListeners implements Listener {
         PowerCell powerCell = claim.getPowerCell();
 
         if (!claim.playerHasPerms(player, ClaimPerm.BREAK)) {
-            LocaleAPI.getMessage(player,"event.general.nopermission");
+            LocaleAPI.getMessage(player, "event.general.nopermission");
             event.setCancelled(true);
             return;
         }
@@ -93,7 +93,7 @@ public class BlockListeners implements Listener {
             if ((member != null && member.getRole() == ClaimRole.OWNER) || player.hasPermission("ultimateclaims.admin.removeclaim")) {
                 powerCell.destroy();
             } else {
-                LocaleAPI.getMessage(player,"event.general.nopermission");
+                LocaleAPI.getMessage(player, "event.general.nopermission");
                 event.setCancelled(true);
             }
         }

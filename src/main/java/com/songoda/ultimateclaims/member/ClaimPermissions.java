@@ -23,6 +23,6 @@ public class ClaimPermissions {
     }
 
     public String getStatus(ClaimPerm perm, Player player) {
-        return hasPermission(perm) ? LocaleAPI.getMessage(player,"general.status.true") : LocaleAPI.getMessage(player,"general.status.false");
+        return hasPermission(perm) ? LocaleAPI.getMessage(player, "general.status.true") : LocaleAPI.getMessage(player, "general.status.false");
     }
 }

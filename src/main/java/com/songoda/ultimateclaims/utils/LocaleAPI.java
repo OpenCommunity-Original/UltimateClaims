@@ -99,8 +99,8 @@ public class LocaleAPI implements Listener {
      * for the default locale. If the message still isn't found, it will
      * return null.
      *
-     * @param player the player
-     * @param key    the message key
+     * @param player       the player
+     * @param key          the message key
      * @param placeholders the placeholders and their corresponding values to be replaced in the message
      * @return the message with placeholders replaced or null if not found
      */
@@ -129,7 +129,7 @@ public class LocaleAPI implements Listener {
 
         // replace placeholders
         for (int i = 0; i < placeholders.length; i += 2) {
-            message = message.replace(placeholders[i], placeholders[i+1]);
+            message = message.replace(placeholders[i], placeholders[i + 1]);
         }
 
         return message;
@@ -245,17 +245,17 @@ public class LocaleAPI implements Listener {
      */
     public static void sendPrefixedMessage(CommandSender sender, String messageKey, String... placeholders) {
         Player player = (Player) sender;
-        String message = LocaleAPI.getMessage(player, messageKey).toString();
+        String message = LocaleAPI.getMessage(player, messageKey);
         String prefix = LocaleAPI.getMessage(player, "general.nametag.prefix");
 
         if (sender instanceof Player) {
             for (int i = 0; i < placeholders.length; i += 2) {
-                message = message.replace(placeholders[i], placeholders[i+1]);
+                message = message.replace(placeholders[i], placeholders[i + 1]);
             }
             player.sendMessage(TextUtils.formatText((prefix == null ? "" : prefix + " ") + message));
         } else {
             for (int i = 0; i < placeholders.length; i += 2) {
-                message = message.replace(placeholders[i], placeholders[i+1]);
+                message = message.replace(placeholders[i], placeholders[i + 1]);
             }
             sender.sendMessage(TextUtils.formatText(message));
         }

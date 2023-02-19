@@ -43,13 +43,13 @@ public class InteractListeners implements Listener {
             if (canRedstone) {
                 return;
             } else if (isRedstone(block) && !claim.playerHasPerms(player, ClaimPerm.REDSTONE)) {
-                LocaleAPI.getMessage(player,"event.general.nopermission");
+                LocaleAPI.getMessage(player, "event.general.nopermission");
                 event.setCancelled(true);
                 return;
             }
 
             if (!claim.playerHasPerms(player, ClaimPerm.PLACE)) {
-                LocaleAPI.getMessage(player,"event.general.nopermission");
+                LocaleAPI.getMessage(player, "event.general.nopermission");
                 event.setCancelled(true);
             }
             return;
@@ -66,7 +66,7 @@ public class InteractListeners implements Listener {
             return;
         } else if (isRedstone(block) && !claim.playerHasPerms(player, ClaimPerm.REDSTONE)
                 || isDoor(block) && !claim.playerHasPerms(player, ClaimPerm.DOORS)) {
-            LocaleAPI.getMessage(player,"event.general.nopermission");
+            LocaleAPI.getMessage(player, "event.general.nopermission");
             event.setCancelled(true);
             return;
         }
@@ -83,7 +83,7 @@ public class InteractListeners implements Listener {
             if (member != null && member.getRole() != ClaimRole.VISITOR || player.hasPermission("ultimateclaims.powercell.view")) {
                 plugin.getGuiManager().showGUI(player, claim.getPowerCell().getGui(player));
             } else {
-                LocaleAPI.getMessage(player,"event.powercell.failopen");
+                LocaleAPI.getMessage(player, "event.powercell.failopen");
             }
             event.setCancelled(true);
             return;
@@ -95,7 +95,7 @@ public class InteractListeners implements Listener {
         }
 
         if (!claim.playerHasPerms(player, ClaimPerm.INTERACT)) {
-            LocaleAPI.getMessage(player,"event.general.nopermission");
+            LocaleAPI.getMessage(player, "event.general.nopermission");
             event.setCancelled(true);
         }
     }
@@ -122,7 +122,7 @@ public class InteractListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms(player, ClaimPerm.PLACE)) {
-            LocaleAPI.getMessage(player,"event.general.nopermission");
+            LocaleAPI.getMessage(player, "event.general.nopermission");
             event.setCancelled(true);
         }
     }
