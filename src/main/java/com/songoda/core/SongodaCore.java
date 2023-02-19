@@ -62,11 +62,6 @@ public class SongodaCore {
         loginListener = new EventListener();
     }
 
-    public static boolean hasShading() {
-        // sneaky hack to check the package name since maven tries to re-shade all references to the package string
-        return !SongodaCore.class.getPackage().getName().equals(new String(new char[]{'c', 'o', 'm', '.', 's', 'o', 'n', 'g', 'o', 'd', 'a', '.', 'c', 'o', 'r', 'e'}));
-    }
-
     public static void registerPlugin(JavaPlugin plugin, int pluginID, CompatibleMaterial icon) {
         registerPlugin(plugin, pluginID, icon == null ? "STONE" : icon.name(), coreVersion);
     }
@@ -94,11 +89,11 @@ public class SongodaCore {
                             // assuming that the other is greater than R6 if we get here ;)
                             clazz.getMethod("registerPlugin", JavaPlugin.class, int.class, String.class, String.class).invoke(null, plugin, pluginID, icon, coreVersion);
 
-                            if (hasShading()) {
-                                (INSTANCE = new SongodaCore()).piggybackedPlugin = plugin;
-                                INSTANCE.shadingListener = new ShadedEventListener();
-                                Bukkit.getPluginManager().registerEvents(INSTANCE.shadingListener, plugin);
-                            }
+
+                            (INSTANCE = new SongodaCore()).piggybackedPlugin = plugin;
+                            INSTANCE.shadingListener = new ShadedEventListener();
+                            Bukkit.getPluginManager().registerEvents(INSTANCE.shadingListener, plugin);
+
 
                             return;
                         }
@@ -216,9 +211,6 @@ public class SongodaCore {
                 .forEach(task -> Bukkit.getScheduler().cancelTask(task.getTaskId()));
 
         HandlerList.unregisterAll(loginListener);
-        if (!hasShading()) {
-            HandlerList.unregisterAll(shadingListener);
-        }
 
         registeredPlugins.clear();
         commandManager = null;
