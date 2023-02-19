@@ -1,6 +1,6 @@
 name: UltimateClaims
 description: UltimateClaims
-version: maven-version-number
+version: ${version}
 softdepend: [HolographicDisplays, Holograms, Vault, dynmap, ItemsAdder, Slimefun]
 main: com.songoda.ultimateclaims.UltimateClaims
 authors: [Envel, Songoda Team]
