@@ -99,33 +99,26 @@ public class BlockListeners implements Listener {
         }
     }
 
-    // TODO fix fire spread not in claims
-    //@EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true)
     public void ignite(BlockIgniteEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
 
         Claim claim = claimManager.getClaim(event.getBlock().getChunk());
         if (claim != null && !claim.getClaimSettings().isEnabled(ClaimSetting.FIRE_SPREAD)) {
+            System.out.println("Cancel this.");
             event.setCancelled(true);
         }
     }
 
-    //@EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true)
     public void ignite(BlockBurnEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
 
         Claim claim = claimManager.getClaim(event.getBlock().getChunk());
         if (claim != null && !claim.getClaimSettings().isEnabled(ClaimSetting.FIRE_SPREAD)) {
             event.getIgnitingBlock().setType(CompatibleMaterial.AIR.getMaterial());
-        } else {
-            for (BlockFace bf : new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
-                Block b = event.getBlock().getRelative(bf);
-                if (b != null && b.getType() == CompatibleMaterial.FIRE.getMaterial()) {
-                    b.setType(CompatibleMaterial.AIR.getMaterial());
-                }
-            }
+            event.setCancelled(true);
         }
-        event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)

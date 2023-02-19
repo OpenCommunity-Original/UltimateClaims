@@ -16,6 +16,8 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -113,51 +115,45 @@ public class CommandRound extends AbstractCommand {
                 }
             }
 
-            List<Chunk> getChunks;
-            {
-                // start radius match
-                List<Chunk> chunks = new ArrayList<>();
+            // Calculate radius only once
+            final int rSquared = (radius - 1) * (radius - 1);
 
-                int r = radius + radius - 2;
-                int xx = centerChunk.getX();
-                int zz = centerChunk.getZ();
+            // Get player world and location only once
+             World world = player.getWorld();
+             Location playerLocation = player.getLocation();
 
-                // match
-                for (int x = xx - radius; x < xx + radius + 1; x++) {
-                    for (int z = zz - radius; z < zz + radius + 1; z++) {
-                        if ((x - xx) * (x - xx) + (z - zz) * (z - zz) < r * r) {
-
-                            // check chunk loaded
-                            if (player.getLocation().getWorld().isChunkLoaded(x, z)) {
-
-                                // skip claimed chunks
-                                Chunk chunk = centerChunk.getWorld().getChunkAt(x, z);
-                                if (!plugin.getClaimManager().hasClaim(chunk)) {
-
-                                    // start save logic
-                                    ClaimChunkClaimEvent events = new ClaimChunkClaimEvent(claim, chunk);
-                                    Bukkit.getPluginManager().callEvent(events);
-                                    boolean newRegion = claim.isNewRegion(chunk);
-
-                                    // check max region limit
-                                    if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
-                                        sendPrefixedMessage(sender, "command.claim.maxregions");
-                                        return ReturnType.FAILURE;
-                                    }
-
-                                    claim.addClaimedChunk(chunk, player);
-                                    ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
-                                    plugin.getDataManager().createClaimedChunk(claimedChunk);
-
+            // Loop through chunks within radius
+            for (int x = centerChunk.getX() - radius; x <= centerChunk.getX() + radius; x++) {
+                for (int z = centerChunk.getZ() - radius; z <= centerChunk.getZ() + radius; z++) {
+                    // Calculate distance to center only once
+                    final int xDistSquared = (x - centerChunk.getX()) * (x - centerChunk.getX());
+                    final int zDistSquared = (z - centerChunk.getZ()) * (z - centerChunk.getZ());
+                    if (xDistSquared + zDistSquared < rSquared) {
+                        // Check if chunk is loaded
+                        if (world.isChunkLoaded(x, z)) {
+                            // Get chunk and check if it's claimed
+                            final Chunk chunk = world.getChunkAt(x, z);
+                            if (!plugin.getClaimManager().hasClaim(chunk)) {
+                                // Call event and check max region limit
+                                final ClaimChunkClaimEvent events = new ClaimChunkClaimEvent(claim, chunk);
+                                Bukkit.getPluginManager().callEvent(events);
+                                if (claim.isNewRegion(chunk) && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
+                                    sendPrefixedMessage(sender, "command.claim.maxregions");
+                                    return ReturnType.FAILURE;
                                 }
-                            } else {
-                                // warn player if chunks not loaded and skipped part 1
-                                warnload++;
+                                // Add claimed chunk and save to database
+                                claim.addClaimedChunk(chunk, player);
+                                final ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
+                                plugin.getDataManager().createClaimedChunk(claimedChunk);
                             }
+                        } else {
+                            // Warn player if chunk is not loaded
+                            warnload++;
                         }
                     }
                 }
             }
+
 
         } else {
             claim = new ClaimBuilder()
