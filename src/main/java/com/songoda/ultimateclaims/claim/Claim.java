@@ -1,7 +1,6 @@
 package com.songoda.ultimateclaims.claim;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimDeleteEvent;
@@ -323,14 +322,14 @@ public class Claim {
     }
 
     public void animateChunk(Chunk chunk, Player player, Material material) {
-        if (!Settings.ENABLE_CHUNK_ANIMATION.getBoolean())
+        if (!Settings.ENABLE_CHUNK_ANIMATION.getBoolean()) {
             return;
+        }
 
         int bx = chunk.getX() << 4;
         int bz = chunk.getZ() << 4;
 
         World world = player.getWorld();
-
         Random random = new Random();
 
         for (int xx = bx; xx < bx + 16; xx++) {
@@ -338,12 +337,19 @@ public class Claim {
                 for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
                     Block block = world.getBlockAt(xx, yy, zz);
                     CompatibleMaterial m = CompatibleMaterial.getMaterial(block);
-                    if (!m.isOccluding() || m.isInteractable()) continue;
+                    if (!m.isOccluding() || m.isInteractable()) {
+                        continue;
+                    }
+
+                    // Only animate some blocks
+                    if (random.nextInt(9) != 0) {
+                        continue;
+                    }
+
                     Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
                         player.sendBlockChange(block.getLocation(), material, (byte) 0);
                         Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
                                 player.sendBlockChange(block.getLocation(), block.getBlockData()), random.nextInt(30) + 1);
-                        player.playSound(block.getLocation(), CompatibleSound.BLOCK_METAL_STEP.getSound(), 1F, .2F);
                     }, random.nextInt(30) + 1);
                 }
             }

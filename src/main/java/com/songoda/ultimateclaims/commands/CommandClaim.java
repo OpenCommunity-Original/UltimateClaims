@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.hooks.WorldGuardHook;
 import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;

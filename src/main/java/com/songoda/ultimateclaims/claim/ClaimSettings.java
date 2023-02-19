@@ -23,6 +23,6 @@ public class ClaimSettings {
     }
 
     public String getStatus(ClaimSetting setting, Player player) {
-        return isEnabled(setting) ? LocaleAPI.getMessage(player,"general.status.true") : LocaleAPI.getMessage(player,"general.status.false");
+        return isEnabled(setting) ? LocaleAPI.getMessage(player, "general.status.true") : LocaleAPI.getMessage(player, "general.status.false");
     }
 }

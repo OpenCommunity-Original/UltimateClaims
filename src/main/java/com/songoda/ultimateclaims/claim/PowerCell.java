@@ -169,11 +169,11 @@ public class PowerCell {
     public String getTimeRemaining() {
         if (getTotalPower() > 1) {
             return plugin.getLocale().getMessage("general.claim.powercell")
-                    .processPlaceholder("%time%", TimeUtils.makeReadable(getTotalPower() * 60 * 1000))
+                    .processPlaceholder("time", TimeUtils.makeReadable(getTotalPower() * 60 * 1000))
                     .getMessage();
         } else {
             return plugin.getLocale().getMessage("general.claim.powercell.low")
-                    .processPlaceholder("%time%", TimeUtils.makeReadable((getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000))
+                    .processPlaceholder("time", TimeUtils.makeReadable((getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000))
                     .getMessage();
         }
     }

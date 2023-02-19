@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.hooks.WorldGuardHook;
 import com.songoda.core.utils.NumberUtils;
 import com.songoda.core.utils.TimeUtils;
@@ -16,7 +17,6 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -119,8 +119,8 @@ public class CommandRound extends AbstractCommand {
             final int rSquared = (radius - 1) * (radius - 1);
 
             // Get player world and location only once
-             World world = player.getWorld();
-             Location playerLocation = player.getLocation();
+            World world = player.getWorld();
+            player.playSound(player.getLocation(), CompatibleSound.ENTITY_PLAYER_LEVELUP.getSound(), 1F, .1F);
 
             // Loop through chunks within radius
             for (int x = centerChunk.getX() - radius; x <= centerChunk.getX() + radius; x++) {

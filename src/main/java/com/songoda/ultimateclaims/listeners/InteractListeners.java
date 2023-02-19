@@ -87,6 +87,11 @@ public class InteractListeners implements Listener {
             }
             event.setCancelled(true);
             return;
+        } else if (claim.getPowerCell().hasLocation()
+                && claim.getPowerCell().getLocation().equals(block.getLocation())
+                && event.getAction() == Action.RIGHT_CLICK_BLOCK
+                && player.isSneaking()) {
+            event.setCancelled(true);
         }
 
         if (!claim.playerHasPerms(player, ClaimPerm.INTERACT)) {

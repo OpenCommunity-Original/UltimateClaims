@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.hooks.WorldGuardHook;
 import com.songoda.core.utils.NumberUtils;
 import com.songoda.core.utils.TimeUtils;
@@ -116,6 +117,7 @@ public class CommandSquare extends AbstractCommand {
 
             // Get the world only once
             World world = player.getLocation().getWorld();
+            player.playSound(player.getLocation(), CompatibleSound.ENTITY_PLAYER_LEVELUP.getSound(), 1F, .1F);
 
             // Loop through chunks within radius
             for (int x = centerChunk.getX() - radius; x <= centerChunk.getX() + radius; x++) {
