@@ -21,7 +21,7 @@ public class CommandReload extends AbstractCommand {
     @Override
     protected AbstractCommand.ReturnType runCommand(CommandSender sender, String... args) {
         plugin.reloadConfig();
-        sender.sendMessage("&7UltimateClaims > Configuration and Language files reloaded.");
+        sender.sendMessage("UltimateClaims > Configuration and Language files reloaded.");
         return ReturnType.SUCCESS;
     }
 
