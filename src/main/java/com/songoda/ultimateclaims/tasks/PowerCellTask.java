@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class PowerCellTask extends BukkitRunnable {
 
     private static PowerCellTask instance;
@@ -68,24 +70,21 @@ public class PowerCellTask extends BukkitRunnable {
     private void outOfPower(ClaimMember member) {
         OfflinePlayer player = member.getPlayer();
         if (player.isOnline())
-            plugin.getLocale().getMessage("event.powercell.lowpower")
-                    .processPlaceholder("claim", member.getClaim().getName())
-                    .sendPrefixedMessage(player.getPlayer());
+            sendPrefixedMessage(player.getPlayer(), "event.powercell.lowpower",
+                    "claim", member.getClaim().getName());
     }
 
     private void tenLeft(ClaimMember member) {
         OfflinePlayer player = member.getPlayer();
         if (player.isOnline())
-            plugin.getLocale().getMessage("event.powercell.superpower")
-                    .processPlaceholder("claim", member.getClaim().getName())
-                    .sendPrefixedMessage(player.getPlayer());
+            sendPrefixedMessage(player.getPlayer(), "event.powercell.superpower",
+                    "claim", member.getClaim().getName());
     }
 
     private void dissolved(ClaimMember member) {
         OfflinePlayer player = member.getPlayer();
         if (player.isOnline())
-            plugin.getLocale().getMessage("general.claim.dissolve")
-                    .processPlaceholder("claim", member.getClaim().getName())
-                    .sendPrefixedMessage(player.getPlayer());
+            sendPrefixedMessage(player.getPlayer(), "general.claim.dissolve",
+                    "claim", member.getClaim().getName());
     }
 }

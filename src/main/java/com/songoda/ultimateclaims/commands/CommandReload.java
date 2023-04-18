@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import org.bukkit.command.CommandSender;
 
@@ -20,7 +21,7 @@ public class CommandReload extends AbstractCommand {
     @Override
     protected AbstractCommand.ReturnType runCommand(CommandSender sender, String... args) {
         plugin.reloadConfig();
-        sendPrefixedMessage(sender, "&7Configuration and Language files reloaded.");
+        sender.sendMessage("&7UltimateClaims > Configuration and Language files reloaded.");
         return ReturnType.SUCCESS;
     }
 

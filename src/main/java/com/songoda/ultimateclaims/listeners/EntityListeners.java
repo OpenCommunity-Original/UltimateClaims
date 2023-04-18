@@ -35,6 +35,8 @@ import org.bukkit.projectiles.ProjectileSource;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class EntityListeners implements Listener {
 
     private final UltimateClaims plugin;
@@ -131,7 +133,7 @@ public class EntityListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+            sendPrefixedMessage(event.getPlayer(),"event.general.nopermission");
             event.setCancelled(true);
         }
     }
@@ -150,7 +152,7 @@ public class EntityListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms((Player) event.getRemover(), ClaimPerm.PLACE)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getRemover());
+            sendPrefixedMessage(event.getRemover(),"event.general.nopermission");
             event.setCancelled(true);
         }
     }
@@ -256,7 +258,7 @@ public class EntityListeners implements Listener {
             Entity source = event.getPlayer();
             Entity entity = event.getRightClicked();
             if (entity.getType().equals(EntityType.VILLAGER) && !claim.playerHasPerms((Player) source, ClaimPerm.TRADING)) {
-                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(source);
+                sendPrefixedMessage(source,"event.general.nopermission");
                 event.setCancelled(true);
             }
         }

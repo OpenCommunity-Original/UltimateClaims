@@ -64,7 +64,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return "Songoda";
+        return "OpenCommunity Original";
     }
 
     @Override

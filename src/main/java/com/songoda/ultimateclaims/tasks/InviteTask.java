@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
+
 public class InviteTask extends BukkitRunnable {
 
     private static InviteTask instance;
@@ -51,12 +53,10 @@ public class InviteTask extends BukkitRunnable {
                 OfflinePlayer invited = Bukkit.getPlayer(invite.getInvited());
 
                 if (inviter != null && inviter.isOnline())
-                    plugin.getLocale().getMessage("event.invite.expired")
-                            .sendPrefixedMessage(inviter.getPlayer());
+                    sendPrefixedMessage(invited.getPlayer(),"event.invite.expired");
 
                 if (invited != null && invited.isOnline())
-                    plugin.getLocale().getMessage("event.invite.expired")
-                            .sendPrefixedMessage(invited.getPlayer());
+                    sendPrefixedMessage(invited.getPlayer(), "event.invite.expired");
                 waitingInventations.remove(invite);
             }
         }
