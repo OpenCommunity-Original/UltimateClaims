@@ -236,11 +236,12 @@ public class PowerCellGui extends CustomizableGui {
         ChatPrompt.showPrompt(plugin, player,
                 getFormattedMessage(player, "interface.powercell.addfunds"),
                 response -> {
-                    if (!NumberUtils.isNumeric(String.valueOf(response))) {
+                    String message = response.getMessage();
+                    if (!NumberUtils.isNumeric(message)) {
                         sendPrefixedMessage(player, "general.notanumber");
                         return;
                     }
-                    double amount = Double.parseDouble(response.getMessage().trim());
+                    double amount = Double.parseDouble(message.trim());
                     if (amount > 0 && powercell.hasLocation()) {
                         if (EconomyManager.hasBalance(player, amount)) {
                             EconomyManager.withdrawBalance(player, amount);
@@ -260,14 +261,14 @@ public class PowerCellGui extends CustomizableGui {
     private void takeEcon(Player player) {
         player.closeInventory();
 
-        ChatPrompt.showPrompt(plugin, player,
-                getFormattedMessage(player, "interface.powercell.takefunds"),
+        ChatPrompt.showPrompt(plugin, player, getFormattedMessage(player, "interface.powercell.addfunds"),
                 response -> {
-                    if (!NumberUtils.isNumeric(response.getMessage())) {
+                    String message = response.getMessage();
+                    if (!NumberUtils.isNumeric(message)) {
                         sendPrefixedMessage(player, "general.notanumber");
                         return;
                     }
-                    double amount = Double.parseDouble(response.getMessage().trim());
+                    double amount = Double.parseDouble(message.trim());
                     if (amount > 0 && powercell.hasLocation()) {
                         if (powercell.getEconomyBalance() >= amount) {
                             EconomyManager.deposit(player, amount);
