@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.commands;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -39,14 +40,14 @@ public class CommandSetOwner extends AbstractCommand {
         Claim claim = plugin.getClaimManager().getClaim(player);
 
         if (player.getUniqueId().equals(newOwner.getUniqueId())) {
-            sendPrefixedMessage(sender, "command.setowner.notself");
+            sendPrefixedMessage(sender, "command.invite.notself");
             return ReturnType.FAILURE;
         }
 
         if (!claim.getMembers().stream()
                 .filter(m -> m.getRole() == ClaimRole.MEMBER)
                 .anyMatch(m -> m.getUniqueId().equals(newOwner.getUniqueId()))) {
-            sendPrefixedMessage(sender, "command.setowner.noinclaim");
+            sendPrefixedMessage(sender, "command.general.notinclaim");
             return ReturnType.FAILURE;
         }
 
@@ -59,11 +60,20 @@ public class CommandSetOwner extends AbstractCommand {
             sendPrefixedMessage(sender, "command.general.noclaim");
             return ReturnType.FAILURE;
         }
+
+        final ClaimMember toMember = claim.getOwner();
 
         if (claim.transferOwnership(newOwner))
-            sendPrefixedMessage(sender, "command.setowner.success", "%claim%", claim.getName());
+            sendPrefixedMessage(sender, "command.transferownership.success", "%claim%", claim.getName());
         else
-            sendPrefixedMessage(sender, "command.setowner.failed", "%claim%", claim.getName());
+            sendPrefixedMessage(sender, "command.transferownership.failed", "%claim%", claim.getName());
+
+        toMember.setRole(ClaimRole.MEMBER);
+
+        ClaimMember toOwner = claim.getMember(newOwner.getUniqueId());
+        toOwner.setRole(ClaimRole.OWNER);
+
+        UltimateClaims.getInstance().getDataManager().transferClaimOwnership(claim, toMember, toOwner);
 
         return ReturnType.SUCCESS;
     }

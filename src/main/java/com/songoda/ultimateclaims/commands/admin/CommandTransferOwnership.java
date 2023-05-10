@@ -3,6 +3,8 @@ package com.songoda.ultimateclaims.commands.admin;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
@@ -44,11 +46,20 @@ public class CommandTransferOwnership extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
+        final ClaimMember toMember = claim.getOwner();
+
         if (claim.transferOwnership(newOwner))
             sendPrefixedMessage(sender, "command.transferownership.success", "%claim%", claim.getName());
 
         else
             sendPrefixedMessage(sender, "command.transferownership.failed", "%claim%", claim.getName());
+
+        toMember.setRole(ClaimRole.MEMBER);
+
+        ClaimMember toOwner = claim.getMember(newOwner.getUniqueId());
+        toOwner.setRole(ClaimRole.OWNER);
+
+        UltimateClaims.getInstance().getDataManager().transferClaimOwnership(claim, toMember, toOwner);
 
         return ReturnType.SUCCESS;
     }

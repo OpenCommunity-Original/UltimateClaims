@@ -283,6 +283,30 @@ public class DataManager extends DataManagerAbstract {
         }
     }
 
+    public void transferClaimOwnership(Claim claim, ClaimMember oldOwner, ClaimMember newOwner) {
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
+                // Change old owner's role to 2
+                String updateOldOwnerRole = "UPDATE " + this.getTablePrefix() + "member SET role = 2 WHERE claim_id = ? AND player_uuid = ? AND role = 3";
+                try (PreparedStatement statement = connection.prepareStatement(updateOldOwnerRole)) {
+                    statement.setInt(1, claim.getId());
+                    statement.setString(2, oldOwner.getUniqueId().toString());
+                    statement.executeUpdate();
+                }
+
+                // Change new owner's role to 3
+                String updateNewOwnerRole = "UPDATE " + this.getTablePrefix() + "member SET role = 3 WHERE claim_id = ? AND player_uuid = ? AND role = 2";
+                try (PreparedStatement statement = connection.prepareStatement(updateNewOwnerRole)) {
+                    statement.setInt(1, claim.getId());
+                    statement.setString(2, newOwner.getUniqueId().toString());
+                    statement.executeUpdate();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public void deleteClaim(Claim claim) {
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
