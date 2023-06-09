@@ -4,7 +4,7 @@ version: ${version}
 softdepend: [HolographicDisplays, Holograms, Vault, dynmap, ItemsAdder, Slimefun]
 main: com.songoda.ultimateclaims.UltimateClaims
 authors: [Envel, Songoda Team]
-api-version: 1.20
+api-version: "1.20"
 loadbefore: [WorldGuard]
 commands:
   c:
