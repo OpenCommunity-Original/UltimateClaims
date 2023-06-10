@@ -82,7 +82,12 @@ public class LocaleAPI implements Listener {
             return playerLocales.get(player);
         }
 
+        if (player == null) {
+            return DEFAULT_LOCALE;
+        }
+
         Locale locale = player.locale();
+
         if (isLocaleSupported(locale)) {
             setPlayerLocale(player, locale);
         } else {
