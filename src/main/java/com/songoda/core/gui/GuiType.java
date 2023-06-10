@@ -8,8 +8,8 @@ public enum GuiType {
     HOPPER(InventoryType.HOPPER, 5, 1);
 
     final InventoryType type;
-    private final int rows;
     final int columns;
+    private final int rows;
 
     GuiType(InventoryType type, int rows, int columns) {
         this.type = type;

@@ -67,14 +67,6 @@ public class LegacyParticleEffects {
         createParticle(l, e, 0F, 0F, 0F, 1, 0, null);
     }
 
-    public static void createParticle(Location l, Type e, List<Player> localOnly) {
-        createParticle(l, e, 0F, 0F, 0F, 1, 0, localOnly);
-    }
-
-    public static void createParticle(Location l, Type e, float effectSpeed, int amountOfParticles) {
-        createParticle(l, e, 0F, 0F, 0F, effectSpeed, amountOfParticles, null);
-    }
-
     /**
      * @param l                 exact location to spawn the particle
      * @param e                 particle effect type
@@ -249,13 +241,5 @@ public class LegacyParticleEffects {
             this.maxVersion = maxVersion;
         }
 
-        public static Type getById(String id) {
-            for (Type t : Type.values()) {
-                if (t.name.equalsIgnoreCase(id) || t.name().equalsIgnoreCase(id)) {
-                    return t;
-                }
-            }
-            return null;
-        }
     }
 }

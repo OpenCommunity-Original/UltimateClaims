@@ -3,12 +3,9 @@ package com.songoda.core.locale;
 import com.songoda.core.chat.ChatMessage;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.TextUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 
 /**
@@ -46,33 +43,6 @@ public class Message {
     }
 
     /**
-     * create a new message
-     *
-     * @param message the message text
-     */
-    public Message(ChatMessage message) {
-        this.message = message;
-    }
-
-    /**
-     * Format and send the held message to a player
-     *
-     * @param player player to send the message to
-     */
-    public void sendMessage(Player player) {
-        player.sendMessage(this.getMessage());
-    }
-
-    /**
-     * Format and send the held message to a player
-     *
-     * @param sender command sender to send the message to
-     */
-    public void sendMessage(CommandSender sender) {
-        message.sendTo(sender);
-    }
-
-    /**
      * Format and send the held message to a player as a title messagexc
      *
      * @param sender command sender to send the message to
@@ -93,71 +63,12 @@ public class Message {
     }
 
     /**
-     * Format and send the held message to a player as an actionbar message
-     *
-     * @param sender command sender to send the message to
-     */
-    public void sendActionBar(CommandSender sender) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(this.getMessage());
-            return;
-        }
-
-        if (!canActionBar) {
-            sendTitle(sender);
-            return;
-        }
-
-        ((Player) sender).spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
-                new net.md_5.bungee.api.chat.TextComponent(getMessage()));
-    }
-
-    /**
-     * Format and send the held message with the
-     * appended plugin prefix to a command sender
-     *
-     * @param sender command sender to send the message to
-     */
-    public void sendPrefixedMessage(CommandSender sender) {
-        this.message.sendTo(this.prefix, sender);
-        
-    }
-
-    /**
-     * Format the held message and append the plugins
-     * prefix
-     *
-     * @return the prefixed message
-     */
-    public String getPrefixedMessage() {
-        return TextUtils.formatText((prefix == null ? "" : this.prefix.toText()) + " " + this.message.toText());
-    }
-
-    /**
      * Get and format the held message
      *
      * @return the message
      */
     public String getMessage() {
         return TextUtils.formatText(this.message.toText());
-    }
-
-    /**
-     * Get and format the held message
-     *
-     * @return the message
-     */
-    public List<String> getMessageLines() {
-        return Arrays.asList(ChatColor.translateAlternateColorCodes('&', this.message.toText()).split("[\n|]"));
-    }
-
-    /**
-     * Get the held message
-     *
-     * @return the message
-     */
-    public String getUnformattedMessage() {
-        return this.message.toText();
     }
 
     /**
@@ -187,7 +98,4 @@ public class Message {
         return this.message.toString();
     }
 
-    public String toText() {
-        return this.message.toText();
-    }
 }

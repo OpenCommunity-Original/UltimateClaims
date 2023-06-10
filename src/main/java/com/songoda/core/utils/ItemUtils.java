@@ -3,7 +3,6 @@ package com.songoda.core.utils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.songoda.core.compatibility.*;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -12,16 +11,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.util.io.BukkitObjectInputStream;
-import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,7 +26,6 @@ import java.util.stream.Stream;
  * This class uses some Minecraft code and also Paper API
  */
 public class ItemUtils {
-    static boolean can_getI18NDisplayName = true;
     static Class<?> cb_ItemStack = ClassMapping.CRAFT_ITEM_STACK.getClazz();
     static Class<?> mc_ItemStack = ClassMapping.ITEM_STACK.getClazz();
     static Class<?> mc_NBTTagCompound = ClassMapping.NBT_TAG_COMPOUND.getClazz();
@@ -53,7 +44,6 @@ public class ItemUtils {
         try {
             ItemStack.class.getMethod("getI18NDisplayName");
         } catch (NoSuchMethodException | SecurityException ex) {
-            can_getI18NDisplayName = false;
         }
     }
 
@@ -104,14 +94,6 @@ public class ItemUtils {
         }
     }
 
-    public static String getItemName(ItemStack it) {
-        if (it == null) {
-            return null;
-        }
-
-        return itemName(it.getType());
-    }
-
     static String itemName(Material mat) {
         String matName = mat.name().replace("_", " ");
         StringBuilder titleCase = new StringBuilder(matName.length());
@@ -148,78 +130,6 @@ public class ItemUtils {
         }
 
         return item;
-    }
-
-    public static String itemStackArrayToBase64(ItemStack[] items) {
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
-            dataOutput.writeInt(items.length);
-
-            for (ItemStack item : items) {
-                dataOutput.writeObject(item);
-            }
-
-            dataOutput.close();
-
-            return Base64Coder.encodeLines(outputStream.toByteArray());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public static ItemStack[] itemStackArrayFromBase64(String data) {
-        try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
-            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-            ItemStack[] items = new ItemStack[dataInput.readInt()];
-
-            for (int i = 0; i < items.length; i++) {
-                items[i] = (ItemStack) dataInput.readObject();
-            }
-
-            dataInput.close();
-
-            return items;
-        } catch (ClassNotFoundException | IOException ex) {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
-    /**
-     * Clone of org.bukkit.inventory.ItemStack.asQuantity, since it is a paper-only function
-     *
-     * @param item item to copy
-     * @param qty  amount the new ItemStack should have
-     * @return a copy of the original item
-     */
-    public static ItemStack getAsCopy(ItemStack item, int qty) {
-        ItemStack clone = item.clone();
-        clone.setAmount(qty);
-
-        return clone;
-    }
-
-    public static boolean hasEnoughDurability(ItemStack tool, int requiredAmount) {
-        if (tool.getType().getMaxDurability() <= 1) {
-            return true;
-        }
-
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
-            if (!tool.hasItemMeta() || !(tool.getItemMeta() instanceof Damageable damageable)) {
-                return true;
-            }
-
-            int durabilityRemaining = tool.getType().getMaxDurability() - damageable.getDamage();
-
-            return durabilityRemaining > requiredAmount;
-        }
-
-        return tool.getDurability() + requiredAmount <= tool.getType().getMaxDurability();
     }
 
     /**
@@ -331,24 +241,6 @@ public class ItemUtils {
         return head;
     }
 
-    public static void setHeadOwner(ItemStack head, OfflinePlayer player) {
-        if (ServerVersion.isServerVersionBelow(ServerVersion.V1_8) || !CompatibleMaterial.PLAYER_HEAD.matches(head)) {
-            return;
-        }
-
-        SkullMeta meta = (SkullMeta) head.getItemMeta();
-
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
-            meta.setOwningPlayer(player);
-        } else {
-            meta.setOwner(player.getName());
-        }
-    }
-
-    public static ItemStack getCustomHead(String texture) {
-        return getCustomHead(null, texture);
-    }
-
     public static ItemStack getCustomHead(String signature, String texture) {
         ItemStack skullItem = CompatibleMaterial.PLAYER_HEAD.getItem();
 
@@ -383,48 +275,6 @@ public class ItemUtils {
         } catch (NoSuchFieldException | IllegalAccessException | SecurityException ex) {
             throw new RuntimeException("Reflection error while setting head texture", ex);
         }
-    }
-
-    public static String getSkullTexture(Player player) {
-        if (player == null || ServerVersion.isServerVersionBelow(ServerVersion.V1_8)) {
-            return null;
-        }
-
-        try {
-            Object craftPlayer = cb_CraftPlayer.cast(player);
-
-            Iterator<Property> iterator = ((GameProfile) cb_CraftPlayer_getProfile.invoke(craftPlayer)).getProperties().get("textures").iterator();
-
-            return iterator.hasNext() ? iterator.next().getValue() : null;
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public static String getSkullTexture(ItemStack item) {
-        if (!CompatibleMaterial.PLAYER_HEAD.matches(item) || ServerVersion.isServerVersionBelow(ServerVersion.V1_8)) {
-            return null;
-        }
-
-        try {
-            SkullMeta localSkullMeta = (SkullMeta) item.getItemMeta();
-            Field cb_SkullMeta_profile = localSkullMeta.getClass().getDeclaredField("profile");
-            cb_SkullMeta_profile.setAccessible(true);
-
-            GameProfile profile = (GameProfile) cb_SkullMeta_profile.get(localSkullMeta);
-            Iterator<Property> iterator = profile.getProperties().get("textures").iterator();
-
-            return iterator.hasNext() ? iterator.next().getValue() : null;
-        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException ignore) {
-        }
-
-        return null;
-    }
-
-    public static String getDecodedTexture(String encoded) {
-        return encoded != null ? StringUtils.substringBetween(new String(Base64.getDecoder().decode(encoded)), "texture/", "\"") : null;
     }
 
     /**
@@ -462,151 +312,6 @@ public class ItemUtils {
         CompatibleMaterial mat1 = CompatibleMaterial.getMaterial(is1);
 
         return mat1 != null && mat1 == CompatibleMaterial.getMaterial(is2);
-    }
-
-    /**
-     * Check to see if this item can be moved into a single slot in this
-     * inventory. <br>
-     * This returns true if there is a free slot or a slot with a matching item
-     * where adding this item's amount to that item's amount will not violate
-     * the maximum stack size for that item.
-     *
-     * @param inventory inventory to check
-     * @param item      item to check against
-     * @return true if a free slot or single receiver slot is available
-     */
-    public static boolean canMove(Inventory inventory, ItemStack item) {
-        if (inventory.firstEmpty() != -1) {
-            return true;
-        }
-
-        final ItemMeta itemMeta = item.getItemMeta();
-        for (ItemStack stack : inventory) {
-            final ItemMeta stackMeta;
-
-            if (isSimilarMaterial(stack, item) && (stack.getAmount() + item.getAmount()) < stack.getMaxStackSize()
-                    && ((itemMeta == null) == ((stackMeta = stack.getItemMeta()) == null))
-                    && (itemMeta == null || Bukkit.getItemFactory().equals(itemMeta, stackMeta))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check to see if this item can be moved into a single slot in this
-     * inventory. <br>
-     * This returns true if there is a free slot or a slot with a matching item
-     * where adding this item's amount to that item's amount will not violate
-     * the maximum stack size for that item.
-     *
-     * @param contents inventory to check
-     * @param item     item to check against
-     * @return true if a free slot or single receiver slot is available
-     */
-    public static boolean canMove(ItemStack[] contents, ItemStack item) {
-        final ItemMeta itemMeta = item.getItemMeta();
-
-        for (final ItemStack stack : contents) {
-            if (stack == null || stack.getAmount() == 0) {
-                return true;
-            }
-
-            final ItemMeta stackMeta;
-            if (isSimilarMaterial(stack, item) && (stack.getAmount() + item.getAmount()) < stack.getMaxStackSize()
-                    && ((itemMeta == null) == ((stackMeta = stack.getItemMeta()) == null))
-                    && (itemMeta == null || Bukkit.getItemFactory().equals(itemMeta, stackMeta))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check to see if this item can be moved into a single slot in this
-     * inventory while also reserving one of the slots.<br>
-     * This returns true if there is a free slot or a slot with a matching item
-     * where adding this item's amount to that item's amount will not violate
-     * the maximum stack size for that item.
-     *
-     * @param inventory inventory to check
-     * @param item      item to check against
-     * @param reserved  which slot should be reserved
-     * @return true if a free slot or single receiver slot is available
-     */
-    public static boolean canMoveReserved(Inventory inventory, ItemStack item, int reserved) {
-        final ItemMeta itemMeta = item.getItemMeta();
-        final ItemStack[] contents = inventory.getContents();
-
-        for (int i = 0; i < contents.length; ++i) {
-            if (i == reserved) {
-                continue;
-            }
-
-            final ItemStack stack = contents[i];
-            final ItemMeta stackMeta;
-
-            if (stack == null || stack.getAmount() == 0
-                    || (isSimilarMaterial(stack, item) && (stack.getAmount() + item.getAmount()) < stack.getMaxStackSize()
-                    && ((itemMeta == null) == ((stackMeta = stack.getItemMeta()) == null))
-                    && (itemMeta == null || Bukkit.getItemFactory().equals(itemMeta, stackMeta)))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check to see if this item can be moved into a single slot in this
-     * inventory while also reserving one of the slots.<br>
-     * This returns true if there is a free slot or a slot with a matching item
-     * where adding this item's amount to that item's amount will not violate
-     * the maximum stack size for that item.
-     *
-     * @param contents inventory to check
-     * @param item     item to check against
-     * @param reserved which slot should be reserved
-     * @return true if a free slot or single receiver slot is available
-     */
-    public static boolean canMoveReserved(ItemStack[] contents, ItemStack item, int reserved) {
-        final ItemMeta itemMeta = item.getItemMeta();
-
-        for (int i = 0; i < contents.length; ++i) {
-            if (i == reserved) {
-                continue;
-            }
-
-            final ItemStack stack = contents[i];
-
-            if (stack == null || stack.getAmount() == 0) {
-                return true;
-            }
-
-            final ItemMeta stackMeta;
-            if (isSimilarMaterial(stack, item) && (stack.getAmount() + item.getAmount()) < stack.getMaxStackSize()
-                    && ((itemMeta == null) == ((stackMeta = stack.getItemMeta()) == null))
-                    && (itemMeta == null || Bukkit.getItemFactory().equals(itemMeta, stackMeta))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Add up to a number of items to this inventory.
-     *
-     * @param item        item to add
-     * @param amountToAdd how many of this item to attempt to add
-     * @param inventory   a list that represents the inventory
-     * @param maxSize     maximum number of different items this container can hold
-     * @return how many items were added
-     */
-    public static int addAny(ItemStack item, int amountToAdd, List<ItemStack> inventory, int maxSize) {
-        return addAny(item, amountToAdd, inventory, maxSize, -1);
     }
 
     /**
@@ -658,41 +363,6 @@ public class ItemUtils {
         }
 
         return totalAdded;
-    }
-
-    /**
-     * Add an item to this inventory, but only if it can be added completely.
-     *
-     * @param item          item to add
-     * @param inventory     a list that represents the inventory
-     * @param containerSize maximum number of different items this container can
-     *                      hold
-     * @return true if the item was added
-     */
-    public static boolean addItem(ItemStack item, List<ItemStack> inventory, int containerSize) {
-        if (inventory == null || item == null || item.getAmount() <= 0 || containerSize <= 0) {
-            return false;
-        }
-
-        return addItem(item, item.getAmount(), inventory, containerSize);
-    }
-
-    /**
-     * Add an item to this inventory, but only if it can be added completely.
-     *
-     * @param item          item to add
-     * @param inventory     a list that represents the inventory
-     * @param containerSize maximum number of different items this container can
-     *                      hold
-     * @param reserved      slot to reserve - will not fill this slot
-     * @return true if the item was added
-     */
-    public static boolean addItem(ItemStack item, List<ItemStack> inventory, int containerSize, int reserved) {
-        if (inventory == null || item == null || item.getAmount() <= 0 || containerSize <= 0) {
-            return false;
-        }
-
-        return addItem(item, item.getAmount(), inventory, containerSize, reserved);
     }
 
     /**
@@ -847,76 +517,6 @@ public class ItemUtils {
     }
 
     /**
-     * Add up to a number of items to this inventory.
-     *
-     * @param item        item to add
-     * @param amountToAdd how many of this item to attempt to add
-     * @param inventory   a list that represents the inventory
-     * @return how many items were added
-     */
-    public static int addAny(ItemStack item, int amountToAdd, Inventory inventory) {
-        int totalAdded = 0;
-
-        if (inventory != null && item != null && amountToAdd > 0) {
-            final int containerSize = inventory.getSize();
-            final int maxStack = item.getMaxStackSize();
-
-            for (int i = 0; amountToAdd > 0 && i < containerSize; ++i) {
-                final ItemStack cacheItem = inventory.getItem(i);
-                if (cacheItem == null || cacheItem.getAmount() == 0) {
-                    // free slot!
-                    int toAdd = Math.min(maxStack, amountToAdd);
-
-                    ItemStack item2 = item.clone();
-                    item2.setAmount(toAdd);
-                    inventory.setItem(i, item2);
-
-                    totalAdded += toAdd;
-                    amountToAdd -= toAdd;
-                } else if (maxStack > cacheItem.getAmount() && item.isSimilar(cacheItem)) {
-                    // free space!
-                    int toAdd = Math.min(maxStack - cacheItem.getAmount(), amountToAdd);
-
-                    cacheItem.setAmount(toAdd + cacheItem.getAmount());
-
-                    totalAdded += toAdd;
-                    amountToAdd -= toAdd;
-                }
-            }
-        }
-
-        return totalAdded;
-    }
-
-    /**
-     * Add an item to this inventory, but only if it can be added completely.
-     *
-     * @param item      item to add
-     * @param inventory a list that represents the inventory hold
-     * @return true if the item was added
-     */
-    public static boolean addItem(ItemStack item, Inventory inventory) {
-        if (inventory == null || item == null || item.getAmount() <= 0) {
-            return false;
-        }
-
-        return addItem(item, item.getAmount(), inventory, -1, null);
-    }
-
-    /**
-     * Add an item to this inventory.
-     *
-     * @param item      item to add
-     * @param amount    how many of this item should be added
-     * @param inventory a list that represents the inventory
-     * @param reserved  slot to reserve - will not fill this slot
-     * @return true if the item was added
-     */
-    public static boolean addItem(ItemStack item, int amount, Inventory inventory, int reserved) {
-        return addItem(item, amount, inventory, reserved, null);
-    }
-
-    /**
      * Add an item to this inventory, but only if it can be added completely.
      *
      * @param item            item to add
@@ -1037,43 +637,6 @@ public class ItemUtils {
         }
 
         return false;
-    }
-
-    public static CompatibleMaterial getDyeColor(char color) {
-        switch (color) {
-            case '0':
-                return CompatibleMaterial.BLACK_DYE;
-            case '1':
-                return CompatibleMaterial.BLUE_DYE;
-            case '2':
-                return CompatibleMaterial.GREEN_DYE;
-            case '3':
-                return CompatibleMaterial.CYAN_DYE;
-            case '4':
-                return CompatibleMaterial.BROWN_DYE;
-            case '5':
-                return CompatibleMaterial.PURPLE_DYE;
-            case '6':
-                return CompatibleMaterial.ORANGE_DYE;
-            case '7':
-                return CompatibleMaterial.LIGHT_GRAY_DYE;
-            case '8':
-                return CompatibleMaterial.GRAY_DYE;
-            case 'a':
-                return CompatibleMaterial.LIME_DYE;
-            case 'b':
-                return CompatibleMaterial.LIGHT_BLUE_DYE;
-            case 'c':
-                return CompatibleMaterial.RED_DYE;
-            case 'd':
-                return CompatibleMaterial.MAGENTA_DYE;
-            case 'e':
-                return CompatibleMaterial.YELLOW_DYE;
-            case 'f':
-                return CompatibleMaterial.WHITE_DYE;
-        }
-
-        return CompatibleMaterial.STONE;
     }
 
     /**

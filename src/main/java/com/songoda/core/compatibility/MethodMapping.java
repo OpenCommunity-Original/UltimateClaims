@@ -10,11 +10,7 @@ public enum MethodMapping {
     MC_ITEM_STACK__SET_TAG("setTag", "setTag", "c", "c", "c", ClassMapping.NBT_TAG_COMPOUND.getClazz()),
 
     MC_NBT_TAG_COMPOUND__SET("set", "set", "a", "a", "a", String.class, ClassMapping.NBT_BASE.getClazz()),
-    MC_NBT_TAG_COMPOUND__SET_SHORT("setShort", "setShort", "a", "a", "a", String.class, short.class),
-    MC_NBT_TAG_COMPOUND__SET_STRING("setString", "setString", "a", "a", "a", String.class, String.class),
     MC_NBT_TAG_COMPOUND__REMOVE("remove", "remove", "r", "r", "r", String.class),
-
-    MC_NBT_TAG_LIST__ADD("add", "a", "add", "a", "add", "add", ClassMapping.NBT_BASE.getClazz()),
 
     MC_CHUNK__GET_WORLD("getWorld", "getWorld", "D", "D"),
 
@@ -36,20 +32,11 @@ public enum MethodMapping {
 
     CHUNK__SET_BLOCK_STATE("setType", "setBlockState", "a", "a", ClassMapping.BLOCK_POSITION.getClazz(), ClassMapping.I_BLOCK_DATA.getClazz(), boolean.class, boolean.class),
 
-    ITEM_STACK__SAVE("save", "b", "b", "b", ClassMapping.NBT_TAG_COMPOUND.getClazz()),
-    ITEM_STACK__GET_ITEM("getItem", "c", "c", "c"),
-    ITEM_STACK__GET_MAX_STACK_SIZE("getMaxStackSize", "l", "e", "f"),
-
     WORLD__UPDATE_ADJACENT_COMPARATORS("updateAdjacentComparators", "c", "c", "c", ClassMapping.BLOCK_POSITION.getClazz(), ClassMapping.BLOCK.getClazz()), /* #updateNeighbourForOutputSignal */
-    WORLD__GET_CHUNK_AT("getChunkAt", "d", "a", "a", int.class, int.class),
+    WORLD__GET_CHUNK_AT("getChunkAt", "d", "a", "a", int.class, int.class)
 
-    WORLD_BOARDER__SET_CENTER("setCenter", "setCenter", "setCenter", "c", "c", "c", double.class, double.class),
-    WORLD_BOARDER__SET_SIZE("setSize", "setSize", "setSize", "a", "a", "a", double.class),
-    WORLD_BOARDER__SET_WARNING_TIME("setWarningTime", "setWarningTime", "setWarningTime", "b", "b", "b", int.class),
-    WORLD_BOARDER__SET_WARNING_DISTANCE("setWarningDistance", "setWarningDistance", "setWarningDistance", "c", "c", "c", int.class), /* #setWarningBlocks */
-    WORLD_BOARDER__TRANSITION_SIZE_BETWEEN("transitionSizeBetween", "transitionSizeBetween", "transitionSizeBetween", "a", "a", "a", double.class, double.class, long.class), /* #lerpSizeBetween */
-
-    MOJANGSON_PARSER__PARSE("parse", "a", "a", "a", String.class);
+    /* #setWarningBlocks */
+    /* #lerpSizeBetween */;
 
     private final String saneFallback;
     private final String _1_14;

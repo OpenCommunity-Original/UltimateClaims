@@ -9,7 +9,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -34,13 +33,6 @@ public abstract class SongodaPlugin extends JavaPlugin {
      * Called after reloadConfig() is called
      */
     public abstract void onConfigReload();
-
-    /**
-     * Any other plugin configuration files used by the plugin.
-     *
-     * @return a list of Configs that are used in addition to the main config.
-     */
-    public abstract List<Config> getExtraConfig();
 
     @Override
     public FileConfiguration getConfig() {
@@ -133,10 +125,6 @@ public abstract class SongodaPlugin extends JavaPlugin {
         console.sendMessage(" "); // blank line to separate chatter
     }
 
-    public ConsoleCommandSender getConsole() {
-        return console;
-    }
-
     public Locale getLocale() {
         return locale;
     }
@@ -161,11 +149,6 @@ public abstract class SongodaPlugin extends JavaPlugin {
         }
 
         return false;
-    }
-
-    protected void shutdownDataManager(DataManagerAbstract dataManager) {
-        // 3 minutes is overkill, but we just want to make sure
-        shutdownDataManager(dataManager, 15, TimeUnit.MINUTES.toSeconds(3));
     }
 
     protected void shutdownDataManager(DataManagerAbstract dataManager, int reportInterval, long secondsUntilForceShutdown) {

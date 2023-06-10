@@ -1,13 +1,10 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
-
-import static com.songoda.ultimateclaims.utils.LocaleAPI.sendPrefixedMessage;
 
 public class CommandReload extends AbstractCommand {
 

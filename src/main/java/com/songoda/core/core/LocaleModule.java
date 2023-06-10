@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LocaleModule implements PluginInfoModule {
-    @Override
     public void run(PluginInfo plugin) {
         if (plugin.getJavaPlugin() == null || plugin.getSongodaId() <= 0) {
             return;

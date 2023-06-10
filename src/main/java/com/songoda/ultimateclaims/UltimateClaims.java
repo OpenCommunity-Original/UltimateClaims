@@ -4,7 +4,6 @@ import com.songoda.core.SongodaCore;
 import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
 import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.configuration.Config;
 import com.songoda.core.database.DataMigrationManager;
 import com.songoda.core.database.DatabaseConnector;
 import com.songoda.core.database.MySQLConnector;
@@ -31,9 +30,6 @@ import com.songoda.ultimateclaims.utils.LocaleAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.PluginManager;
-
-import java.util.Collections;
-import java.util.List;
 
 public class UltimateClaims extends SongodaPlugin {
 
@@ -216,11 +212,6 @@ public class UltimateClaims extends SongodaPlugin {
 
             Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> dataManager.purgeAuditLog(), 1000, 15 * 60 * 1000);
         });
-    }
-
-    @Override
-    public List<Config> getExtraConfig() {
-        return Collections.emptyList();
     }
 
     @Override

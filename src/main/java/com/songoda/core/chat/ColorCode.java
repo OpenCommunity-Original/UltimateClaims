@@ -55,10 +55,6 @@ public enum ColorCode {
         return code;
     }
 
-    public ChatColor getChatColor() {
-        return chatColor;
-    }
-
     public boolean isColor() {
         return this.isColor;
     }

@@ -1,6 +1,5 @@
 package com.songoda.core.compatibility;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 
 public enum ServerVersion {
@@ -45,20 +44,12 @@ public enum ServerVersion {
         return serverPackageVersion;
     }
 
-    public static String getVersionReleaseNumber() {
-        return serverReleaseVersion;
-    }
-
     public static ServerVersion getServerVersion() {
         return serverVersion;
     }
 
     public static boolean isServerVersion(ServerVersion version) {
         return serverVersion == version;
-    }
-
-    public static boolean isServerVersion(ServerVersion... versions) {
-        return ArrayUtils.contains(versions, serverVersion);
     }
 
     public static boolean isServerVersionAbove(ServerVersion version) {
@@ -75,18 +66,6 @@ public enum ServerVersion {
 
     public static boolean isServerVersionBelow(ServerVersion version) {
         return serverVersion.ordinal() < version.ordinal();
-    }
-
-    public boolean isLessThan(ServerVersion other) {
-        return this.ordinal() < other.ordinal();
-    }
-
-    public boolean isAtOrBelow(ServerVersion other) {
-        return this.ordinal() <= other.ordinal();
-    }
-
-    public boolean isGreaterThan(ServerVersion other) {
-        return this.ordinal() > other.ordinal();
     }
 
     public boolean isAtLeast(ServerVersion other) {

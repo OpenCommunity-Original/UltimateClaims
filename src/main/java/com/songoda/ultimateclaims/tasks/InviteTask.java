@@ -53,7 +53,7 @@ public class InviteTask extends BukkitRunnable {
                 OfflinePlayer invited = Bukkit.getPlayer(invite.getInvited());
 
                 if (inviter != null && inviter.isOnline())
-                    sendPrefixedMessage(invited.getPlayer(),"event.invite.expired");
+                    sendPrefixedMessage(invited.getPlayer(), "event.invite.expired");
 
                 if (invited != null && invited.isOnline())
                     sendPrefixedMessage(invited.getPlayer(), "event.invite.expired");

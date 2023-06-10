@@ -103,11 +103,11 @@ public class DynmapManager {
                         .replace("${Claim}", claim.getName())
                         .replace("${Owner}", claim.getOwner().getName())
                         .replace("${OwnerUUID}", claim.getOwner().getUniqueId().toString())
-                        .replace("${MemberCount}", claim.getMembers().size() + "")
+                        .replace("${MemberCount}", String.valueOf(claim.getMembers().size()))
                         .replace("${PowerLeft}", powerLeft) :
                 Settings.DYNMAP_BUBBLE_UNCLAIMED.getString()
                         .replace("${Claim}", claim.getName())
-                        .replace("${MemberCount}", claim.getMembers().size() + "")
+                        .replace("${MemberCount}", String.valueOf(claim.getMembers().size()))
                         .replace("${PowerLeft}", powerLeft);
 
         for (AreaMarker aMarker : markerSet.getAreaMarkers()) {

@@ -133,7 +133,7 @@ public class EntityListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
-            sendPrefixedMessage(event.getPlayer(),"event.general.nopermission");
+            sendPrefixedMessage(event.getPlayer(), "event.general.nopermission");
             event.setCancelled(true);
         }
     }
@@ -152,7 +152,7 @@ public class EntityListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms((Player) event.getRemover(), ClaimPerm.PLACE)) {
-            sendPrefixedMessage(event.getRemover(),"event.general.nopermission");
+            sendPrefixedMessage(event.getRemover(), "event.general.nopermission");
             event.setCancelled(true);
         }
     }
@@ -258,7 +258,7 @@ public class EntityListeners implements Listener {
             Entity source = event.getPlayer();
             Entity entity = event.getRightClicked();
             if (entity.getType().equals(EntityType.VILLAGER) && !claim.playerHasPerms((Player) source, ClaimPerm.TRADING)) {
-                sendPrefixedMessage(source,"event.general.nopermission");
+                sendPrefixedMessage(source, "event.general.nopermission");
                 event.setCancelled(true);
             }
         }

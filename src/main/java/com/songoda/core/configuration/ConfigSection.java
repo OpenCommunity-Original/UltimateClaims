@@ -67,10 +67,6 @@ public class ConfigSection extends MemoryConfiguration {
         }
     }
 
-    public char getPathSeparator() {
-        return root.pathChar;
-    }
-
     /**
      * Sets the character used to separate configuration nodes. <br>
      * IMPORTANT: Do not change this after loading or adding ConfigurationSections!
@@ -83,13 +79,6 @@ public class ConfigSection extends MemoryConfiguration {
         }
 
         root.pathChar = pathChar;
-    }
-
-    /**
-     * @return The full key for this section node
-     */
-    public String getKey() {
-        return !fullPath.endsWith(String.valueOf(root.pathChar)) ? fullPath : fullPath.substring(0, fullPath.length() - 1);
     }
 
     /**
@@ -212,15 +201,6 @@ public class ConfigSection extends MemoryConfiguration {
     public ConfigSection setDefaultComment(@NotNull String path, ConfigFormattingRules.CommentStyle commentStyle, @Nullable List<String> lines) {
         synchronized (root.lock) {
             root.defaultComments.put(fullPath + path, new Comment(commentStyle, lines));
-        }
-
-        return this;
-    }
-
-    @NotNull
-    public ConfigSection setDefaultComment(@NotNull String path, @Nullable Comment comment) {
-        synchronized (root.lock) {
-            root.defaultComments.put(fullPath + path, comment);
         }
 
         return this;

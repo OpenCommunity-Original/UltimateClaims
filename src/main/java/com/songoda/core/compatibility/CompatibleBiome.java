@@ -1,11 +1,8 @@
 package com.songoda.core.compatibility;
 
-import org.bukkit.Chunk;
-import org.bukkit.World;
 import org.bukkit.block.Biome;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -166,18 +163,6 @@ public enum CompatibleBiome {
         this.versions.addAll(Arrays.asList(versions));
     }
 
-    public static Set<CompatibleBiome> getCompatibleBiomes() {
-        return compatibleBiomes;
-    }
-
-    public static CompatibleBiome getBiome(Biome biome) {
-        return biome == null ? null : lookupMap.get(biome.name());
-    }
-
-    public static CompatibleBiome getBiome(String name) {
-        return name == null ? null : lookupMap.get(name.toUpperCase());
-    }
-
     private static Version v(ServerVersion version, String biome) {
         return new Version(version, biome);
     }
@@ -206,59 +191,6 @@ public enum CompatibleBiome {
         }
 
         return null;
-    }
-
-    public void setBiome(Chunk chunk) throws InvocationTargetException, IllegalAccessException {
-        Object nmsChunk = null;
-        Object biomeStorage = null;
-        Object biomeBase = null;
-
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_15) && ServerVersion.isServerVersionBelow(ServerVersion.V1_18)) {
-            nmsChunk = methodGetHandle.invoke(chunk);
-            biomeStorage = methodGetBiomeIndex.invoke(nmsChunk);
-
-            if (isAbove1_16_R1) {
-                Object registry = fieldStorageRegistry.get(biomeStorage);
-                biomeBase = methodBiomeToBiomeBase.invoke(null, registry, getBiome());
-            } else {
-                biomeBase = methodBiomeToBiomeBase.invoke(null, getBiome());
-            }
-        }
-
-        World world = chunk.getWorld();
-        int chunkX = chunk.getX();
-        int chunkZ = chunk.getZ();
-        for (int x = chunkX << 4; x < (chunkX << 4) + 16; x++) {
-            for (int z = chunkZ << 4; z < (chunkZ << 4) + 16; z++) {
-                for (int y = 0; y < world.getMaxHeight(); ++y) {
-                    if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_18)) {
-                        chunk.getWorld().setBiome(x, y, z, getBiome());
-                    } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_15) && ServerVersion.isServerVersionBelow(ServerVersion.V1_18)) {
-                        methodSetBiome.invoke(biomeStorage, x >> 2, y >> 2, z >> 2, biomeBase);
-                    }
-                }
-
-                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_15)) {
-                    continue;
-                }
-
-                chunk.getWorld().setBiome(x, z, getBiome());
-            }
-        }
-
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_15) && ServerVersion.isServerVersionBelow(ServerVersion.V1_18)) {
-            methodMarkDirty.invoke(nmsChunk);
-        }
-    }
-
-    public void setBiome(World world, int x, int y, int z) {
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_15)) {
-            world.setBiome(x, y, z, getBiome());
-
-            return;
-        }
-
-        world.setBiome(x, z, getBiome());
     }
 
     private static class Version {

@@ -103,23 +103,8 @@ public enum LegacyMaterialBlockType {
         return getFromLegacy(lookup, (byte) -1);
     }
 
-    public String getBlockMaterialName() {
-        return blockMaterialName;
-    }
-
-    public String getAlternateMaterialName() {
-        return alternateBlockMaterialName;
-    }
-
     public Material getBlockMaterial() {
         return blockMaterial;
     }
 
-    public Material getAlternateBlockMaterial() {
-        return alternateBlockMaterial;
-    }
-
-    public boolean requiresData() {
-        return requiresData;
-    }
 }

@@ -26,10 +26,10 @@ public final class PluginHook<T extends Class> {
     public static final PluginHook HOLO_DECENTHOLOGRAMS = new PluginHook(Holograms.class, "DecentHolograms", DecentHologramsHolograms.class);
     public static final PluginHook LOG_CORE_PROTECT = new PluginHook(Log.class, "CoreProtect", CoreProtectLog.class);
     private static Map<Class, PluginHook> hooks;
+    final String plugin;
     /******* Start Manager stuff *******/
 
     private final T hookGeneric;
-    final String plugin;
     private final Class managerClass;
     private Constructor pluginConstructor; // for passing the plugin loading the hook to the plugin hook
 

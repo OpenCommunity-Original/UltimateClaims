@@ -89,65 +89,6 @@ public class Locale {
     }
 
     /**
-     * Load all locales from this plugin's locale directory
-     *
-     * @param plugin plugin to load from
-     * @return returns the loaded Locales
-     */
-    public static List<Locale> loadAllLocales(JavaPlugin plugin) {
-        File localeFolder = new File(plugin.getDataFolder(), "locales/");
-        List<Locale> all = new ArrayList<>();
-
-        for (File localeFile : localeFolder.listFiles()) {
-            String fileName = localeFile.getName();
-            if (!fileName.endsWith(FILE_EXTENSION)) {
-                continue;
-            }
-
-            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-            if (fileName.split("_").length != 2) {
-                continue;
-            }
-
-            Locale l = new Locale(plugin, localeFile, fileName);
-
-            if (l.reloadMessages()) {
-                plugin.getLogger().info("Loaded locale \"" + fileName + "\"");
-                all.add(l);
-            }
-        }
-
-        return all;
-    }
-
-    /**
-     * Get a list of all locale files in this plugin's locale directory
-     *
-     * @param plugin Plugin to check for
-     */
-    public static List<String> getLocales(Plugin plugin) {
-        File localeFolder = new File(plugin.getDataFolder(), "locales/");
-        List<String> all = new ArrayList<>();
-
-        for (File localeFile : localeFolder.listFiles()) {
-            String fileName = localeFile.getName();
-            if (!fileName.endsWith(FILE_EXTENSION)) {
-                continue;
-            }
-
-            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-
-            if (fileName.split("_").length != 2) {
-                continue;
-            }
-
-            all.add(fileName);
-        }
-
-        return all;
-    }
-
-    /**
      * Save a locale file from the Plugin's Resources to the locale folder
      *
      * @param plugin   plugin owning the locale file

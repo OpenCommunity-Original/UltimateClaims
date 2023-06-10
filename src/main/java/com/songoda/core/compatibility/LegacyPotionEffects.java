@@ -3,10 +3,8 @@ package com.songoda.core.compatibility;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
-import java.util.Random;
 
 public class LegacyPotionEffects {
-    protected final static Random rand = new Random();
     private final static HashMap<Integer, String> potionEffectNames = new HashMap<Integer, String>() {
         {
             put(PotionEffectType.SPEED.getId(), "Speed");
@@ -38,11 +36,4 @@ public class LegacyPotionEffects {
     private LegacyPotionEffects() {
     }
 
-    public static String getEffectName(PotionEffectType e) {
-        if (e == null) {
-            return "null";
-        }
-        final String n = potionEffectNames.get(e.getId());
-        return n == null ? e.getName() : n;
-    }
 }

@@ -1,7 +1,8 @@
 package com.songoda.core.compatibility;
 
-import org.bukkit.*;
-import org.bukkit.block.BlockFace;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
@@ -10,29 +11,11 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class CompatibleParticleHandler {
-    public static void spawnParticles(String type, Location location) {
-        spawnParticles(type, location, 0);
-    }
 
     public static void spawnParticles(String type, Location location, int count) {
         ParticleType pt;
         if (type != null && (pt = ParticleType.getParticle(type.toUpperCase())) != null) {
             spawnParticles(pt, location, count);
-        }
-    }
-
-    public static void spawnParticles(String type, Location location, int count, double offsetX, double offsetY, double offsetZ) {
-        ParticleType pt;
-        if (type != null && (pt = ParticleType.getParticle(type.toUpperCase())) != null) {
-            spawnParticles(pt, location, count, offsetX, offsetY, offsetZ);
-        }
-    }
-
-    public static void spawnParticles(ParticleType type, Location location) {
-        if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_8)) {
-            LegacyParticleEffects.createParticle(location, type.compatibleEffect);
-        } else {
-            location.getWorld().spawnParticle((Particle) type.particle, location, 0);
         }
     }
 
@@ -65,10 +48,6 @@ public class CompatibleParticleHandler {
         }
     }
 
-    public static void spawnParticles(ParticleType type, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra) {
-        spawnParticles(type, location, count, offsetX, offsetY, offsetZ, extra, null);
-    }
-
     public static void spawnParticles(ParticleType type, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra, Player receiver) {
         if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_8)) {
             for (int i = 0; i < count; i++) {
@@ -85,10 +64,6 @@ public class CompatibleParticleHandler {
                 receiver.spawnParticle((Particle) type.particle, location, count, offsetX, offsetY, offsetZ, extra);
             }
         }
-    }
-
-    public static void redstoneParticles(Location location, int red, int green, int blue) {
-        redstoneParticles(location, red, green, blue, 1F, 1, 0, null);
     }
 
     public static void redstoneParticles(Location location, int red, int green, int blue, float size, int count, float radius) {
@@ -140,21 +115,6 @@ public class CompatibleParticleHandler {
                         0, player == null ? null : Collections.singletonList(player));
             }
         }
-    }
-
-    public static void bonemealSmoke(Location loc) {
-        World world = loc.getWorld();
-        assert world != null;
-
-        world.playEffect(loc, Effect.SMOKE, BlockFace.SOUTH_EAST);
-        world.playEffect(loc, Effect.SMOKE, BlockFace.SOUTH);
-        world.playEffect(loc, Effect.SMOKE, BlockFace.SOUTH_WEST);
-        world.playEffect(loc, Effect.SMOKE, BlockFace.EAST);
-        world.playEffect(loc, Effect.SMOKE, BlockFace.SELF);
-        world.playEffect(loc, Effect.SMOKE, BlockFace.WEST);
-        world.playEffect(loc, Effect.SMOKE, BlockFace.NORTH_EAST);
-        world.playEffect(loc, Effect.SMOKE, BlockFace.NORTH);
-        world.playEffect(loc, Effect.SMOKE, BlockFace.NORTH_WEST);
     }
 
     public enum ParticleType {
@@ -272,13 +232,11 @@ public class CompatibleParticleHandler {
             }
         }
 
-        final boolean compatibilityMode;
         final LegacyParticleEffects.Type compatibleEffect;
         final Object particle;
 
         ParticleType() {
             if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_8)) {
-                this.compatibilityMode = true;
                 this.particle = null;
                 this.compatibleEffect = LegacyParticleEffects.Type.valueOf(name());
             } else {
@@ -287,11 +245,9 @@ public class CompatibleParticleHandler {
                 Particle check = Stream.of(Particle.values()).filter(p -> p.name().equals(name())).findFirst().orElse(null);
                 if (check != null) {
                     this.particle = check;
-                    this.compatibilityMode = false;
                 } else {
                     // this shouldn't happen, really
                     this.particle = Particle.END_ROD;
-                    this.compatibilityMode = true;
                 }
             }
         }
@@ -299,11 +255,9 @@ public class CompatibleParticleHandler {
         ParticleType(ServerVersion minVersion, String compatible) {
             // Particle class doesn't exist in 1.8
             if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_8)) {
-                this.compatibilityMode = true;
                 this.compatibleEffect = LegacyParticleEffects.Type.valueOf(compatible);
                 this.particle = null;
             } else if (ServerVersion.isServerVersionBelow(minVersion)) {
-                this.compatibilityMode = true;
                 this.compatibleEffect = null;
                 this.particle = Particle.valueOf(compatible);
             } else {
@@ -312,11 +266,9 @@ public class CompatibleParticleHandler {
                 Particle check = Stream.of(Particle.values()).filter(p -> p.name().equals(name())).findFirst().orElse(null);
                 if (check != null) {
                     this.particle = check;
-                    this.compatibilityMode = false;
                 } else {
                     // this shouldn't happen, really
                     this.particle = Particle.END_ROD;
-                    this.compatibilityMode = true;
                 }
             }
         }

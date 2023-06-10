@@ -18,12 +18,6 @@ public abstract class AbstractCommand {
         this._cmdType = type;
     }
 
-    protected AbstractCommand(CommandType type, boolean hasArgs, String... command) {
-        this._handledCommands.addAll(Arrays.asList(command));
-        this._hasArgs = hasArgs;
-        this._cmdType = type;
-    }
-
     @Deprecated
     protected AbstractCommand(boolean noConsole, String... command) {
         this._handledCommands.addAll(Arrays.asList(command));
@@ -42,10 +36,6 @@ public abstract class AbstractCommand {
         return Collections.unmodifiableList(_handledCommands);
     }
 
-    public final void addSubCommand(String command) {
-        _handledCommands.add(command);
-    }
-
     protected abstract ReturnType runCommand(CommandSender sender, String... args);
 
     protected abstract List<String> onTab(CommandSender sender, String... args);
@@ -55,10 +45,6 @@ public abstract class AbstractCommand {
     public abstract String getSyntax();
 
     public abstract String getDescription();
-
-    public boolean hasArgs() {
-        return _hasArgs;
-    }
 
     public boolean isNoConsole() {
         return _cmdType == CommandType.PLAYER_ONLY;

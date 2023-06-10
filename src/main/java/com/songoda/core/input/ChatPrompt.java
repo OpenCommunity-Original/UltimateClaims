@@ -32,10 +32,6 @@ public class ChatPrompt implements Listener {
         registered.add(player.getUniqueId());
     }
 
-    public static ChatPrompt showPrompt(Plugin plugin, Player player, ChatConfirmHandler hander) {
-        return showPrompt(plugin, player, null, hander);
-    }
-
     public static ChatPrompt showPrompt(Plugin plugin, Player player, String message, ChatConfirmHandler hander) {
         ChatPrompt prompt = new ChatPrompt(plugin, player, hander);
         prompt.startListener(plugin);
@@ -63,20 +59,6 @@ public class ChatPrompt implements Listener {
 
     public ChatPrompt setOnCancel(OnCancel onCancel) {
         this.onCancel = onCancel;
-        return this;
-    }
-
-    public ChatPrompt setTimeOut(Player player, long ticks) {
-        taskId = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            if (onClose != null) {
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () ->
-                        onClose.onClose(), 0L);
-            }
-
-            HandlerList.unregisterAll(listener);
-            player.sendMessage("Your action has timed out.");
-        }, ticks);
-
         return this;
     }
 
@@ -158,10 +140,6 @@ public class ChatPrompt implements Listener {
         public ChatConfirmEvent(Player player, String message) {
             this.player = player;
             this.message = message;
-        }
-
-        public Player getPlayer() {
-            return player;
         }
 
         public String getMessage() {
