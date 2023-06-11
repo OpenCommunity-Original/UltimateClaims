@@ -105,7 +105,6 @@ public class BlockListeners implements Listener {
 
         Claim claim = claimManager.getClaim(event.getBlock().getChunk());
         if (claim != null && !claim.getClaimSettings().isEnabled(ClaimSetting.FIRE_SPREAD)) {
-            System.out.println("Cancel this.");
             event.setCancelled(true);
         }
     }
