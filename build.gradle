@@ -57,7 +57,7 @@ dependencies {
     compileOnly 'com.sk89q.worldedit:worldedit-core:7.2.14-SNAPSHOT'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'net.coreprotect:coreprotect:21.3'
-    compileOnly 'com.github.decentsoftware-eu:decentholograms:2.2.5'
+    compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.3'
     compileOnly 'us.dynmap:dynmap-api:3.4'
     compileOnly 'com.github.jojodmo:ItemBridge:b0054538c1'
     compileOnly 'io.github.thebusybiscuit:slimefun4:RC-28'
@@ -68,7 +68,6 @@ dependencies {
 group = 'com.songoda'
 version = '1.11'
 description = 'UltimateClaims'
-java.sourceCompatibility = JavaVersion.VERSION_19
 
 processResources {
     filter { String line -> line.replace('${version}', project.version.toString()) }

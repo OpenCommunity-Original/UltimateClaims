@@ -31,7 +31,7 @@ public class Settings {
             "You can choose from \"" + EconomyManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining("\", \"")) + "\".");
 
     public static final ConfigSetting HOLOGRAM = new ConfigSetting(config, "Main.Hologram",
-            HologramManager.getHolograms() == null ? "HolographicDisplays" : HologramManager.getHolograms().getName(),
+            HologramManager.getHolograms() == null ? "DecentHolograms" : HologramManager.getHolograms().getName(),
             "Which hologram plugin should be used?",
             "You can choose from \"" + HologramManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining(", ")) + "\".");
 
