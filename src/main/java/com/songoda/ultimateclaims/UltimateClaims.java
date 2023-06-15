@@ -144,7 +144,11 @@ public class UltimateClaims extends SongodaPlugin {
     public void onPluginDisable() {
         // save all claims data
         this.guiManager.closeAll();
-        this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
+        if (this.dataManager != null) {
+            this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
+        } else {
+            this.getLogger().severe("DataManager is null. Unable to update claims.");
+        }
         this.databaseConnector.closeConnection();
 
         // cleanup holograms
